@@ -1,0 +1,13 @@
+<h1>ClearBlade API Test App</h1>
+<div ng-show="!previousApp">
+	<h4>Please enter your appKey and appSecret</h4>
+	<form ng-submit="appKeySecretSubmit()">
+		<input type="text" ng-model="appKey" id="appKey" name="appKey" placeholder="App Key" />
+		<input type="text" ng-model="appSecret" id="appSecret" name="appSecret" placeholder="App Secret" />
+		<input type="submit" value="Save App Key and Secret" />
+	</form>
+</div>	
+
+<button ng-click="clearAppKeySecret()" ng-show="previousApp">Clear Stored Key and Secret</button>
+<button ng-click="goToColTest()" ng-show="previousApp">Test Collections</button>
+<button ng-click="goToQueryTest()" ng-show="previousApp">Test Queries</button>

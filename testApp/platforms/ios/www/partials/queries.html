@@ -1,0 +1,20 @@
+<button ng-click="goHome()">Home</button>
+<h1>Queries</h1>
+
+<form ng-submit="submitQuery()">
+	<input type="text" ng-model="collection" id="collection" name="collection" placeholder="collection" required />
+	<select ng-model="selectedOp" ng-options="op.value as op.name for op in ops"></select>
+	<input type="text" ng-model="field" id="field" name="field" placeholder="field" required />
+	<input type="text" ng-model="value" id="value" name="value" placeholder="value" required />
+	<button ng-click="submitQuery()" >Query</button>
+</form>
+<div ng-show="showTable">
+	<table border="1">
+		<tr>
+			<th ng-repeat="(key, val) in Items[0].data">{{key}}</th>
+		</tr>
+		<tr ng-repeat="item in Items">
+			<td ng-repeat="(key, val) in item.data">{{val}}</td>
+		</tr>
+	</table>
+</div>
