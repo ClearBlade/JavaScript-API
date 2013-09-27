@@ -1,13 +1,12 @@
-/*
- * This is the client-side JavaScript API for The ClearBlade Platform
- * Learn More at https://platform.clearblade.com/
- *
- * Copyright 2013 ClearBlade Inc
- *
- * @author Charlie Andrews (candrews@clearblade.com)
- * @version 0.0.2
- *
- */
+/*******************************************************************************
+* Copyright 2013 ClearBlade, Inc
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*
+* Any redistribution of this program in any form must include this copyright
+*******************************************************************************/
 
 if (!window.console) {
 	window.console = window.console || {};
