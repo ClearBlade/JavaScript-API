@@ -917,8 +917,13 @@ if (!window.console) {
 	conf["timeout"] = options["timeout"] || 60;
 	this.client.subscribe(topic,conf);
     };
-    ClearBlade.Messaging.prototype.Unsubscribe(topic){
-	
+    ClearBlade.Messaging.prototype.Unsubscribe(topic,options){
+	var conf = {};
+	conf["invocationContext"] = options["invocationContext"] ||  {};
+	conf["onSuccess"] = options["onSuccess"] || null;
+	conf["onFailure"] = options["onFailure"] || null;
+	conf["timeout"] = options["timeout"] || 60;
+	this.client.subscribe(topic,conf);
     };
     ClearBlade.Messaging.prototype.Disconnect(){
 	this.client.disconnect()
