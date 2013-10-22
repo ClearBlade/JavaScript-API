@@ -895,21 +895,33 @@ if (!window.console) {
 	conf["onFailure"] = options["onFailure"] || null;
 	conf["hosts"] = options["hosts"] == null ? ["platform.clearblade.com"] : options["hosts"].concat("platform.clearblade.com");
 	conf["ports"] = options["ports"] == null ? [80,8080,1337] : options["ports"].concat([80,8080,1337]);
+	conf["clientID"] = Math.floor(Math.random() * 10e12)
+	this.client = Messaging.Client(conf["hosts"][0],conf["ports"][0],conf["clientID"]);
+	this.client.connect(conf);
 	
 
 
     };
     ClearBlade.Messaging.prototype.Publish(topic, payload){
-
+	//todo handle options
+	var msg = Messaging.Messaging(payload);
+	msg.destinationName = topic;
+	this.client.send(msg);
     };
-    ClearBlade.Messaging.prototype.Subscribe(topic,onReceive){
-	
+    ClearBlade.Messaging.prototype.Subscribe(topic,options){
+	var conf = {};
+	conf["qos"] = options["qos"] || 0;
+	conf["invocationContext"] = options["invocationContext"] ||  {};
+	conf["onSuccess"] = options["onSuccess"] || null;
+	conf["onFailure"] = options["onFailure"] || null;
+	conf["timeout"] = options["timeout"] || 60;
+	this.client.subscribe(topic,conf);
     };
     ClearBlade.Messaging.prototype.Unsubscribe(topic){
-
+	
     };
     ClearBlade.Messaging.prototype.Disconnect(){
-
+	this.client.disconnect()
     };
 
 })(window);
