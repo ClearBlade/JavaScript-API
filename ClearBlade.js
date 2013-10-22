@@ -903,7 +903,6 @@ if (!window.console) {
 
     };
     ClearBlade.Messaging.prototype.Publish(topic, payload){
-	//todo handle options
 	var msg = Messaging.Messaging(payload);
 	msg.destinationName = topic;
 	this.client.send(msg);
