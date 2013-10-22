@@ -849,7 +849,7 @@ if (!window.console) {
 		};
 		query.fetch(callback);
 	};
-
+    
 	ClearBlade.Item.prototype.destroy = function () {
 		//deletes the relative record in the DB then deletes the item locally
 		var self = this;
@@ -868,5 +868,25 @@ if (!window.console) {
 		query.remove(callback);
 		delete this;
 	};
+    
+
+
+    //herein: messaging stuff
+
+    ClearBlade.Messaging = function(options){
+	
+    };
+    ClearBlade.Messaging.prototype.Publish(topic, payload){
+
+    };
+    ClearBlade.Messaging.prototype.Subscribe(topic,onReceive){
+	
+    };
+    ClearBlade.Messaging.prototype.Unsubscribe(topic){
+
+    };
+    ClearBlade.Messaging.prototype.Disconnect(){
+
+    };
 
 })(window);
