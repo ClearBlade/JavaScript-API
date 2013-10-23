@@ -871,7 +871,7 @@ if (!window.console) {
     
 
     /**
-	 * Initializes the ClearBlade messaging object.
+	 * Initializes the ClearBlade messaging object and connects to a server.
 	 * @method ClearBlade.Messaging
 	 * @param {Object} options  This value contains the config object for connecting. A number of reasonable defaults are set for the option if none are set.
 	 *<p>
@@ -886,6 +886,8 @@ if (!window.console) {
 	 * @options {object} [invocationContext] An object to wrap all the important variables needed for the onFalure and onSuccess functions. The default is empty.
 	 * @options {function} [onSuccess] A callback to operate on the result of a sucessful connect. In beta the default is empty.
 	 * @options {function} [onFailure] A callback to operate on the result of an unsuccessful connect. In beta the default is also empty.
+	 * @options {Object} [hosts] An array of hosts to attempt to connect too. Sticks to the first one that works. The default is "platform.clearblade.com".
+	 * @options {Object} [ports] An array of ports to try, it also sticks to thef first one that works. The defaults are 80,8080,1337.
 	 *</p>
 	 * @example <caption> A standard connect</caption>
 	 * var cb = ClearBlade.Messaging({"timeout":15});
@@ -913,10 +915,18 @@ if (!window.console) {
 	conf["clientID"] = Math.floor(Math.random() * 10e12)
 	this.client = Messaging.Client(conf["hosts"][0],conf["ports"][0],conf["clientID"]);
 	this.client.connect(conf);
-	
-
-
     };
+
+    /**
+	 * Publishes to a topic.
+	 * @method ClearBlade.Messaging.prototype.Publish
+	 * @param {string} [topic] Is the topic path of the message to be published. This will be sent to all listeners on the topic. No default.
+	 * @param {String | ArrayBuffer} [payload] The payload to be sent. Also no default.
+	 * @example <caption> How to publish </caption>
+	 * var cb = ClearBlade.Messaging({"timeout":15});
+	 * cb.Publish("ClearBlade/is awesome!","Totally rules");
+	 * //Topics can include spaces and punctuation  except "/" 
+	 */
     ClearBlade.Messaging.prototype.Publish(topic, payload){
 	var msg = Messaging.Messaging(payload);
 	msg.destinationName = topic;
