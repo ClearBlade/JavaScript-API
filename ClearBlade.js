@@ -870,13 +870,28 @@ if (!window.console) {
 	};
     
 
+    /**
+	 * Initializes the ClearBlade messaging object.
+	 * @method ClearBlade.Messaging
+	 * @param {Object} options  This value contains the config object for connecting. A number of reasonable defaults are set for the option if none are set.
+	 *<p>
+	 *The connect options and their defaults are:
+	 * @options {number} [timeout] sets the timeout for the websocket connection in case of failure. The default is 60
+	 * @options {string} [userName] The app key assigned in the clearblade platform control. This is always set within the function, but noted here in case you want to use a different mqtt websocket client.
+	 * @options {string} [password] The same as above for the app secret.
+	 * @options {Messaging Message} [willMessage] A message sent on a specified topic when the client disconnects without sending a disconnect packet. The default is none.
+	 * @options {Number} [keepAliveInterval] The server disconnects if there is no activity for this pierod of time. The default is 60.
+	 * @options {boolean} [cleanSession] The server will persist state of the session if true. Not avaliable in beta.
+	 * @options {boolean} [useSSL] The option to use SSL websockets. Default is false for now.
+	 * @options {object} [invocationContext] An object to wrap all the important variables needed for the onFalure and onSuccess functions. The default is empty.
+	 * @options {function} [onSuccess] A callback to operate on the result of a sucessful connect. In beta the default is empty.
+	 * @options {function} [onFailure] A callback to operate on the result of an unsuccessful connect. In beta the default is also empty.
+	 *</p>
+	 * @example <caption> A standard connect</caption>
+	 * var cb = ClearBlade.Messaging({"timeout":15});
+	 * //A connect with a nonstandard timeout.
+	 */
 
-    //herein: messaging stuff
-    
-
-    //our options object is very similar to the paho options object.
-    //the difference is that we're providing some simple configs.
-    //Feel free to change it up!
     ClearBlade.Messaging = function(options){
 	//roll through the config
 	//aaharg how does scope work again?!
