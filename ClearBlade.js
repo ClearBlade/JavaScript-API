@@ -849,7 +849,7 @@ if (!window.console) {
 		};
 		query.fetch(callback);
 	};
-
+    
 	ClearBlade.Item.prototype.destroy = function () {
 		//deletes the relative record in the DB then deletes the item locally
 		var self = this;
@@ -868,5 +868,64 @@ if (!window.console) {
 		query.remove(callback);
 		delete this;
 	};
+    
+
+
+    //herein: messaging stuff
+    
+
+    //our options object is very similar to the paho options object.
+    //the difference is that we're providing some simple configs.
+    //Feel free to change it up!
+    ClearBlade.Messaging = function(options){
+	//roll through the config
+	//aaharg how does scope work again?!
+	var conf = {}
+	conf["timeout"] = options["timeout"] || 60; 
+	//security, username will always be appkey (don't worry, we got more <3)
+	conf["userName"] = ClearBlade.appKey;
+	//password is the same
+	conf["password"] = ClearBlade.appSecret;
+	conf["willMessage"] = options["willMessage"] || "";
+	conf["keepAliveInterval"] = options["keepAliveInterval"] || 60;
+	conf["cleanSession"] = options["cleanSession"] || true;
+	conf["useSSL"] = options["useSSL"] || false; //up for debate. ole' perf vs sec argument
+	conf["invocationContext"] = options["invocationContext"] || {}; //up for debate too. probably too app specific
+	conf["onSuccess"] = options["onSuccess"] || null;
+	conf["onFailure"] = options["onFailure"] || null;
+	conf["hosts"] = options["hosts"] == null ? ["platform.clearblade.com"] : options["hosts"].concat("platform.clearblade.com");
+	conf["ports"] = options["ports"] == null ? [80,8080,1337] : options["ports"].concat([80,8080,1337]);
+	conf["clientID"] = Math.floor(Math.random() * 10e12)
+	this.client = Messaging.Client(conf["hosts"][0],conf["ports"][0],conf["clientID"]);
+	this.client.connect(conf);
+	
+
+
+    };
+    ClearBlade.Messaging.prototype.Publish(topic, payload){
+	var msg = Messaging.Messaging(payload);
+	msg.destinationName = topic;
+	this.client.send(msg);
+    };
+    ClearBlade.Messaging.prototype.Subscribe(topic,options){
+	var conf = {};
+	conf["qos"] = options["qos"] || 0;
+	conf["invocationContext"] = options["invocationContext"] ||  {};
+	conf["onSuccess"] = options["onSuccess"] || null;
+	conf["onFailure"] = options["onFailure"] || null;
+	conf["timeout"] = options["timeout"] || 60;
+	this.client.subscribe(topic,conf);
+    };
+    ClearBlade.Messaging.prototype.Unsubscribe(topic,options){
+	var conf = {};
+	conf["invocationContext"] = options["invocationContext"] ||  {};
+	conf["onSuccess"] = options["onSuccess"] || null;
+	conf["onFailure"] = options["onFailure"] || null;
+	conf["timeout"] = options["timeout"] || 60;
+	this.client.subscribe(topic,conf);
+    };
+    ClearBlade.Messaging.prototype.Disconnect(){
+	this.client.disconnect()
+    };
 
 })(window);
