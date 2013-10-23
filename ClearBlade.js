@@ -979,6 +979,13 @@ if (!window.console) {
 	conf["timeout"] = options["timeout"] || 60;
 	this.client.subscribe(topic,conf);
     };
+
+/**
+   * Disconnects from the server.
+   * @example <caption> How to publish </caption>
+	 * var cb = ClearBlade.Messaging({"timeout":15});
+	 * cb.Disconnect()//why leave so soon :(
+*/
     ClearBlade.Messaging.prototype.Disconnect(){
 	this.client.disconnect()
     };
