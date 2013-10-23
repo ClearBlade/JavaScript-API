@@ -932,15 +932,32 @@ if (!window.console) {
 	msg.destinationName = topic;
 	this.client.send(msg);
     };
+
+    /**
+       *Subscribes to a topic
+       *@param {string} [topic] The topic to subscribe to. No default.
+       *@param {Object} [options] The configuration object
+       <p>
+       @options {Number} [qos] The quality of service specified within MQTT. The default is 0, or fire and forget.
+       @options {Object}  [invocationContext] An object that contains variables and other data for the onSuccess and failure callbacks. The default is blank.
+       @options {function} [onSuccess] The callback invoked on a successful subscription. The default is nothing.
+       @options {function} [onFailure] The callback invoked on a failed subsciption. The default is nothing.
+       @options {Number} [timeout] The time to wait for a response from the server acknowleging the subscription.
+       </p>
+	 * @example <caption> How to publish </caption>
+	 * var cb = ClearBlade.Messaging({"timeout":15});
+	 * cb.Subscribe("ClearBlade/is awesome!",{});
+	 */
     ClearBlade.Messaging.prototype.Subscribe(topic,options){
 	var conf = {};
-	conf["qos"] = options["qos"] || 0;
+	conf["qos"] = 0; //options["qos"] || 0;
 	conf["invocationContext"] = options["invocationContext"] ||  {};
 	conf["onSuccess"] = options["onSuccess"] || null;
 	conf["onFailure"] = options["onFailure"] || null;
 	conf["timeout"] = options["timeout"] || 60;
 	this.client.subscribe(topic,conf);
     };
+
     ClearBlade.Messaging.prototype.Unsubscribe(topic,options){
 	var conf = {};
 	conf["invocationContext"] = options["invocationContext"] ||  {};
