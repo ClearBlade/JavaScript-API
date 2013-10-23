@@ -891,7 +891,14 @@ if (!window.console) {
 	 *</p>
 	 * @example <caption> A standard connect</caption>
 	 * var cb = ClearBlade.Messaging({"timeout":15});
-	 * //A connect with a nonstandard timeout.
+	 * //A connect with a nonstandard timeout
+	 *
+	 *<p>
+	 *Please indulge a small exposition.
+	 *The limited nature of the API is due to the universal nature of ClearBlade's MQTT implementation.
+	 *That is to say that any complying MQTT client should be able to communicate freely with our servers, whether on websockets or TCP. Also, whether one is using the websocket or tcp, a message sent to "ClearBlade/Rules" will be received by all clients subscribed, whether on tcp or websocket.
+	 *Our goal with the provided API is to provide simple functions to use in the default cases, please feel free to directly use your own mqtt client (provided the username/password appkey/appsecret pattern is followed.
+	 *</p>
 	 */
 
     ClearBlade.Messaging = function(options){
