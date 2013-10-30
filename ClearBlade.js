@@ -30,7 +30,7 @@ if (!window.console) {
 		window = exports;
 	} else {
 		ClearBlade = $cb = window.$cb = window.ClearBlade = window.ClearBlade || {};
-	}	   
+	}   
 
 	/**
 	 * This method returns the current version of the API
@@ -162,7 +162,7 @@ if (!window.console) {
 		var body = options.body || {};
 		var qs = options.qs || '';
 		var url = options.URI || self.URI;
-		var params = qs
+		var params = qs;
 			if (endpoint) {
 				url +=  ('/' + endpoint);
 			}
@@ -901,27 +901,43 @@ if (!window.console) {
 	 *</p>
 	 */
 
-    ClearBlade.Messaging = function(options){
-	//roll through the config
-	//aaharg how does scope work again?!
-	var conf = {}
-	conf["timeout"] = options["timeout"] || 60; 
-	//security, username will always be appkey (don't worry, we got more <3)
-	conf["userName"] = ClearBlade.appKey;
-	//password is the same
-	conf["password"] = ClearBlade.appSecret;
-	conf["willMessage"] = options["willMessage"] || "";
-	conf["keepAliveInterval"] = options["keepAliveInterval"] || 60;
-	conf["cleanSession"] = options["cleanSession"] || true;
-	conf["useSSL"] = options["useSSL"] || false; //up for debate. ole' perf vs sec argument
-	conf["invocationContext"] = options["invocationContext"] || {}; //up for debate too. probably too app specific
-	conf["onSuccess"] = options["onSuccess"] || null;
-	conf["onFailure"] = options["onFailure"] || null;
-	conf["hosts"] = options["hosts"] == null ? ["platform.clearblade.com"] : options["hosts"].concat("platform.clearblade.com");
-	conf["ports"] = options["ports"] == null ? [80,8080,1337] : options["ports"].concat([80,8080,1337]);
-	conf["clientID"] = Math.floor(Math.random() * 10e12)
-	this.client = Messaging.Client(conf["hosts"][0],conf["ports"][0],conf["clientID"]);
-	this.client.connect(conf);
+    ClearBlade.Messaging = function(options, callback){
+		//roll through the config
+		var conf = {}
+		conf["userName"] = ClearBlade.appKey;
+		//password is the same
+		conf["password"] = ClearBlade.appSecret;
+		conf["cleanSession"] = options["cleanSession"] || true;
+		conf["useSSL"] = options["useSSL"] || false; //up for debate. ole' perf vs sec argument
+		conf["hosts"] = options["hosts"] == null ? ["platform.clearblade.com"] : options["hosts"].concat("platform.clearblade.com");
+		conf["ports"] = options["ports"] == null ? [1337] : options["ports"].concat([1337]);
+		
+		//conf["clientID"] = Math.floor(Math.random() * 10e12).toString();
+		var clientID= Math.floor(Math.random() * 10e12).toString();
+		this.client = new Messaging.Client(conf["hosts"][0],conf["ports"][0],clientID);
+		this.client.onConnectionLost = onConnectionLost;
+      
+      	this.client.onMessageArrived = onMessageArrived; 
+		var onConnect = function(data){
+			callback(data);
+		};
+
+		this.client.onConnect =onConnect;
+		var onFailure = function(err) {
+			alert("failed to connect");
+			callback(err);
+		};
+		this.client.connect({onSuccess:onConnect, onFailure:onFailure});
+    };
+
+    var onConnectionLost = function(){
+    	alert("connection lost- attempting to reestablish");
+    	this.client.connect({onSuccess:onConnect, onFailure:onFailure});
+    };
+
+    var onMessageArrived = function(message){
+    	console.log("message arrived: "+message.payloadString);
+    	messaging.messageCallback(message.payloadString);
     };
 
     /**
@@ -934,10 +950,11 @@ if (!window.console) {
 	 * cb.Publish("ClearBlade/is awesome!","Totally rules");
 	 * //Topics can include spaces and punctuation  except "/" 
 	 */
-    ClearBlade.Messaging.prototype.Publish(topic, payload){
-	var msg = Messaging.Messaging(payload);
-	msg.destinationName = topic;
-	this.client.send(msg);
+
+    ClearBlade.Messaging.prototype.Publish = function(topic, payload){
+		var msg = new Messaging.Message(payload);
+		msg.destinationName = topic;
+		this.client.send(msg);
     };
 
     /**
@@ -955,14 +972,26 @@ if (!window.console) {
 	 * var cb = ClearBlade.Messaging({"timeout":15});
 	 * cb.Subscribe("ClearBlade/is awesome!",{});
 	 */
-    ClearBlade.Messaging.prototype.Subscribe(topic,options){
-	var conf = {};
-	conf["qos"] = 0; //options["qos"] || 0;
-	conf["invocationContext"] = options["invocationContext"] ||  {};
-	conf["onSuccess"] = options["onSuccess"] || null;
-	conf["onFailure"] = options["onFailure"] || null;
-	conf["timeout"] = options["timeout"] || 60;
-	this.client.subscribe(topic,conf);
+    ClearBlade.Messaging.prototype.Subscribe = function (topic,options,messageCallback){
+
+    	var onSuccess = function() {
+    		var conf = {};
+			conf["qos"] = 0; //options["qos"] || 0;
+			conf["invocationContext"] = options["invocationContext"] ||  {};
+			conf["onSuccess"] = options["onSuccess"] || null;
+			conf["onFailure"] = options["onFailure"] || null;
+			conf["timeout"] = options["timeout"] || 60;
+			this.client.subscribe(topic,conf);
+    	};
+
+    	var onFailure = function() {
+    		alert("failed to connect");
+    	};
+
+    	//this.client.connect({onSuccess:onConnect, onFailure:onFailure});
+    	this.client.subscribe(topic);	
+
+    	this.messageCallback = messageCallback;
     };
     /**
        *Unsubscribes from a topic
@@ -978,13 +1007,13 @@ if (!window.console) {
 	 * var cb = ClearBlade.Messaging({"timeout":15});
 	 * cb.Unsubscribe("ClearBlade/is awesome!",{"onSuccess":function(){console.log("we unsubscribe);});
 	 */
-    ClearBlade.Messaging.prototype.Unsubscribe(topic,options){
-	var conf = {};
-	conf["invocationContext"] = options["invocationContext"] ||  {};
-	conf["onSuccess"] = options["onSuccess"] || null;
-	conf["onFailure"] = options["onFailure"] || null;
-	conf["timeout"] = options["timeout"] || 60;
-	this.client.subscribe(topic,conf);
+    ClearBlade.Messaging.prototype.Unsubscribe = function(topic,options){
+		var conf = {};
+		conf["invocationContext"] = options["invocationContext"] ||  {};
+		conf["onSuccess"] = options["onSuccess"] || null;
+		conf["onFailure"] = options["onFailure"] || null;
+		conf["timeout"] = options["timeout"] || 60;
+		this.client.subscribe(topic,conf);
     };
 
 /**
@@ -993,8 +1022,9 @@ if (!window.console) {
 	 * var cb = ClearBlade.Messaging({"timeout":15});
 	 * cb.Disconnect()//why leave so soon :(
 */
-    ClearBlade.Messaging.prototype.Disconnect(){
-	this.client.disconnect()
+    ClearBlade.Messaging.prototype.Disconnect = function(){
+		this.client.disconnect()
     };
+
 
 })(window);
