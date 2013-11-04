@@ -1013,7 +1013,7 @@ if (!window.console) {
 		conf["onSuccess"] = options["onSuccess"] || null;
 		conf["onFailure"] = options["onFailure"] || null;
 		conf["timeout"] = options["timeout"] || 60;
-		this.client.subscribe(topic,conf);
+		this.client.unsubscribe(topic,conf);
     };
 
 /**
@@ -1028,3 +1028,4 @@ if (!window.console) {
 
 
 })(window);
+v
