@@ -34,7 +34,7 @@ if (!window.console) {
 
 	/**
 	 * This method returns the current version of the API
-	 * @method getApiVersion
+	 * @method ClearBlade.getApiVersion
 	 */
 	ClearBlade.getApiVersion = function () {
 		return '0.0.2';
@@ -42,7 +42,7 @@ if (!window.console) {
 
 	/**
 	 * This method initializes the ClearBlade module with the values needed to connect to the platform
-	 * @method init
+	 * @method ClearBlade.init
 	 * @param options {Object} the `options` Object
 	 */
 	ClearBlade.init = function (options) {
@@ -174,13 +174,11 @@ if (!window.console) {
 		//begin XMLHttpRequest 
 		var httpRequest;
 
-		if (typeof window.XMLHttpRequest !== 'undefined') { // Mozilla, Safari, IE 10 ...
+		if (typeof window.XMLHttpRequest !== 'undefined') { // Mozilla, Safari, IE 10 ..
 
 			httpRequest = new XMLHttpRequest();
 
 			// if "withCredentials is not in the XMLHttpRequest object CORS is not supported
-
-
 			if (!("withCredentials" in httpRequest)) {
 				logger("Sorry it seems that CORS is not supported on your Browser. The RESTful api calls will not work!");
 				httpRequest = null;
@@ -342,7 +340,7 @@ if (!window.console) {
 
 	/**
 	 * Reqests an item or a set of items from the collection. 
-	 * @method ClearBlade.Collection.fetch
+	 * @method ClearBlade.Collection.prototype.fetch
 	 * @param {Query} _query Used to request a specific item or subset of items from the collection on the server
 	 * @param {function} callback Supplies processing for what to do with the data that is returned from the collection
 	 * @example <caption>The typical callback</caption>
@@ -413,7 +411,7 @@ if (!window.console) {
 
 	/**
 	 * Creates a new item in the collection and returns the created item to the callback
-	 * @method ClearBlade.Collection.create
+	 * @method ClearBlade.Collection.prototype.create
 	 * @param {Object} newItem An object that represents an item that you want to add to the collection
 	 * @param {function} callback Supplies processing for what to do with the data that is returned from the collection
 	 * @example <caption>Creating a new item in the collection</caption>
@@ -449,7 +447,7 @@ if (!window.console) {
 
 	/**
 	 * Updates an existing item or set of items 
-	 * @method ClearBlade.Collection.update
+	 * @method ClearBlade.Collection.prototype.update
 	 * @param {Query} _query Query object to denote which items or set of Items will be changed
 	 * @param {Object} changes Object representing the attributes that you want changed
 	 * @param {function} callback Function that handles the response of the server
@@ -486,7 +484,7 @@ if (!window.console) {
 
 	/**
 	 * Removes an item or set of items from the specified collection
-	 * @method ClearBlade.Collection.remove
+	 * @method ClearBlade.Collection.prototype.remove
 	 * @param {Query} _query Query object that used to define what item or set of items to remove
 	 * @param {function} callback Function that handles the response from the server
 	 * @example <caption>Removing an item in a collection</caption>
@@ -537,7 +535,7 @@ if (!window.console) {
 		if (!options) {
 			options = {}; 
 		}
-		if (options.collection != undefined || options.collection != "") {
+		if (options.collection !== undefined || options.collection !== "") {
 			this.collection = options.collection;
 		}
 		this.query = {};
@@ -549,7 +547,7 @@ if (!window.console) {
 	};
 
 	ClearBlade.Query.prototype.ascending = function (field) {
-		jaddToQuery(this, "SORT", makeKVPair("ASC", field));
+		addToQuery(this, "SORT", makeKVPair("ASC", field));
 		return this;
 	};
 
@@ -560,7 +558,7 @@ if (!window.console) {
 
 	/**
 	 * Creates an equality clause in the query object
-	 * @method ClearBlade.Query.equalTo
+	 * @method ClearBlade.Query.prototype.equalTo
 	 * @param {String} field String defining what attribute to compare
 	 * @param {String} value String or Number that is used to compare against
 	 * @example <caption>Adding an equality clause to a query</caption>
@@ -575,7 +573,7 @@ if (!window.console) {
 
 	/**
 	 * Creates a greater than clause in the query object
-	 * @method ClearBlade.Query.greaterThan
+	 * @method ClearBlade.Query.prototype.greaterThan
 	 * @param {String} field String defining what attribute to compare
 	 * @param {String} value String or Number that is used to compare against
 	 * @example <caption>Adding a greater than clause to a query</caption>
@@ -590,7 +588,7 @@ if (!window.console) {
 
 	/**
 	 * Creates a greater than or equality clause in the query object
-	 * @method ClearBlade.Query.greaterThanEqualTo
+	 * @method ClearBlade.Query.prototype.greaterThanEqualTo
 	 * @param {String} field String defining what attribute to compare
 	 * @param {String} value String or Number that is used to compare against 
 	 * @example <caption>Adding a greater than or equality clause to a query</caption>
@@ -605,7 +603,7 @@ if (!window.console) {
 
 	/**
 	 * Creates a less than clause in the query object
-	 * @method ClearBlade.Query.lessThan
+	 * @method ClearBlade.Query.prototype.lessThan
 	 * @param {String} field String defining what attribute to compare
 	 * @param {String} value String or Number that is used to compare against 
 	 * @example <caption>Adding a less than clause to a query</caption>
@@ -620,7 +618,7 @@ if (!window.console) {
 
 	/**
 	 * Creates a less than or equality clause in the query object
-	 * @method ClearBlade.Query.lessThanEqualTo
+	 * @method ClearBlade.Query.prototype.lessThanEqualTo
 	 * @param {String} field String defining what attribute to compare
 	 * @param {String} value String or Number that is used to compare against 
 	 * @example <caption>Adding a less than or equality clause to a query</caption>
@@ -636,7 +634,7 @@ if (!window.console) {
 
 	/**
 	 * Creates a not equal clause in the query object
-	 * @method ClearBlade.Query.notEqualTo
+	 * @method ClearBlade.Query.prototype.notEqualTo
 	 * @param {String} field String defining what attribute to compare
 	 * @param {String} value String or Number that is used to compare against 
 	 * @example <caption>Adding a not equal clause to a query</caption>
@@ -652,7 +650,7 @@ if (!window.console) {
 
 	/**
 	 * chains an existing query object to the Query object in an or
-	 * @method ClearBlade.Query.or
+	 * @method ClearBlade.Query.prototype.or
 	 * @param {Query} that Query object that will be added in disjunction to this query object
 	 * @example <caption>Chaining two queries together in an or</caption>
 	 * var query1 = new ClearBlade.Query();
@@ -708,6 +706,33 @@ if (!window.console) {
 		}
 	};
 
+	/**
+	 * Reqests an item or a set of items from the query. Requires that
+   * the Query object was initialized with a collection.
+	 * @method ClearBlade.Query.prototype.fetch
+	 * @param {function} callback Supplies processing for what to do with the data that is returned from the collection
+	 * @example <caption>The typical callback</caption>
+	 * var callback = function (err, data) {
+	 *     if (err) {
+	 *         //error handling
+	 *     } else {
+	 *         console.log(data);
+	 *     }
+	 * };
+	 *
+	 * @example <caption>Fetching data from a collection</caption>
+	 * var returnedData = [];
+	 * var callback = function (err, data) {
+	 *     if (err) {
+	 *         throw new Error (data);
+	 *     } else {
+	 *         returnedData = data;
+	 *     }
+	 * };
+	 *
+	 * query.fetch(callback);
+	 * //this will give returnedData the value of what ever was returned from the server.
+	 */
 	ClearBlade.Query.prototype.fetch = function (callback) {
 		var reqOptions = {
 			method: 'GET',
@@ -740,6 +765,30 @@ if (!window.console) {
 		}
 	};
 
+	/**
+	 * Updates an existing item or set of items. Requires that a collection was 
+   * set when the Query was initialized.
+	 * @method ClearBlade.Query.prototype.update
+	 * @param {Object} changes Object representing the attributes that you want changed
+	 * @param {function} callback Function that handles the response of the server
+	 * @example <caption>Updating a set of items</caption>
+	 * //This example assumes a collection of items that have the columns name and age.
+	 * var query = new ClearBlade.Query({'collection': 'COLLECTIONID'});
+	 * query.equalTo('name', 'John');
+	 * var changes = {
+	 *     age: 23
+	 * };
+	 * var callback = function (err, data) {
+	 *     if (err) {
+	 *         throw new Error (data);
+	 *     } else {
+	 *         console.log(data);
+	 *     }
+	 * };
+	 *
+	 * query.update(changes, callback);
+	 * //sets John's age to 23
+	 */
 	ClearBlade.Query.prototype.update = function (changes, callback) {
 		var reqOptions = {
 			method: 'PUT',
@@ -774,6 +823,25 @@ if (!window.console) {
 		}
 	};
 
+	/**
+	 * Removes an item or set of items from the Query
+	 * @method ClearBlade.Query.prototype.remove
+	 * @param {function} callback Function that handles the response from the server
+	 * @example <caption>Removing an item in a collection</caption>
+	 * //This example assumes that you have a collection with the item whose 'name' attribute is 'John'
+	 * var query = new ClearBlade.Query({'collection': 'COLLECTIONID'});
+	 * query.equalTo('name', 'John');
+	 * var callback = function (err, data) {
+	 *     if (err) {
+	 *         throw new Error (data);
+	 *     } else {
+	 *         console.log(data);
+	 *     }
+	 * };
+	 *
+	 * query.remove(callback);
+	 * //removes every item whose 'name' attribute is equal to 'John'
+	 */
 	ClearBlade.Query.prototype.remove = function (callback) {
 		var reqOptions = {
 			method: 'DELETE',
@@ -872,32 +940,32 @@ if (!window.console) {
 
     /**
 	 * Initializes the ClearBlade messaging object and connects to a server.
-	 * @method ClearBlade.Messaging
+	 * @class ClearBlade.Messaging
 	 * @param {Object} options  This value contains the config object for connecting. A number of reasonable defaults are set for the option if none are set.
 	 *<p>
 	 *The connect options and their defaults are:
-	 * @options {number} [timeout] sets the timeout for the websocket connection in case of failure. The default is 60
-	 * @options {string} [userName] The app key assigned in the clearblade platform control. This is always set within the function, but noted here in case you want to use a different mqtt websocket client.
-	 * @options {string} [password] The same as above for the app secret.
-	 * @options {Messaging Message} [willMessage] A message sent on a specified topic when the client disconnects without sending a disconnect packet. The default is none.
-	 * @options {Number} [keepAliveInterval] The server disconnects if there is no activity for this pierod of time. The default is 60.
-	 * @options {boolean} [cleanSession] The server will persist state of the session if true. Not avaliable in beta.
-	 * @options {boolean} [useSSL] The option to use SSL websockets. Default is false for now.
-	 * @options {object} [invocationContext] An object to wrap all the important variables needed for the onFalure and onSuccess functions. The default is empty.
-	 * @options {function} [onSuccess] A callback to operate on the result of a sucessful connect. In beta the default is empty.
-	 * @options {function} [onFailure] A callback to operate on the result of an unsuccessful connect. In beta the default is also empty.
-	 * @options {Object} [hosts] An array of hosts to attempt to connect too. Sticks to the first one that works. The default is "platform.clearblade.com".
-	 * @options {Object} [ports] An array of ports to try, it also sticks to thef first one that works. The defaults are 80,8080,1337.
+	 * <p>{number} [timeout] sets the timeout for the websocket connection in case of failure. The default is 60</p>
+	 * <p>{string} [userName] The app key assigned in the clearblade platform control. This is always set within the function, but noted here in case you want to use a different mqtt websocket client.</p>
+	 * <p>{string} [password] The same as above for the app secret.</p>
+	 * <p>{Messaging Message} [willMessage] A message sent on a specified topic when the client disconnects without sending a disconnect packet. The default is none.</p>
+	 * <p>{Number} [keepAliveInterval] The server disconnects if there is no activity for this pierod of time. The default is 60.</p>
+	 * <p>{boolean} [cleanSession] The server will persist state of the session if true. Not avaliable in beta.</p>
+	 * <p>{boolean} [useSSL] The option to use SSL websockets. Default is false for now.</p>
+	 * <p>{object} [invocationContext] An object to wrap all the important variables needed for the onFalure and onSuccess functions. The default is empty.</p>
+	 * <p>{function} [onSuccess] A callback to operate on the result of a sucessful connect. In beta the default is empty.</p>
+	 * <p>{function} [onFailure] A callback to operate on the result of an unsuccessful connect. In beta the default is also empty.</p>
+	 * <p>{Object} [hosts] An array of hosts to attempt to connect too. Sticks to the first one that works. The default is "platform.clearblade.com".</p>
+	 * <p>{Object} [ports] An array of ports to try, it also sticks to thef first one that works. The defaults are 80,8080,1337.</p>
 	 *</p>
 	 * @example <caption> A standard connect</caption>
 	 * var cb = ClearBlade.Messaging({"timeout":15});
 	 * //A connect with a nonstandard timeout
 	 *
 	 *<p>
-	 *Please indulge a small exposition.
-	 *The limited nature of the API is due to the universal nature of ClearBlade's MQTT implementation.
-	 *That is to say that any complying MQTT client should be able to communicate freely with our servers, whether on websockets or TCP. Also, whether one is using the websocket or tcp, a message sent to "ClearBlade/Rules" will be received by all clients subscribed, whether on tcp or websocket.
-	 *Our goal with the provided API is to provide simple functions to use in the default cases, please feel free to directly use your own mqtt client (provided the username/password appkey/appsecret pattern is followed.
+	 * // Please indulge a small exposition.
+	 * // The limited nature of the API is due to the universal nature of ClearBlade's MQTT implementation.
+	 * // That is to say that any complying MQTT client should be able to communicate freely with our servers, whether on websockets or TCP. Also, whether one is using the websocket or tcp, a message sent to "ClearBlade/Rules" will be received by all clients subscribed, whether on tcp or websocket.
+	 * // Our goal with the provided API is to provide simple functions to use in the default cases, please feel free to directly use your own mqtt client (provided the username/password appkey/appsecret pattern is followed.
 	 *</p>
 	 */
 
@@ -940,11 +1008,11 @@ if (!window.console) {
     	messaging.messageCallback(message.payloadString);
     };
 
-    /**
+  /**
 	 * Publishes to a topic.
 	 * @method ClearBlade.Messaging.prototype.Publish
-	 * @param {string} [topic] Is the topic path of the message to be published. This will be sent to all listeners on the topic. No default.
-	 * @param {String | ArrayBuffer} [payload] The payload to be sent. Also no default.
+	 * @param {string} topic Is the topic path of the message to be published. This will be sent to all listeners on the topic. No default.
+	 * @param {string | ArrayBuffer} payload The payload to be sent. Also no default.
 	 * @example <caption> How to publish </caption>
 	 * var cb = ClearBlade.Messaging({"timeout":15});
 	 * cb.Publish("ClearBlade/is awesome!","Totally rules");
@@ -952,36 +1020,35 @@ if (!window.console) {
 	 */
 
     ClearBlade.Messaging.prototype.Publish = function(topic, payload){
-		var msg = new Messaging.Message(payload);
-		msg.destinationName = topic;
-		this.client.send(msg);
+		  var msg = new Messaging.Message(payload);
+		  msg.destinationName = topic;
+		  this.client.send(msg);
     };
 
     /**
-       *Subscribes to a topic
-       *@param {string} [topic] The topic to subscribe to. No default.
-       *@param {Object} [options] The configuration object
-       <p>
-       @options {Number} [qos] The quality of service specified within MQTT. The default is 0, or fire and forget.
-       @options {Object}  [invocationContext] An object that contains variables and other data for the onSuccess and failure callbacks. The default is blank.
-       @options {function} [onSuccess] The callback invoked on a successful subscription. The default is nothing.
-       @options {function} [onFailure] The callback invoked on a failed subsciption. The default is nothing.
-       @options {Number} [timeout] The time to wait for a response from the server acknowleging the subscription.
-       </p>
+     * Subscribes to a topic
+     * @method ClearBlade.Messaging.prototype.Subscribe
+     * @param {string} topic The topic to subscribe to. No default.
+     * @param {Object} [options] The configuration object. Options:
+       <p>{Number} [qos] The quality of service specified within MQTT. The default is 0, or fire and forget.</p>
+       <p>{Object}  [invocationContext] An object that contains variables and other data for the onSuccess and failure callbacks. The default is blank.</p>
+       <p>{function} [onSuccess] The callback invoked on a successful subscription. The default is nothing.</p>
+       <p>{function} [onFailure] The callback invoked on a failed subsciption. The default is nothing.</p>
+       <p>{Number} [timeout] The time to wait for a response from the server acknowleging the subscription.</p>
 	 * @example <caption> How to publish </caption>
 	 * var cb = ClearBlade.Messaging({"timeout":15});
 	 * cb.Subscribe("ClearBlade/is awesome!",{});
 	 */
     ClearBlade.Messaging.prototype.Subscribe = function (topic,options,messageCallback){
 
-    	var onSuccess = function() {
-    		var conf = {};
-			conf["qos"] = 0; //options["qos"] || 0;
-			conf["invocationContext"] = options["invocationContext"] ||  {};
-			conf["onSuccess"] = options["onSuccess"] || null;
-			conf["onFailure"] = options["onFailure"] || null;
-			conf["timeout"] = options["timeout"] || 60;
-			this.client.subscribe(topic,conf);
+      var onSuccess = function() {
+        var conf = {};
+        conf["qos"] = 0; //options["qos"] || 0;
+        conf["invocationContext"] = options["invocationContext"] ||  {};
+        conf["onSuccess"] = options["onSuccess"] || null;
+			  conf["onFailure"] = options["onFailure"] || null;
+			  conf["timeout"] = options["timeout"] || 60;
+			  this.client.subscribe(topic,conf);
     	};
 
     	var onFailure = function() {
@@ -993,39 +1060,40 @@ if (!window.console) {
 
     	this.messageCallback = messageCallback;
     };
-    /**
-       *Unsubscribes from a topic
-       *@param {string} [topic] The topic to subscribe to. No default.
-       *@param {Object} [options] The configuration object
-       <p>
-       @options {Object}  [invocationContext] An object that contains variables and other data for the onSuccess and failure callbacks. The default is blank.
-       @options {function} [onSuccess] The callback invoked on a successful unsubscription. The default is nothing.
-       @options {function} [onFailure] The callback invoked on a failed unsubcription. The default is nothing.
-       @options {Number} [timeout] The time to wait for a response from the server acknowleging the subscription.
-       </p>
-	 * @example <caption> How to publish </caption>
-	 * var cb = ClearBlade.Messaging({"timeout":15});
-	 * cb.Unsubscribe("ClearBlade/is awesome!",{"onSuccess":function(){console.log("we unsubscribe);});
-	 */
+  /**
+    * Unsubscribes from a topic
+    * @method ClearBlade.Messaging.prototype.Unsubscribe
+    * @param {string} topic The topic to subscribe to. No default.
+    * @param {Object} [options] The configuration object
+      <p>
+      @options {Object}  [invocationContext] An object that contains variables and other data for the onSuccess and failure callbacks. The default is blank.
+      @options {function} [onSuccess] The callback invoked on a successful unsubscription. The default is nothing.
+      @options {function} [onFailure] The callback invoked on a failed unsubcription. The default is nothing.
+      @options {Number} [timeout] The time to wait for a response from the server acknowleging the subscription.
+      </p>
+	  * @example <caption> How to publish </caption>
+	  * var cb = ClearBlade.Messaging({"timeout":15});
+	  * cb.Unsubscribe("ClearBlade/is awesome!",{"onSuccess":function(){console.log("we unsubscribe);});
+	  */
     ClearBlade.Messaging.prototype.Unsubscribe = function(topic,options){
-		var conf = {};
-		conf["invocationContext"] = options["invocationContext"] ||  {};
-		conf["onSuccess"] = options["onSuccess"] || null;
-		conf["onFailure"] = options["onFailure"] || null;
-		conf["timeout"] = options["timeout"] || 60;
-		this.client.unsubscribe(topic,conf);
+		  var conf = {};
+		  conf["invocationContext"] = options["invocationContext"] ||  {};
+		  conf["onSuccess"] = options["onSuccess"] || null;
+		  conf["onFailure"] = options["onFailure"] || null;
+		  conf["timeout"] = options["timeout"] || 60;
+		  this.client.unsubscribe(topic,conf);
     };
 
 /**
    * Disconnects from the server.
+   * @method ClearBlade.Messaging.prototype.Disconnect
    * @example <caption> How to publish </caption>
 	 * var cb = ClearBlade.Messaging({"timeout":15});
 	 * cb.Disconnect()//why leave so soon :(
 */
     ClearBlade.Messaging.prototype.Disconnect = function(){
-		this.client.disconnect()
+		  this.client.disconnect()
     };
 
 
 })(window);
-v

@@ -130,7 +130,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line512">line 512</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line526">line 526</a>
     </li></ul></dd>
     
     
@@ -176,7 +176,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="equalTo"><span class="type-signature">&lt;static> </span>equalTo<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="equalTo"><span class="type-signature"></span>equalTo<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -288,7 +288,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line545">line 545</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line559">line 559</a>
     </li></ul></dd>
     
     
@@ -325,7 +325,152 @@ query.equalTo('name', 'John');
         
             
 <dt>
-    <h4 class="name" id="greaterThan"><span class="type-signature">&lt;static> </span>greaterThan<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="fetch"><span class="type-signature"></span>fetch<span class="signature">(callback)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Reqests an item or a set of items from the query. Requires that
+the Query object was initialized with a collection.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Supplies processing for what to do with the data that is returned from the collection</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line709">line 709</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Examples</h5>
+        
+        <p class="code-caption">The typical callback</p>
+    
+    <pre class="prettyprint"><code>var callback = function (err, data) {
+    if (err) {
+        //error handling
+    } else {
+        console.log(data);
+    }
+};</code></pre>
+
+        <p class="code-caption">Fetching data from a collection</p>
+    
+    <pre class="prettyprint"><code>var returnedData = [];
+var callback = function (err, data) {
+    if (err) {
+        throw new Error (data);
+    } else {
+        returnedData = data;
+    }
+};
+
+query.fetch(callback);
+//this will give returnedData the value of what ever was returned from the server.</code></pre>
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="greaterThan"><span class="type-signature"></span>greaterThan<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -437,7 +582,7 @@ query.equalTo('name', 'John');
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line560">line 560</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line574">line 574</a>
     </li></ul></dd>
     
     
@@ -474,7 +619,7 @@ query.greaterThan('age', 21);
         
             
 <dt>
-    <h4 class="name" id="greaterThanEqualTo"><span class="type-signature">&lt;static> </span>greaterThanEqualTo<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="greaterThanEqualTo"><span class="type-signature"></span>greaterThanEqualTo<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -586,7 +731,7 @@ query.greaterThan('age', 21);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line575">line 575</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line589">line 589</a>
     </li></ul></dd>
     
     
@@ -623,7 +768,7 @@ query.greaterThanEqualTo('age', 21);
         
             
 <dt>
-    <h4 class="name" id="lessThan"><span class="type-signature">&lt;static> </span>lessThan<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="lessThan"><span class="type-signature"></span>lessThan<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -735,7 +880,7 @@ query.greaterThanEqualTo('age', 21);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line590">line 590</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line604">line 604</a>
     </li></ul></dd>
     
     
@@ -772,7 +917,7 @@ query.lessThan('age', 50);
         
             
 <dt>
-    <h4 class="name" id="lessThanEqualTo"><span class="type-signature">&lt;static> </span>lessThanEqualTo<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="lessThanEqualTo"><span class="type-signature"></span>lessThanEqualTo<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -884,7 +1029,7 @@ query.lessThan('age', 50);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line605">line 605</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line619">line 619</a>
     </li></ul></dd>
     
     
@@ -921,7 +1066,7 @@ query.lessThanEqualTo('age', 50);
         
             
 <dt>
-    <h4 class="name" id="notEqualTo"><span class="type-signature">&lt;static> </span>notEqualTo<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="notEqualTo"><span class="type-signature"></span>notEqualTo<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -1033,7 +1178,7 @@ query.lessThanEqualTo('age', 50);
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line621">line 621</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line635">line 635</a>
     </li></ul></dd>
     
     
@@ -1070,7 +1215,7 @@ query.notEqualTo('name', 'Jim');
         
             
 <dt>
-    <h4 class="name" id="or"><span class="type-signature">&lt;static> </span>or<span class="signature">(that)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="or"><span class="type-signature"></span>or<span class="signature">(that)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -1159,7 +1304,7 @@ query.notEqualTo('name', 'Jim');
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line637">line 637</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line651">line 651</a>
     </li></ul></dd>
     
     
@@ -1196,6 +1341,305 @@ query1.or(query2);
     
 </dd>
 
+        
+            
+<dt>
+    <h4 class="name" id="remove"><span class="type-signature"></span>remove<span class="signature">(callback)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Removes an item or set of items from the Query
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Function that handles the response from the server</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line826">line 826</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+        <p class="code-caption">Removing an item in a collection</p>
+    
+    <pre class="prettyprint"><code>//This example assumes that you have a collection with the item whose 'name' attribute is 'John'
+var query = new ClearBlade.Query({'collection': 'COLLECTIONID'});
+query.equalTo('name', 'John');
+var callback = function (err, data) {
+    if (err) {
+        throw new Error (data);
+    } else {
+        console.log(data);
+    }
+};
+
+query.remove(callback);
+//removes every item whose 'name' attribute is equal to 'John'</code></pre>
+
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="update"><span class="type-signature"></span>update<span class="signature">(changes, callback)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Updates an existing item or set of items. Requires that a collection was 
+set when the Query was initialized.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>changes</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Object representing the attributes that you want changed</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Function that handles the response of the server</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line768">line 768</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+        <h5>Example</h5>
+        
+        <p class="code-caption">Updating a set of items</p>
+    
+    <pre class="prettyprint"><code>//This example assumes a collection of items that have the columns name and age.
+var query = new ClearBlade.Query({'collection': 'COLLECTIONID'});
+query.equalTo('name', 'John');
+var changes = {
+    age: 23
+};
+var callback = function (err, data) {
+    if (err) {
+        throw new Error (data);
+    } else {
+        console.log(data);
+    }
+};
+
+query.update(changes, callback);
+//sets John's age to 23</code></pre>
+
+    
+</dd>
+
         </dl>
     
     
@@ -1212,13 +1656,13 @@ query1.or(query2);
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Query.html">Query</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getApiVersion">getApiVersion</a></li><li><a href="global.html#init">init</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.Query.html">Query</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Wed Sep 11 2013 13:01:01 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha1</a> on Wed Nov 06 2013 14:17:31 GMT-0600 (CST)
 </footer>
 
 <script> prettyPrint(); </script>
