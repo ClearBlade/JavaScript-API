@@ -942,6 +942,7 @@ if (!window.console) {
    * Initializes the ClearBlade messaging object and connects to a server.
    * @class ClearBlade.Messaging
    * @param {Object} options  This value contains the config object for connecting. A number of reasonable defaults are set for the option if none are set.
+   * @param {function} callback Callback to be run upon connection
    *<p>
    *The connect options and their defaults are:
    * <p>{number} [timeout] sets the timeout for the websocket connection in case of failure. The default is 60</p>
@@ -958,7 +959,7 @@ if (!window.console) {
    * <p>{Object} [ports] An array of ports to try, it also sticks to thef first one that works. The defaults are 80,8080,1337.</p>
    *</p>
    * @example <caption> A standard connect</caption>
-   * var cb = ClearBlade.Messaging({"timeout":15});
+   * var cb = new ClearBlade.Messaging({"timeout":15});
    * //A connect with a nonstandard timeout
    *
    *<p>
