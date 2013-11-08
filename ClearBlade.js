@@ -970,6 +970,7 @@ if (!window.console) {
    *</p>
    */
   ClearBlade.Messaging = function(options, callback){
+    var that = this;
     //roll through the config
     var conf = {};
     conf.userName = ClearBlade.appKey;
@@ -982,7 +983,7 @@ if (!window.console) {
     
     var onConnectionLost = function(){
       alert("connection lost- attempting to reestablish");
-      this.client.connect({onSuccess:onConnect, onFailure:onFailure});
+      that.client.connect({onSuccess:onConnect, onFailure:onFailure});
     };
 
     var onMessageArrived = function(message){
