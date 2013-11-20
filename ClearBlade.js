@@ -945,8 +945,6 @@ if (!window.console) {
    *<p>
    *The connect options and their defaults are:
    * <p>{number} [timeout] sets the timeout for the websocket connection in case of failure. The default is 60</p>
-   * <p>{string} [userName] The app key assigned in the clearblade platform control. This is always set within the function, but noted here in case you want to use a different mqtt websocket client.</p>
-   * <p>{string} [password] The same as above for the app secret.</p>
    * <p>{Messaging Message} [willMessage] A message sent on a specified topic when the client disconnects without sending a disconnect packet. The default is none.</p>
    * <p>{Number} [keepAliveInterval] The server disconnects if there is no activity for this pierod of time. The default is 60.</p>
    * <p>{boolean} [cleanSession] The server will persist state of the session if true. Not avaliable in beta.</p>
@@ -959,22 +957,17 @@ if (!window.console) {
    *</p>
    * @param {function} callback Callback to be run upon connection
    * @example <caption> A standard connect</caption>
-   * var cb = new ClearBlade.Messaging({"timeout":15});
+   * var callback = function (data) {
+   *   console.log(data);
+   * };
    * //A connect with a nonstandard timeout
-   *
-   *<p>
-   * // Please indulge a small exposition.
-   * // The limited nature of the API is due to the universal nature of ClearBlade's MQTT implementation.
-   * // That is to say that any complying MQTT client should be able to communicate freely with our servers, whether on websockets or TCP. Also, whether one is using the websocket or tcp, a message sent to "ClearBlade/Rules" will be received by all clients subscribed, whether on tcp or websocket.
-   * // Our goal with the provided API is to provide simple functions to use in the default cases, please feel free to directly use your own mqtt client (provided the username/password appkey/appsecret pattern is followed.
-   *</p>
+   * var cb = new ClearBlade.Messaging({"timeout":15}, callback);
    */
   ClearBlade.Messaging = function(options, callback){
     var that = this;
     //roll through the config
     var conf = {};
     conf.userName = ClearBlade.appKey;
-    //password is the same
     conf.password = ClearBlade.appSecret;
     conf.cleanSession = options.cleanSession || true;
     conf.useSSL = options.useSSL || false; //up for debate. ole' perf vs sec argument
@@ -1018,7 +1011,10 @@ if (!window.console) {
    * @param {string} topic Is the topic path of the message to be published. This will be sent to all listeners on the topic. No default.
    * @param {string | ArrayBuffer} payload The payload to be sent. Also no default.
    * @example <caption> How to publish </caption>
-   * var cb = ClearBlade.Messaging({"timeout":15});
+   * var callback = function (data) {
+   *   console.log(data);
+   * };
+   * var cb = ClearBlade.Messaging({}, callback);
    * cb.Publish("ClearBlade/is awesome!","Totally rules");
    * //Topics can include spaces and punctuation  except "/" 
    */
@@ -1040,7 +1036,10 @@ if (!window.console) {
      <p>{function} [onFailure] The callback invoked on a failed subsciption. The default is nothing.</p>
      <p>{Number} [timeout] The time to wait for a response from the server acknowleging the subscription.</p>
    * @example <caption> How to publish </caption>
-   * var cb = ClearBlade.Messaging({"timeout":15});
+   * var callback = function (data) {
+   *   console.log(data);
+   * };
+   * var cb = ClearBlade.Messaging({}, callback);
    * cb.Subscribe("ClearBlade/is awesome!",{});
    */
   ClearBlade.Messaging.prototype.Subscribe = function (topic,options,messageCallback){
@@ -1059,7 +1058,6 @@ if (!window.console) {
       alert("failed to connect");
     };
 
-    //this.client.connect({onSuccess:onConnect, onFailure:onFailure});
     this.client.subscribe(topic);  
 
     this.messageCallback = messageCallback;
@@ -1077,8 +1075,11 @@ if (!window.console) {
     @options {Number} [timeout] The time to wait for a response from the server acknowleging the subscription.
     </p>
   * @example <caption> How to publish </caption>
-  * var cb = ClearBlade.Messaging({"timeout":15});
-  * cb.Unsubscribe("ClearBlade/is awesome!",{"onSuccess":function(){console.log("we unsubscribe);});
+  * var callback = function (data) {
+  *   console.log(data);
+  * };
+  * var cb = ClearBlade.Messaging({}, callback);
+  * cb.Unsubscribe("ClearBlade/is awesome!",{"onSuccess":function(){console.log("we unsubscribe");});
   */
   ClearBlade.Messaging.prototype.Unsubscribe = function(topic,options){
     var conf = {};
@@ -1094,7 +1095,10 @@ if (!window.console) {
    * Disconnects from the server.
    * @method ClearBlade.Messaging.prototype.Disconnect
    * @example <caption> How to publish </caption>
-   * var cb = ClearBlade.Messaging({"timeout":15});
+   * var callback = function (data) {
+   *   console.log(data);
+   * };
+   * var cb = ClearBlade.Messaging({}, callback);
    * cb.Disconnect()//why leave so soon :(
   */
   ClearBlade.Messaging.prototype.Disconnect = function(){
