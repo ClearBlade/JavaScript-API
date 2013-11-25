@@ -14,7 +14,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-	  'ClearBlade.js',
+      'ClearBlade.js',
+      'mqttws31.js',
       'test/**/*Spec.js'
     ],
 
@@ -55,7 +56,7 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['Chrome', 'Firefox', 'Safari'],
+    browsers: ['Firefox', 'Chrome'],
 
 
     // If browser does not capture in given timeout [ms], kill it
