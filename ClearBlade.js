@@ -981,7 +981,6 @@ if (!window.console) {
 
     var onMessageArrived = function(message){
       console.log("message arrived: "+message.payloadString);
-      debugger;
       that.messageCallback(message.payloadString);
     };
 
