@@ -7,14 +7,14 @@
  * password: testPass
  */
 
-describe("ClearBlade API misc.", function () {
+describe("ClearBlade API", function () {
   it("should return the correct API version", function () {
     var APIversion = ClearBlade.getApiVersion();
     expect(APIversion).toEqual('0.0.2');
   });
 });
 
-describe("ClearBlade Initialization", function () {
+describe("ClearBlade initialization should", function () {
   beforeEach(function () {
     var initOptions = {
       appKey: 'c49ee8a80ae2e3d5b4edfaa7eb75',
@@ -23,27 +23,27 @@ describe("ClearBlade Initialization", function () {
     ClearBlade.init(initOptions);
   });
 
-  it("should have the appKey stored", function () {
+  it("have the appKey stored", function () {
     expect(ClearBlade.appKey).toEqual('c49ee8a80ae2e3d5b4edfaa7eb75');
   });
 
-  it("should have the appSecret stored", function () {
+  it("have the appSecret stored", function () {
     expect(ClearBlade.appSecret).toEqual('C49EE8A80ABAD9ACCF90C9F2BC04');
   });
 
-  it("should have defaulted the URI to the Platform", function () {
-    expect(ClearBlade.URI).toEqual('');
-  });
+  // it("have defaulted the URI to the Platform", function () {
+  //   expect(ClearBlade.URI).toEqual('');
+  // });
 
-  it("should have defaulted the logging to false", function () {
+  it("have defaulted the logging to false", function () {
     expect(ClearBlade.logging).toEqual(false);
   });
 
-  it("should have defaulted the masterSecret to null", function () {
+  it("have defaulted the masterSecret to null", function () {
     expect(ClearBlade.masterSecret).toEqual(null);
   });
 
-  it("should have defaulted the callTimeout to 30000", function () {
+  it("have defaulted the callTimeout to 30000", function () {
     expect(ClearBlade._callTimeout).toEqual(30000);
   });
 });
@@ -87,7 +87,7 @@ describe("ClearBlade collections fetching", function () {
     });
   });
 });
-describe("ClearBlade collections CRUD", function () {
+describe("ClearBlade collections CRUD should", function () {
   var collection, col;
   if(window.navigator.userAgent.indexOf("Firefox") > 0) {
         collection = "c4a3e8a80a8ac58ad2dfe38ca98b01"; 
@@ -109,7 +109,7 @@ describe("ClearBlade collections CRUD", function () {
     col.remove(query, function (err, data) {});
   });
 
-  it("successful push", function () {
+  it("successfully create an item", function () {
     var flag, returnedData, secondFlag;  
     
     runs(function () {
@@ -151,7 +151,7 @@ describe("ClearBlade collections CRUD", function () {
     });
   });
 
-  it("successful update", function () {
+  it("successfully update an item", function () {
     var flag, returnedData, secondFlag;  
     
     runs(function () {
@@ -194,7 +194,7 @@ describe("ClearBlade collections CRUD", function () {
     });
   });
 
-  it("successful delete", function () {
+  it("successfully delete an item", function () {
     var flag, returnedData, secondFlag;  
     
     runs(function () {
@@ -232,7 +232,7 @@ describe("ClearBlade collections CRUD", function () {
   });
 });
 
-describe("query should work correctly", function () {
+describe("Query objects should", function () {
   var collection, col;
   beforeEach(function () {
     var initOptions = {
@@ -269,7 +269,7 @@ describe("query should work correctly", function () {
     col.remove(query, callback);
   });
 
-  it("successful fetch", function () {
+  it("successfully fetch an item", function () {
     var flag, returnedData;
     var options = {
       collection: collection
@@ -331,7 +331,7 @@ describe("query should work correctly", function () {
 });
 
 ddescribe("The ClearBlade Messaging module", function() {
-  var flag, msgReceived;
+  var flag, messaging, msgReceived;
 
   beforeEach(function () {
     var initOptions = {
@@ -343,16 +343,35 @@ ddescribe("The ClearBlade Messaging module", function() {
 
   it("should be able to subscribe", function () {
     var onMessageArrived = function(message) {
+      flag = true;
       msgReceived = message;
     };  
     var onConnect = function(data) {
+      flag = true;
       // Once a connection has been made, make a subscription and send a message.
       messaging.Subscribe("/test", {}, onMessageArrived);
     };
 
-    var messaging = new ClearBlade.Messaging({}, onConnect);
+    runs(function() {
+      flag = false;
+      messaging = new ClearBlade.Messaging({}, onConnect);
+    });
+
+    waitsFor(function() {
+      return flag;
+    }, "Didn't connect", 3000);
+
+    runs(function() {
+      flag = false;
+      messaging.Publish('test', 'hello');
+    });
+
+    waitsFor(function() {
+      return flag;
+    }, "Didn't publish", 3000);
   
-    messaging.Publish('test', 'hello');
-    expect(msgReceived).toEqual('hello');
+    runs(function() {
+      expect(msgReceived).toEqual('hello');
+    });
   });
 });
