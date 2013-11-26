@@ -333,6 +333,16 @@ describe("Query objects should", function () {
 describe("The ClearBlade Messaging module", function() {
   var flag, messaging, msgReceived;
 
+  var onMessageArrived = function(message) {
+    flag = true;
+    msgReceived = message;
+  };  
+  var onConnect = function(data) {
+    flag = true;
+    // Once a connection has been made, make a subscription and send a message.
+    messaging.Subscribe('/test', {}, onMessageArrived);
+  };
+
   beforeEach(function () {
     var initOptions = {
       appKey: 'c49ee8a80ae2e3d5b4edfaa7eb75',
@@ -342,16 +352,6 @@ describe("The ClearBlade Messaging module", function() {
   });
 
   it("should be able to subscribe and send/receive a message", function () {
-    var onMessageArrived = function(message) {
-      flag = true;
-      msgReceived = message;
-    };  
-    var onConnect = function(data) {
-      flag = true;
-      // Once a connection has been made, make a subscription and send a message.
-      messaging.Subscribe('/test', {}, onMessageArrived);
-    };
-
     runs(function() {
       flag = false;
       messaging = new ClearBlade.Messaging({}, onConnect);
@@ -372,6 +372,29 @@ describe("The ClearBlade Messaging module", function() {
   
     runs(function() {
       expect(msgReceived).toEqual('hello');
+    });
+  });
+
+  it("should use the callbacks I pass into Subscribe()", function () {
+    var successMsg;
+
+    // Custom success callback to use in Subscribe options
+    var onSuccess = function(data) {
+      flag = true;
+      successMsg = 'EXECUTED';
+    };
+
+    runs(function() {
+      flag = false;
+      messaging = new ClearBlade.Messaging({onSuccess:onSuccess}, onConnect);
+    });
+
+    waitsFor(function() {
+      return flag;
+    }, "Did not connect", 3000);
+
+    runs(function() {
+      expect(successMsg).toEqual('EXECUTED');
     });
   });
 });
