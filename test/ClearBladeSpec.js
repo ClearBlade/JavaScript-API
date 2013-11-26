@@ -330,7 +330,7 @@ describe("Query objects should", function () {
   });
 });
 
-ddescribe("The ClearBlade Messaging module", function() {
+describe("The ClearBlade Messaging module", function() {
   var flag, messaging, msgReceived;
 
   beforeEach(function () {
