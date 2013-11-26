@@ -86,7 +86,7 @@ if (!window.console) {
      * @property URI
      * @type String
      */
-    ClearBlade.URI = options.URI || "http://162.209.79.118";
+    ClearBlade.URI = options.URI || "https://platform.clearblade.com";
     /**
      * This is the property that tells the API whether or not the API will log to the console
      * This should be left `false` in production
