@@ -976,12 +976,13 @@ if (!window.console) {
     
     var onConnectionLost = function(){
       alert("connection lost- attempting to reestablish");
-      that.client.connect({onSuccess:onConnect, onFailure:onFailure});
+      that.client.connect(conf);
     };
 
     var onMessageArrived = function(message){
       console.log("message arrived: "+message.payloadString);
-      messaging.messageCallback(message.payloadString);
+      debugger;
+      that.messageCallback(message.payloadString);
     };
 
     var clientID = Math.floor(Math.random() * 10e12).toString();
@@ -1035,6 +1036,7 @@ if (!window.console) {
      <p>{function} [onSuccess] The callback invoked on a successful subscription. The default is nothing.</p>
      <p>{function} [onFailure] The callback invoked on a failed subsciption. The default is nothing.</p>
      <p>{Number} [timeout] The time to wait for a response from the server acknowleging the subscription.</p>
+   * @param {function} messageCallback Callback to invoke upon message arrival
    * @example <caption> How to publish </caption>
    * var callback = function (data) {
    *   console.log(data);

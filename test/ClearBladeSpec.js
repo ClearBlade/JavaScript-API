@@ -341,7 +341,7 @@ ddescribe("The ClearBlade Messaging module", function() {
     ClearBlade.init(initOptions);
   });
 
-  it("should be able to subscribe", function () {
+  it("should be able to subscribe and send/receive a message", function () {
     var onMessageArrived = function(message) {
       flag = true;
       msgReceived = message;
@@ -349,7 +349,7 @@ ddescribe("The ClearBlade Messaging module", function() {
     var onConnect = function(data) {
       flag = true;
       // Once a connection has been made, make a subscription and send a message.
-      messaging.Subscribe("/test", {}, onMessageArrived);
+      messaging.Subscribe('/test', {}, onMessageArrived);
     };
 
     runs(function() {
@@ -359,16 +359,16 @@ ddescribe("The ClearBlade Messaging module", function() {
 
     waitsFor(function() {
       return flag;
-    }, "Didn't connect", 3000);
+    }, "Did not connect", 3000);
 
     runs(function() {
       flag = false;
-      messaging.Publish('test', 'hello');
+      messaging.Publish('/test', 'hello');
     });
 
     waitsFor(function() {
       return flag;
-    }, "Didn't publish", 3000);
+    }, "Did not publish", 3000);
   
     runs(function() {
       expect(msgReceived).toEqual('hello');
