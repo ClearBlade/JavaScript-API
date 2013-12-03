@@ -56,11 +56,11 @@ describe("ClearBlade collections fetching", function () {
       appSecret: 'C49EE8A80ABAD9ACCF90C9F2BC04'
     };
     ClearBlade.init(initOptions);
-    col = new ClearBlade.Collection('b8a0e8a80adcc6fbdffaebe0c42d');
+    col = new ClearBlade.Collection('eee3f0a90aa8c9f3e4929baade37');
   });
 
   it("should have the collectionID stored", function () {
-    expect(col.ID).toEqual('b8a0e8a80adcc6fbdffaebe0c42d');
+    expect(col.ID).toEqual('eee3f0a90aa8c9f3e4929baade37');
   });
 
   it("should return the stuff I entered before", function () {
@@ -90,11 +90,11 @@ describe("ClearBlade collections fetching", function () {
 describe("ClearBlade collections CRUD should", function () {
   var collection, col;
   if(window.navigator.userAgent.indexOf("Firefox") > 0) {
-        collection = "c4a3e8a80a8ac58ad2dfe38ca98b01"; 
+        collection = "e0e9f0a90ab4f0c2c58d8c82fd12"; 
     } else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
-        collection = "d0a3e8a80af8e0b288b2bbb49ca301";
+        collection = "a6e9f0a90aeaf8c8d9e8e6cab140";
     } else if(window.navigator.userAgent.indexOf("Safari") > 0){
-        collection = "daa3e8a80aa6e3c4b0bcf6ddb85a"; 
+        collection = "c2e9f0a90abaf6f5e4f58ec7fc09"; 
     }
 
   beforeEach(function () {
@@ -241,11 +241,11 @@ describe("Query objects should", function () {
     };
     ClearBlade.init(initOptions);
     if(window.navigator.userAgent.indexOf("Firefox") > 0) {
-      collection = "c4a3e8a80a8ac58ad2dfe38ca98b01"; 
+      collection = "e0e9f0a90ab4f0c2c58d8c82fd12"; 
     } else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
-      collection = "d0a3e8a80af8e0b288b2bbb49ca301";
+      collection = "a6e9f0a90aeaf8c8d9e8e6cab140";
     } else if(window.navigator.userAgent.indexOf("Safari") > 0){
-      collection = "daa3e8a80aa6e3c4b0bcf6ddb85a"; 
+      collection = "c2e9f0a90abaf6f5e4f58ec7fc09"; 
     }
     col = new ClearBlade.Collection(collection);
     var newItem = {
