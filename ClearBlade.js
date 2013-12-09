@@ -86,7 +86,7 @@ if (!window.console) {
      * @property URI
      * @type String
      */
-    ClearBlade.URI = options.URI || "http://162.209.79.118";
+    ClearBlade.URI = options.URI || "https://platform.clearblade.com";
     /**
      * This is the property that tells the API whether or not the API will log to the console
      * This should be left `false` in production
@@ -972,7 +972,7 @@ if (!window.console) {
     conf.password = ClearBlade.appSecret;
     conf.cleanSession = options.cleanSession || true;
     conf.useSSL = options.useSSL || false; //up for debate. ole' perf vs sec argument
-    conf.hosts = ["64.49.226.26"];
+    conf.hosts = ["platform.clearblade.com"];
     conf.ports = [1337];
     
     var onConnectionLost = function(){

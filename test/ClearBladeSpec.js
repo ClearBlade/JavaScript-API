@@ -17,18 +17,18 @@ describe("ClearBlade API", function () {
 describe("ClearBlade initialization should", function () {
   beforeEach(function () {
     var initOptions = {
-      appKey: 'c49ee8a80ae2e3d5b4edfaa7eb75',
-      appSecret: 'C49EE8A80ABAD9ACCF90C9F2BC04'
+      appKey: 'bcf1fca90af4f8a8fbb3d5ce9173',
+      appSecret: 'BCF1FCA90A90BAE0CA9399A899F501'
     };
     ClearBlade.init(initOptions);
   });
 
   it("have the appKey stored", function () {
-    expect(ClearBlade.appKey).toEqual('c49ee8a80ae2e3d5b4edfaa7eb75');
+    expect(ClearBlade.appKey).toEqual('bcf1fca90af4f8a8fbb3d5ce9173');
   });
 
   it("have the appSecret stored", function () {
-    expect(ClearBlade.appSecret).toEqual('C49EE8A80ABAD9ACCF90C9F2BC04');
+    expect(ClearBlade.appSecret).toEqual('BCF1FCA90A90BAE0CA9399A899F501');
   });
 
   // it("have defaulted the URI to the Platform", function () {
@@ -52,15 +52,15 @@ describe("ClearBlade collections fetching", function () {
   var col;
   beforeEach(function () {
     var initOptions = {
-      appKey: 'c49ee8a80ae2e3d5b4edfaa7eb75',
-      appSecret: 'C49EE8A80ABAD9ACCF90C9F2BC04'
+      appKey: 'bcf1fca90af4f8a8fbb3d5ce9173',
+      appSecret: 'BCF1FCA90A90BAE0CA9399A899F501'
     };
     ClearBlade.init(initOptions);
-    col = new ClearBlade.Collection('eee3f0a90aa8c9f3e4929baade37');
+    col = new ClearBlade.Collection('b4dc85aa0ab290f1e9d0e0cdad9401');
   });
 
   it("should have the collectionID stored", function () {
-    expect(col.ID).toEqual('eee3f0a90aa8c9f3e4929baade37');
+    expect(col.ID).toEqual('b4dc85aa0ab290f1e9d0e0cdad9401');
   });
 
   it("should return the stuff I entered before", function () {
@@ -90,17 +90,17 @@ describe("ClearBlade collections fetching", function () {
 describe("ClearBlade collections CRUD should", function () {
   var collection, col;
   if(window.navigator.userAgent.indexOf("Firefox") > 0) {
-        collection = "e0e9f0a90ab4f0c2c58d8c82fd12"; 
+        collection = "fadc85aa0aeabea1ba8887f592e101"; 
     } else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
-        collection = "a6e9f0a90aeaf8c8d9e8e6cab140";
+        collection = "f2dc85aa0abac7e7f7a187a68654";
     } else if(window.navigator.userAgent.indexOf("Safari") > 0){
-        collection = "c2e9f0a90abaf6f5e4f58ec7fc09"; 
+        collection = "88dd85aa0afcfdaede8498a4f6f401"; 
     }
 
   beforeEach(function () {
     var initOptions = {
-      appKey: 'c49ee8a80ae2e3d5b4edfaa7eb75',
-      appSecret: 'C49EE8A80ABAD9ACCF90C9F2BC04'
+      appKey: 'bcf1fca90af4f8a8fbb3d5ce9173',
+      appSecret: 'BCF1FCA90A90BAE0CA9399A899F501'
     };
     ClearBlade.init(initOptions);
     col = new ClearBlade.Collection(collection);
@@ -236,16 +236,16 @@ describe("Query objects should", function () {
   var collection, col;
   beforeEach(function () {
     var initOptions = {
-      appKey: 'c49ee8a80ae2e3d5b4edfaa7eb75',
-      appSecret: 'C49EE8A80ABAD9ACCF90C9F2BC04'
+      appKey: 'bcf1fca90af4f8a8fbb3d5ce9173',
+      appSecret: 'BCF1FCA90A90BAE0CA9399A899F501'
     };
     ClearBlade.init(initOptions);
     if(window.navigator.userAgent.indexOf("Firefox") > 0) {
-      collection = "e0e9f0a90ab4f0c2c58d8c82fd12"; 
+      collection = "fadc85aa0aeabea1ba8887f592e101"; 
     } else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
-      collection = "a6e9f0a90aeaf8c8d9e8e6cab140";
+      collection = "f2dc85aa0abac7e7f7a187a68654";
     } else if(window.navigator.userAgent.indexOf("Safari") > 0){
-      collection = "c2e9f0a90abaf6f5e4f58ec7fc09"; 
+      collection = "88dd85aa0afcfdaede8498a4f6f401"; 
     }
     col = new ClearBlade.Collection(collection);
     var newItem = {
@@ -345,8 +345,8 @@ describe("The ClearBlade Messaging module", function() {
 
   beforeEach(function () {
     var initOptions = {
-      appKey: 'c49ee8a80ae2e3d5b4edfaa7eb75',
-      appSecret: 'C49EE8A80ABAD9ACCF90C9F2BC04'
+      appKey: 'bcf1fca90af4f8a8fbb3d5ce9173',
+      appSecret: 'BCF1FCA90A90BAE0CA9399A899F501'
     };
     ClearBlade.init(initOptions);
   });
@@ -371,6 +371,7 @@ describe("The ClearBlade Messaging module", function() {
     }, "Did not publish", 3000);
   
     runs(function() {
+      debugger;
       expect(msgReceived).toEqual('hello');
     });
   });
