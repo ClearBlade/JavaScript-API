@@ -371,7 +371,6 @@ describe("The ClearBlade Messaging module", function() {
     }, "Did not publish", 3000);
   
     runs(function() {
-      debugger;
       expect(msgReceived).toEqual('hello');
     });
   });
