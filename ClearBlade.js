@@ -950,12 +950,13 @@ if (!window.console) {
    * <p>{boolean} [cleanSession] The server will persist state of the session if true. Not avaliable in beta.</p>
    * <p>{boolean} [useSSL] The option to use SSL websockets. Default is false for now.</p>
    * <p>{object} [invocationContext] An object to wrap all the important variables needed for the onFalure and onSuccess functions. The default is empty.</p>
-   * <p>{function} [onSuccess] A callback to operate on the result of a sucessful connect. In beta the default is empty.</p>
-   * <p>{function} [onFailure] A callback to operate on the result of an unsuccessful connect. In beta the default is also empty.</p>
+   * <p>{function} [onSuccess] A callback to operate on the result of a sucessful connect. In beta the default is just the invoking of the `callback` parameter with the data from the connection.</p>
+   * <p>{function} [onFailure] A callback to operate on the result of an unsuccessful connect. In beta the default is just the invoking of the `callback` parameter with the data from the connection.</p>
    * <p>{Object} [hosts] An array of hosts to attempt to connect too. Sticks to the first one that works. The default is "platform.clearblade.com".</p>
    * <p>{Object} [ports] An array of ports to try, it also sticks to thef first one that works. The defaults are 80,8080,1337.</p>
    *</p>
-   * @param {function} callback Callback to be run upon connection
+   * @param {function} callback Callback to be run upon either succeessful or
+   * failed connection
    * @example <caption> A standard connect</caption>
    * var callback = function (data) {
    *   console.log(data);
@@ -975,12 +976,12 @@ if (!window.console) {
     conf.ports = [1337];
     
     var onConnectionLost = function(){
-      alert("connection lost- attempting to reestablish");
+      console.log("ClearBlade Messaging connection lost- attempting to reestablish");
       that.client.connect(conf);
     };
 
     var onMessageArrived = function(message){
-      console.log("message arrived: "+message.payloadString);
+      // messageCallback from Subscribe()
       that.messageCallback(message.payloadString);
     };
 
@@ -988,18 +989,20 @@ if (!window.console) {
     this.client = new Messaging.Client(conf.hosts[0],conf.ports[0],clientID);
     this.client.onConnectionLost = onConnectionLost;
     this.client.onMessageArrived = onMessageArrived; 
-    var onConnect = function(data) {
+    // the mqtt websocket library uses "onConnect," but our terminology uses
+    // "onSuccess" and "onFailure"
+    var onSuccess = function(data) {
       callback(data);
     };
 
-    this.client.onConnect = onConnect;
+    this.client.onConnect = onSuccess;
     var onFailure = function(err) {
-      alert("failed to connect");
+      console.log("ClearBlade Messaging failed to connect");
       callback(err);
     };
   
-    conf.onSuccess = onConnect;
-    conf.onFailure = onFailure;
+    conf.onSuccess = options.onSuccess || onSuccess;
+    conf.onFailure = options.onFailure || onFailure;
 
     this.client.connect(conf);
   };

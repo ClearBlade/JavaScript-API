@@ -17,18 +17,18 @@ describe("ClearBlade API", function () {
 describe("ClearBlade initialization should", function () {
   beforeEach(function () {
     var initOptions = {
-      appKey: 'c49ee8a80ae2e3d5b4edfaa7eb75',
-      appSecret: 'C49EE8A80ABAD9ACCF90C9F2BC04'
+      appKey: 'bcf1fca90af4f8a8fbb3d5ce9173',
+      appSecret: 'BCF1FCA90A90BAE0CA9399A899F501'
     };
     ClearBlade.init(initOptions);
   });
 
   it("have the appKey stored", function () {
-    expect(ClearBlade.appKey).toEqual('c49ee8a80ae2e3d5b4edfaa7eb75');
+    expect(ClearBlade.appKey).toEqual('bcf1fca90af4f8a8fbb3d5ce9173');
   });
 
   it("have the appSecret stored", function () {
-    expect(ClearBlade.appSecret).toEqual('C49EE8A80ABAD9ACCF90C9F2BC04');
+    expect(ClearBlade.appSecret).toEqual('BCF1FCA90A90BAE0CA9399A899F501');
   });
 
   // it("have defaulted the URI to the Platform", function () {
@@ -52,15 +52,15 @@ describe("ClearBlade collections fetching", function () {
   var col;
   beforeEach(function () {
     var initOptions = {
-      appKey: 'c49ee8a80ae2e3d5b4edfaa7eb75',
-      appSecret: 'C49EE8A80ABAD9ACCF90C9F2BC04'
+      appKey: 'bcf1fca90af4f8a8fbb3d5ce9173',
+      appSecret: 'BCF1FCA90A90BAE0CA9399A899F501'
     };
     ClearBlade.init(initOptions);
-    col = new ClearBlade.Collection('b8a0e8a80adcc6fbdffaebe0c42d');
+    col = new ClearBlade.Collection('b4dc85aa0ab290f1e9d0e0cdad9401');
   });
 
   it("should have the collectionID stored", function () {
-    expect(col.ID).toEqual('b8a0e8a80adcc6fbdffaebe0c42d');
+    expect(col.ID).toEqual('b4dc85aa0ab290f1e9d0e0cdad9401');
   });
 
   it("should return the stuff I entered before", function () {
@@ -90,17 +90,17 @@ describe("ClearBlade collections fetching", function () {
 describe("ClearBlade collections CRUD should", function () {
   var collection, col;
   if(window.navigator.userAgent.indexOf("Firefox") > 0) {
-        collection = "c4a3e8a80a8ac58ad2dfe38ca98b01"; 
+        collection = "fadc85aa0aeabea1ba8887f592e101"; 
     } else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
-        collection = "d0a3e8a80af8e0b288b2bbb49ca301";
+        collection = "f2dc85aa0abac7e7f7a187a68654";
     } else if(window.navigator.userAgent.indexOf("Safari") > 0){
-        collection = "daa3e8a80aa6e3c4b0bcf6ddb85a"; 
+        collection = "88dd85aa0afcfdaede8498a4f6f401"; 
     }
 
   beforeEach(function () {
     var initOptions = {
-      appKey: 'c49ee8a80ae2e3d5b4edfaa7eb75',
-      appSecret: 'C49EE8A80ABAD9ACCF90C9F2BC04'
+      appKey: 'bcf1fca90af4f8a8fbb3d5ce9173',
+      appSecret: 'BCF1FCA90A90BAE0CA9399A899F501'
     };
     ClearBlade.init(initOptions);
     col = new ClearBlade.Collection(collection);
@@ -236,16 +236,16 @@ describe("Query objects should", function () {
   var collection, col;
   beforeEach(function () {
     var initOptions = {
-      appKey: 'c49ee8a80ae2e3d5b4edfaa7eb75',
-      appSecret: 'C49EE8A80ABAD9ACCF90C9F2BC04'
+      appKey: 'bcf1fca90af4f8a8fbb3d5ce9173',
+      appSecret: 'BCF1FCA90A90BAE0CA9399A899F501'
     };
     ClearBlade.init(initOptions);
     if(window.navigator.userAgent.indexOf("Firefox") > 0) {
-      collection = "c4a3e8a80a8ac58ad2dfe38ca98b01"; 
+      collection = "fadc85aa0aeabea1ba8887f592e101"; 
     } else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
-      collection = "d0a3e8a80af8e0b288b2bbb49ca301";
+      collection = "f2dc85aa0abac7e7f7a187a68654";
     } else if(window.navigator.userAgent.indexOf("Safari") > 0){
-      collection = "daa3e8a80aa6e3c4b0bcf6ddb85a"; 
+      collection = "88dd85aa0afcfdaede8498a4f6f401"; 
     }
     col = new ClearBlade.Collection(collection);
     var newItem = {
@@ -333,25 +333,25 @@ describe("Query objects should", function () {
 describe("The ClearBlade Messaging module", function() {
   var flag, messaging, msgReceived;
 
+  var onMessageArrived = function(message) {
+    flag = true;
+    msgReceived = message;
+  };  
+  var onConnect = function(data) {
+    flag = true;
+    // Once a connection has been made, make a subscription and send a message.
+    messaging.Subscribe('/test', {}, onMessageArrived);
+  };
+
   beforeEach(function () {
     var initOptions = {
-      appKey: 'c49ee8a80ae2e3d5b4edfaa7eb75',
-      appSecret: 'C49EE8A80ABAD9ACCF90C9F2BC04'
+      appKey: 'bcf1fca90af4f8a8fbb3d5ce9173',
+      appSecret: 'BCF1FCA90A90BAE0CA9399A899F501'
     };
     ClearBlade.init(initOptions);
   });
 
   it("should be able to subscribe and send/receive a message", function () {
-    var onMessageArrived = function(message) {
-      flag = true;
-      msgReceived = message;
-    };  
-    var onConnect = function(data) {
-      flag = true;
-      // Once a connection has been made, make a subscription and send a message.
-      messaging.Subscribe('/test', {}, onMessageArrived);
-    };
-
     runs(function() {
       flag = false;
       messaging = new ClearBlade.Messaging({}, onConnect);
@@ -372,6 +372,29 @@ describe("The ClearBlade Messaging module", function() {
   
     runs(function() {
       expect(msgReceived).toEqual('hello');
+    });
+  });
+
+  it("should use the callbacks I pass into Subscribe()", function () {
+    var successMsg;
+
+    // Custom success callback to use in Subscribe options
+    var onSuccess = function(data) {
+      flag = true;
+      successMsg = 'EXECUTED';
+    };
+
+    runs(function() {
+      flag = false;
+      messaging = new ClearBlade.Messaging({onSuccess:onSuccess}, onConnect);
+    });
+
+    waitsFor(function() {
+      return flag;
+    }, "Did not connect", 3000);
+
+    runs(function() {
+      expect(successMsg).toEqual('EXECUTED');
     });
   });
 });
