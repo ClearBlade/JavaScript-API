@@ -103,17 +103,15 @@
 <p>
 The connect options and their defaults are:
 <p>{number} [timeout] sets the timeout for the websocket connection in case of failure. The default is 60</p>
-<p>{string} [userName] The app key assigned in the clearblade platform control. This is always set within the function, but noted here in case you want to use a different mqtt websocket client.</p>
-<p>{string} [password] The same as above for the app secret.</p>
 <p>{Messaging Message} [willMessage] A message sent on a specified topic when the client disconnects without sending a disconnect packet. The default is none.</p>
 <p>{Number} [keepAliveInterval] The server disconnects if there is no activity for this pierod of time. The default is 60.</p>
 <p>{boolean} [cleanSession] The server will persist state of the session if true. Not avaliable in beta.</p>
 <p>{boolean} [useSSL] The option to use SSL websockets. Default is false for now.</p>
 <p>{object} [invocationContext] An object to wrap all the important variables needed for the onFalure and onSuccess functions. The default is empty.</p>
-<p>{function} [onSuccess] A callback to operate on the result of a sucessful connect. In beta the default is empty.</p>
-<p>{function} [onFailure] A callback to operate on the result of an unsuccessful connect. In beta the default is also empty.</p>
-<p>{Object} [hosts] An array of hosts to attempt to connect too. Sticks to the first one that works. The default is "platform.clearblade.com".</p>
-<p>{Object} [ports] An array of ports to try, it also sticks to thef first one that works. The defaults are 80,8080,1337.</p>
+<p>{function} [onSuccess] A callback to operate on the result of a sucessful connect. In beta the default is just the invoking of the `callback` parameter with the data from the connection.</p>
+<p>{function} [onFailure] A callback to operate on the result of an unsuccessful connect. In beta the default is just the invoking of the `callback` parameter with the data from the connection.</p>
+<p>{Object} [hosts] An array of hosts to attempt to connect too. Sticks to the first one that works. The default is ["platform.clearblade.com"].</p>
+<p>{Object} [ports] An array of ports to try, it also sticks to thef first one that works. The default is [1337].</p>
 </p></td>
         </tr>
 	
@@ -137,7 +135,8 @@ The connect options and their defaults are:
             
             
             
-            <td class="description last">Callback to be run upon connection</td>
+            <td class="description last">Callback to be run upon either succeessful or
+failed connection</td>
         </tr>
 	
 	
@@ -266,7 +265,7 @@ var cb = new ClearBlade.Messaging({"timeout":15}, callback);</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1097">line 1097</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1098">line 1098</a>
     </li></ul></dd>
     
     
@@ -460,7 +459,7 @@ cb.Publish("ClearBlade/is awesome!","Totally rules");
         
             
 <dt>
-    <h4 class="name" id="Subscribe"><span class="type-signature"></span>Subscribe<span class="signature">(topic, <span class="optional">options</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Subscribe"><span class="type-signature"></span>Subscribe<span class="signature">(topic, <span class="optional">options</span>, messageCallback)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -567,6 +566,37 @@ cb.Publish("ClearBlade/is awesome!","Totally rules");
      <p>{function} [onSuccess] The callback invoked on a successful subscription. The default is nothing.</p>
      <p>{function} [onFailure] The callback invoked on a failed subsciption. The default is nothing.</p>
      <p>{Number} [timeout] The time to wait for a response from the server acknowleging the subscription.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>messageCallback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+            
+            <td class="description last">Callback to invoke upon message arrival</td>
         </tr>
 	
 	
@@ -769,7 +799,7 @@ cb.Subscribe("ClearBlade/is awesome!",{});</code></pre>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1069">line 1069</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1070">line 1070</a>
     </li></ul></dd>
     
     
@@ -827,7 +857,7 @@ cb.Unsubscribe("ClearBlade/is awesome!",{"onSuccess":function(){console.log("we 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha1</a> on Fri Nov 08 2013 10:42:53 GMT-0600 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha1</a> on Thu Dec 12 2013 16:50:53 GMT-0600 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -113,7 +113,7 @@ if (!window.console) {
      * @property URI
      * @type String
      */
-    ClearBlade.URI = options.URI || 'https://platform.clearblade.com';
+    ClearBlade.URI = options.URI || "https://platform.clearblade.com";
     /**
      * This is the property that tells the API whether or not the API will log to the console
      * This should be left `false` in production
@@ -972,19 +972,18 @@ if (!window.console) {
    *&lt;p>
    *The connect options and their defaults are:
    * &lt;p>{number} [timeout] sets the timeout for the websocket connection in case of failure. The default is 60&lt;/p>
-   * &lt;p>{string} [userName] The app key assigned in the clearblade platform control. This is always set within the function, but noted here in case you want to use a different mqtt websocket client.&lt;/p>
-   * &lt;p>{string} [password] The same as above for the app secret.&lt;/p>
    * &lt;p>{Messaging Message} [willMessage] A message sent on a specified topic when the client disconnects without sending a disconnect packet. The default is none.&lt;/p>
    * &lt;p>{Number} [keepAliveInterval] The server disconnects if there is no activity for this pierod of time. The default is 60.&lt;/p>
    * &lt;p>{boolean} [cleanSession] The server will persist state of the session if true. Not avaliable in beta.&lt;/p>
    * &lt;p>{boolean} [useSSL] The option to use SSL websockets. Default is false for now.&lt;/p>
    * &lt;p>{object} [invocationContext] An object to wrap all the important variables needed for the onFalure and onSuccess functions. The default is empty.&lt;/p>
-   * &lt;p>{function} [onSuccess] A callback to operate on the result of a sucessful connect. In beta the default is empty.&lt;/p>
-   * &lt;p>{function} [onFailure] A callback to operate on the result of an unsuccessful connect. In beta the default is also empty.&lt;/p>
-   * &lt;p>{Object} [hosts] An array of hosts to attempt to connect too. Sticks to the first one that works. The default is "platform.clearblade.com".&lt;/p>
-   * &lt;p>{Object} [ports] An array of ports to try, it also sticks to thef first one that works. The defaults are 80,8080,1337.&lt;/p>
+   * &lt;p>{function} [onSuccess] A callback to operate on the result of a sucessful connect. In beta the default is just the invoking of the `callback` parameter with the data from the connection.&lt;/p>
+   * &lt;p>{function} [onFailure] A callback to operate on the result of an unsuccessful connect. In beta the default is just the invoking of the `callback` parameter with the data from the connection.&lt;/p>
+   * &lt;p>{Object} [hosts] An array of hosts to attempt to connect too. Sticks to the first one that works. The default is ["platform.clearblade.com"].&lt;/p>
+   * &lt;p>{Object} [ports] An array of ports to try, it also sticks to thef first one that works. The default is [1337].&lt;/p>
    *&lt;/p>
-   * @param {function} callback Callback to be run upon connection
+   * @param {function} callback Callback to be run upon either succeessful or
+   * failed connection
    * @example &lt;caption> A standard connect&lt;/caption>
    * var callback = function (data) {
    *   console.log(data);
@@ -997,39 +996,40 @@ if (!window.console) {
     //roll through the config
     var conf = {};
     conf.userName = ClearBlade.appKey;
-    //password is the same
     conf.password = ClearBlade.appSecret;
     conf.cleanSession = options.cleanSession || true;
     conf.useSSL = options.useSSL || false; //up for debate. ole' perf vs sec argument
-    conf.hosts = ["platform.clearblade.com"];
-    conf.ports = [1337];
+    conf.hosts = options.hosts || ["platform.clearblade.com"];
+    conf.ports = options.ports || [1337];
     
     var onConnectionLost = function(){
-      alert("connection lost- attempting to reestablish");
-      that.client.connect({onSuccess:onConnect, onFailure:onFailure});
+      console.log("ClearBlade Messaging connection lost- attempting to reestablish");
+      that.client.connect(conf);
     };
 
     var onMessageArrived = function(message){
-      console.log("message arrived: "+message.payloadString);
-      messaging.messageCallback(message.payloadString);
+      // messageCallback from Subscribe()
+      that.messageCallback(message.payloadString);
     };
 
     var clientID = Math.floor(Math.random() * 10e12).toString();
     this.client = new Messaging.Client(conf.hosts[0],conf.ports[0],clientID);
     this.client.onConnectionLost = onConnectionLost;
     this.client.onMessageArrived = onMessageArrived; 
-    var onConnect = function(data) {
+    // the mqtt websocket library uses "onConnect," but our terminology uses
+    // "onSuccess" and "onFailure"
+    var onSuccess = function(data) {
       callback(data);
     };
 
-    this.client.onConnect = onConnect;
+    this.client.onConnect = onSuccess;
     var onFailure = function(err) {
-      alert("failed to connect");
+      console.log("ClearBlade Messaging failed to connect");
       callback(err);
     };
   
-    conf.onSuccess = onConnect;
-    conf.onFailure = onFailure;
+    conf.onSuccess = options.onSuccess || onSuccess;
+    conf.onFailure = options.onFailure || onFailure;
 
     this.client.connect(conf);
   };
@@ -1065,6 +1065,7 @@ if (!window.console) {
      &lt;p>{function} [onSuccess] The callback invoked on a successful subscription. The default is nothing.&lt;/p>
      &lt;p>{function} [onFailure] The callback invoked on a failed subsciption. The default is nothing.&lt;/p>
      &lt;p>{Number} [timeout] The time to wait for a response from the server acknowleging the subscription.&lt;/p>
+   * @param {function} messageCallback Callback to invoke upon message arrival
    * @example &lt;caption> How to publish &lt;/caption>
    * var callback = function (data) {
    *   console.log(data);
@@ -1153,7 +1154,7 @@ if (!window.console) {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha1</a> on Fri Nov 08 2013 10:42:53 GMT-0600 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha1</a> on Thu Dec 12 2013 16:50:53 GMT-0600 (CST)
 </footer>
 
 <script> prettyPrint(); </script>
