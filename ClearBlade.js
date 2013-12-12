@@ -952,8 +952,8 @@ if (!window.console) {
    * <p>{object} [invocationContext] An object to wrap all the important variables needed for the onFalure and onSuccess functions. The default is empty.</p>
    * <p>{function} [onSuccess] A callback to operate on the result of a sucessful connect. In beta the default is just the invoking of the `callback` parameter with the data from the connection.</p>
    * <p>{function} [onFailure] A callback to operate on the result of an unsuccessful connect. In beta the default is just the invoking of the `callback` parameter with the data from the connection.</p>
-   * <p>{Object} [hosts] An array of hosts to attempt to connect too. Sticks to the first one that works. The default is "platform.clearblade.com".</p>
-   * <p>{Object} [ports] An array of ports to try, it also sticks to thef first one that works. The defaults are 80,8080,1337.</p>
+   * <p>{Object} [hosts] An array of hosts to attempt to connect too. Sticks to the first one that works. The default is ["platform.clearblade.com"].</p>
+   * <p>{Object} [ports] An array of ports to try, it also sticks to thef first one that works. The default is [1337].</p>
    *</p>
    * @param {function} callback Callback to be run upon either succeessful or
    * failed connection
@@ -972,8 +972,8 @@ if (!window.console) {
     conf.password = ClearBlade.appSecret;
     conf.cleanSession = options.cleanSession || true;
     conf.useSSL = options.useSSL || false; //up for debate. ole' perf vs sec argument
-    conf.hosts = ["platform.clearblade.com"];
-    conf.ports = [1337];
+    conf.hosts = options.hosts || ["platform.clearblade.com"];
+    conf.ports = options.ports || [1337];
     
     var onConnectionLost = function(){
       console.log("ClearBlade Messaging connection lost- attempting to reestablish");
