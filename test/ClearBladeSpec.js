@@ -17,18 +17,18 @@ describe("ClearBlade API", function () {
 describe("ClearBlade initialization should", function () {
   beforeEach(function () {
     var initOptions = {
-      appKey: 'bcf1fca90af4f8a8fbb3d5ce9173',
-      appSecret: 'BCF1FCA90A90BAE0CA9399A899F501'
+      appKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
+      appSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801'
     };
     ClearBlade.init(initOptions);
   });
 
   it("have the appKey stored", function () {
-    expect(ClearBlade.appKey).toEqual('bcf1fca90af4f8a8fbb3d5ce9173');
+    expect(ClearBlade.appKey).toEqual('f2f5f8aa0aba8bc7e4bdcd8ef142');
   });
 
   it("have the appSecret stored", function () {
-    expect(ClearBlade.appSecret).toEqual('BCF1FCA90A90BAE0CA9399A899F501');
+    expect(ClearBlade.appSecret).toEqual('F2F5F8AA0AB4F2C4A4E1C387F3F801');
   });
 
   // it("have defaulted the URI to the Platform", function () {
@@ -52,15 +52,15 @@ describe("ClearBlade collections fetching", function () {
   var col;
   beforeEach(function () {
     var initOptions = {
-      appKey: 'bcf1fca90af4f8a8fbb3d5ce9173',
-      appSecret: 'BCF1FCA90A90BAE0CA9399A899F501'
+      appKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
+      appSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801'
     };
     ClearBlade.init(initOptions);
-    col = new ClearBlade.Collection('b4dc85aa0ab290f1e9d0e0cdad9401');
+    col = new ClearBlade.Collection('90f6f8aa0a86969ced80c0a8b03e');
   });
 
   it("should have the collectionID stored", function () {
-    expect(col.ID).toEqual('b4dc85aa0ab290f1e9d0e0cdad9401');
+    expect(col.ID).toEqual('90f6f8aa0a86969ced80c0a8b03e');
   });
 
   it("should return the stuff I entered before", function () {
@@ -90,17 +90,17 @@ describe("ClearBlade collections fetching", function () {
 describe("ClearBlade collections CRUD should", function () {
   var collection, col;
   if(window.navigator.userAgent.indexOf("Firefox") > 0) {
-        collection = "fadc85aa0aeabea1ba8887f592e101"; 
+        collection = "d8f6f8aa0ababdbbc5b8fdf49356"; 
     } else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
-        collection = "f2dc85aa0abac7e7f7a187a68654";
+        collection = "84f6f8aa0abcf9fbb6ae97a6c9da01";
     } else if(window.navigator.userAgent.indexOf("Safari") > 0){
-        collection = "88dd85aa0afcfdaede8498a4f6f401"; 
+        collection = "82f7f8aa0ab8929ab1c3cad7e534"; 
     }
 
   beforeEach(function () {
     var initOptions = {
-      appKey: 'bcf1fca90af4f8a8fbb3d5ce9173',
-      appSecret: 'BCF1FCA90A90BAE0CA9399A899F501'
+      appKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
+      appSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801'
     };
     ClearBlade.init(initOptions);
     col = new ClearBlade.Collection(collection);
@@ -152,6 +152,8 @@ describe("ClearBlade collections CRUD should", function () {
   });
 
   it("successfully update an item", function () {
+    // This tests an update and then a fetch to get the updated item, as
+    // opposed to checking the updated item in the update callback itself
     var flag, returnedData, secondFlag;  
     
     runs(function () {
@@ -236,16 +238,16 @@ describe("Query objects should", function () {
   var collection, col;
   beforeEach(function () {
     var initOptions = {
-      appKey: 'bcf1fca90af4f8a8fbb3d5ce9173',
-      appSecret: 'BCF1FCA90A90BAE0CA9399A899F501'
+      appKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
+      appSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801'
     };
     ClearBlade.init(initOptions);
     if(window.navigator.userAgent.indexOf("Firefox") > 0) {
-      collection = "fadc85aa0aeabea1ba8887f592e101"; 
+      collection = "d8f6f8aa0ababdbbc5b8fdf49356"; 
     } else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
-      collection = "f2dc85aa0abac7e7f7a187a68654";
+      collection = "84f6f8aa0abcf9fbb6ae97a6c9da01";
     } else if(window.navigator.userAgent.indexOf("Safari") > 0){
-      collection = "88dd85aa0afcfdaede8498a4f6f401"; 
+      collection = "82f7f8aa0ab8929ab1c3cad7e534"; 
     }
     col = new ClearBlade.Collection(collection);
     var newItem = {
@@ -298,7 +300,9 @@ describe("Query objects should", function () {
       expect(returnedData[0].data.name).toEqual('John');
     });
   });
-  it("successful update", function () {
+  it("receive updated dated upon successful update", function () {
+    // This tests the update callback itself to confirm that the data received
+    // in the callback is the updated item
     var flag, returnedData;
     var options = {
       collection: collection
@@ -345,8 +349,8 @@ describe("The ClearBlade Messaging module", function() {
 
   beforeEach(function () {
     var initOptions = {
-      appKey: 'bcf1fca90af4f8a8fbb3d5ce9173',
-      appSecret: 'BCF1FCA90A90BAE0CA9399A899F501'
+      appKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
+      appSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801'
     };
     ClearBlade.init(initOptions);
   });
