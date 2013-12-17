@@ -801,7 +801,7 @@ if (!window.console) {
         callback(err, data);
       } else {
         var itemArray = [];
-        for (var i in data) {
+        for (var i = 0; i < data.length; i++) {
           var newItem = new ClearBlade.Item(data[i], colID);
           itemArray.push(newItem);
         }
@@ -809,9 +809,7 @@ if (!window.console) {
       }
     };
 
-    console.log(this.collection);
-
-    if (this.collection == undefined || this.collection == "") {
+    if (this.collection === undefined || this.collection === "") {
       throw new Error("No collection was defined");
     } else {
       reqOptions.endpoint = "api/" + this.collection;
