@@ -1,0 +1,36 @@
+{
+  "name": "JavaScript-API",
+  "version": "0.0.0",
+  "description": "ClearBlade JavaScript API =========================",
+  "main": "ClearBlade.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "karma": "~0.10.8",
+    "karma-chrome-launcher": "~0.1.2",
+    "karma-coffee-preprocessor": "~0.1.1",
+    "karma-firefox-launcher": "~0.1.2",
+    "karma-html2js-preprocessor": "~0.1.0",
+    "karma-jasmine": "~0.1.5",
+    "karma-requirejs": "~0.2.1",
+    "karma-phantomjs-launcher": "~0.1.1",
+    "karma-script-launcher": "~0.1.0",
+    "requirejs": "~2.1.9",
+    "phantomjs": "~1.9.2-6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "karma start --browsers PhantomJS"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ClearBlade/JavaScript-API.git"
+  },
+  "author": "",
+  "license": "Apache License",
+  "bugs": {
+    "url": "https://github.com/ClearBlade/JavaScript-API/issues"
+  },
+  "homepage": "https://github.com/ClearBlade/JavaScript-API"
+}
