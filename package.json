@@ -21,7 +21,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "karma start --browsers PhantomJS"
+    "test": "karma start --browsers PhantomJS --single-run"
   },
   "repository": {
     "type": "git",
