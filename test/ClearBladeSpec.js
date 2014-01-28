@@ -7,6 +7,27 @@
  * password: testPass
  */
 
+var TEST_TIMEOUT = 30000;
+var RTP_INFO = {
+  serverAddress: "https://rtp.clearblade.com",
+  appKey: "c899bfae0afca9b1c899c2fe841d",
+  appSecret: "C899BFAE0ACAE5A3C2A086ECDCF801",
+  safariCollection: "aaaabfae0ad0da86f2dde3bba761",
+  chromeCollection: "949abfae0aae8aaeffb09f80f8c101",
+  generalCollection: "b69abfae0ad28bceb1dba4eecb19",
+  firefoxCollection: "a49abfae0ac8e987e699def0e4e301"
+};
+var PLATFORM_INFO = {
+  serverAddress: "https://platform.clearblade.com",
+  appKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
+  appSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801',
+  safariCollection: "82f7f8aa0ab8929ab1c3cad7e534",
+  chromeCollection:"84f6f8aa0abcf9fbb6ae97a6c9da01",
+  firefoxCollection:"d8f6f8aa0ababdbbc5b8fdf49356",
+  generalCollection:'90f6f8aa0a86969ced80c0a8b03e'
+}
+var TargetPlatform = RTP_INFO;
+
 describe("ClearBlade API", function () {
   it("should return the correct API version", function () {
     var APIversion = ClearBlade.getApiVersion();
@@ -18,18 +39,19 @@ describe("ClearBlade API", function () {
 describe("ClearBlade initialization should", function () {
   beforeEach(function () {
     var initOptions = {
-      appKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
-      appSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801'
+      appKey: TargetPlatform.appKey,
+      appSecret: TargetPlatform.appSecret,
+      URI: TargetPlatform.serverAddress
     };
     ClearBlade.init(initOptions);
   });
 
   it("have the appKey stored", function () {
-    expect(ClearBlade.appKey).toEqual('f2f5f8aa0aba8bc7e4bdcd8ef142');
+    expect(ClearBlade.appKey).toEqual(TargetPlatform.appKey);
   });
 
   it("have the appSecret stored", function () {
-    expect(ClearBlade.appSecret).toEqual('F2F5F8AA0AB4F2C4A4E1C387F3F801');
+    expect(ClearBlade.appSecret).toEqual(TargetPlatform.appSecret);
   });
 
   // it("have defaulted the URI to the Platform", function () {
@@ -48,20 +70,42 @@ describe("ClearBlade initialization should", function () {
     expect(ClearBlade._callTimeout).toEqual(30000);
   });
 });
+describe("ClearBlade users should", function () {
+  var initOptions;
+  beforeEach(function () {
+    initOptions = {
+      appKey: TargetPlatform.appKey,
+      appSecret: TargetPlatform.appSecret,
+      URI: TargetPlatform.serverAddress
+    };
+  });
+  it("have anonymous user authenticated when no options given", function () {
+    var authenticated = false;
+    initOptions.onSuccess = function() {
+      authenticated = true;
+      expect(ClearBlade.user).toBeDefined();
+    };
+    ClearBlade.init(initOptions)
+    waitsFor(function() {
+      return authenticated;
+    }, "user should be defined", TEST_TIMEOUT);
+  });
+});
 
 describe("ClearBlade collections fetching", function () {
   var col;
   beforeEach(function () {
     var initOptions = {
-      appKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
-      appSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801'
+      appKey: TargetPlatform.appKey,
+      appSecret: TargetPlatform.appSecret,
+      URI: TargetPlatform.serverAddress
     };
     ClearBlade.init(initOptions);
-    col = new ClearBlade.Collection('90f6f8aa0a86969ced80c0a8b03e');
+    col = new ClearBlade.Collection(TargetPlatform.generalCollection);
   });
 
   it("should have the collectionID stored", function () {
-    expect(col.ID).toEqual('90f6f8aa0a86969ced80c0a8b03e');
+    expect(col.ID).toEqual(TargetPlatform.generalCollection);
   });
 
   it("should return the stuff I entered before", function () {
@@ -81,7 +125,7 @@ describe("ClearBlade collections fetching", function () {
 
     waitsFor(function () {
       return flag;
-    }, "returnedData should not be undefined", 30000);
+    }, "returnedData should not be undefined", TEST_TIMEOUT);
 
     runs(function () {
       expect(returnedData[0].data.name).toEqual('aaron');
@@ -91,17 +135,18 @@ describe("ClearBlade collections fetching", function () {
 describe("ClearBlade collections CRUD should", function () {
   var collection, col;
   if(window.navigator.userAgent.indexOf("Firefox") > 0) {
-        collection = "d8f6f8aa0ababdbbc5b8fdf49356"; 
+        collection = TargetPlatform.firefoxCollection; 
     } else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
-        collection = "84f6f8aa0abcf9fbb6ae97a6c9da01";
+        collection = TargetPlatform.chromeCollection;
     } else if(window.navigator.userAgent.indexOf("Safari") > 0){
-        collection = "82f7f8aa0ab8929ab1c3cad7e534"; 
+        collection = TargetPlatform.safariCollection; 
     }
 
   beforeEach(function () {
     var initOptions = {
-      appKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
-      appSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801'
+      appKey: TargetPlatform.appKey,
+      appSecret: TargetPlatform.appSecret,
+      URI: TargetPlatform.serverAddress
     };
     ClearBlade.init(initOptions);
     col = new ClearBlade.Collection(collection);
@@ -129,7 +174,7 @@ describe("ClearBlade collections CRUD should", function () {
 
     waitsFor(function () {
       return flag;
-    }, "returnedData should not be undefined", 30000);
+    }, "returnedData should not be undefined", TEST_TIMEOUT);
     
     runs(function () {
       secondFlag = false;
@@ -145,7 +190,7 @@ describe("ClearBlade collections CRUD should", function () {
 
     waitsFor(function () {
       return secondFlag;
-    }, "returnedData should not be undefined", 30000);
+    }, "returnedData should not be undefined", TEST_TIMEOUT);
 
     runs(function () {
       expect(returnedData[0].data.name).toEqual('jim');
@@ -174,7 +219,7 @@ describe("ClearBlade collections CRUD should", function () {
 
     waitsFor(function () {
       return flag;
-    }, "returnedData should not be undefined", 30000);
+    }, "returnedData should not be undefined", TEST_TIMEOUT);
     
     runs(function () {
       secondFlag = false;
@@ -190,7 +235,7 @@ describe("ClearBlade collections CRUD should", function () {
 
     waitsFor(function () {
       return secondFlag;
-    }, "returnedData should not be undefined", 30000);
+    }, "returnedData should not be undefined", TEST_TIMEOUT);
 
     runs(function () {
       expect(returnedData[0].data.name).toEqual('john');
@@ -214,7 +259,7 @@ describe("ClearBlade collections CRUD should", function () {
 
     waitsFor(function () {
       return flag;
-    }, "returnedData should not be undefined", 30000);
+    }, "returnedData should not be undefined", TEST_TIMEOUT);
     
     runs(function () {
       secondFlag = false;
@@ -227,7 +272,7 @@ describe("ClearBlade collections CRUD should", function () {
 
     waitsFor(function () {
       return secondFlag;
-    }, "returnedData should not be undefined", 30000);
+    }, "returnedData should not be undefined", TEST_TIMEOUT);
 
     runs(function () {
       expect(returnedData).toEqual([]);
@@ -240,16 +285,17 @@ describe("Query objects should", function () {
   beforeEach(function () {
     var isJohnInserted = false;
     var initOptions = {
-      appKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
-      appSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801'
+      appKey: TargetPlatform.appKey,
+      appSecret: TargetPlatform.appSecret,
+      URI: TargetPlatform.serverAddress
     };
     ClearBlade.init(initOptions);
     if(window.navigator.userAgent.indexOf("Firefox") > 0) {
-      collection = "d8f6f8aa0ababdbbc5b8fdf49356"; 
+      collection = TargetPlatform.firefoxCollection; 
     } else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
-      collection = "84f6f8aa0abcf9fbb6ae97a6c9da01";
+      collection = TargetPlatform.chromeCollection;
     } else if(window.navigator.userAgent.indexOf("Safari") > 0){
-      collection = "82f7f8aa0ab8929ab1c3cad7e534"; 
+      collection = TargetPlatform.safariCollection; 
     }
     col = new ClearBlade.Collection(collection);
     var newItem = {
@@ -264,7 +310,7 @@ describe("Query objects should", function () {
     col.create(newItem, callback);
     waitsFor(function() {
       return isJohnInserted;
-    }, "John should be inserted", 30000);
+    }, "John should be inserted", TEST_TIMEOUT);
   });
 
   afterEach(function () {
@@ -279,7 +325,7 @@ describe("Query objects should", function () {
     col.remove(query, callback);
     waitsFor(function() {
       return isJohnRemoved;
-    }, "John should be removed", 30000);
+    }, "John should be removed", TEST_TIMEOUT);
     
   });
 
@@ -305,7 +351,7 @@ describe("Query objects should", function () {
     
     waitsFor(function () {
       return flag;
-    }, "returned data should not be undefined", 30000);
+    }, "returned data should not be undefined", TEST_TIMEOUT);
 
     runs(function () {
       expect(returnedData[0].data.name).toEqual('John');
@@ -338,7 +384,7 @@ describe("Query objects should", function () {
 
     waitsFor(function () {
       return flag;
-    }, "returned data should not be undefined", 30000);
+    }, "returned data should not be undefined", TEST_TIMEOUT);
 
     runs(function () {
       expect(returnedData[0].data.age).toEqual(35);
@@ -361,8 +407,9 @@ describe("The ClearBlade Messaging module", function() {
 
   beforeEach(function () {
     var initOptions = {
-      appKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
-      appSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801'
+      appKey: TargetPlatform.appKey,
+      appSecret: TargetPlatform.appSecret,
+      URI: TargetPlatform.serverAddress
     };
     ClearBlade.init(initOptions);
   });
