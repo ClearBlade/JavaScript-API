@@ -14,6 +14,7 @@ describe("ClearBlade API", function () {
   });
 });
 
+
 describe("ClearBlade initialization should", function () {
   beforeEach(function () {
     var initOptions = {
@@ -237,6 +238,7 @@ describe("ClearBlade collections CRUD should", function () {
 describe("Query objects should", function () {
   var collection, col;
   beforeEach(function () {
+    var isJohnInserted = false;
     var initOptions = {
       appKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
       appSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801'
@@ -257,18 +259,28 @@ describe("Query objects should", function () {
     var callback = function (err, data) {
       if (err) {
       } 
+      isJohnInserted = true;
     };
     col.create(newItem, callback);
+    waitsFor(function() {
+      return isJohnInserted;
+    }, "John should be inserted", 30000);
   });
 
   afterEach(function () {
     var query = new ClearBlade.Query();
+    var isJohnRemoved = false;
     query.equalTo('name', 'John');
     var callback = function (err, data) {
       if (err) {
       } 
+      isJohnRemoved = true;
     };
     col.remove(query, callback);
+    waitsFor(function() {
+      return isJohnRemoved;
+    }, "John should be removed", 30000);
+    
   });
 
   it("successfully fetch an item", function () {
@@ -279,9 +291,8 @@ describe("Query objects should", function () {
 
     var query = new ClearBlade.Query(options);
     query.equalTo('name', 'John');
-    
+    flag = false;
     runs(function () {
-      flag = false;
       var callback = function (err, data) {
         if (err) {
         } else {
@@ -310,14 +321,15 @@ describe("Query objects should", function () {
     var query = new ClearBlade.Query(options);
     query.equalTo('name', 'John');
 
+    flag = false;
     runs(function () {
-      flag = false;
       var changes = {
         age: 35
       };
       query.update(changes, function (err, data) {
         flag = true;
         if (err) {
+            console.error(err);
         } else {
           returnedData = data;
         }
