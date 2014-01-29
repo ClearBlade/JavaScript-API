@@ -10,6 +10,7 @@
 var TEST_TIMEOUT = 30000;
 var RTP_INFO = {
   serverAddress: "https://rtp.clearblade.com",
+  messagingURI: "rtp.clearblade.com",
   appKey: "c899bfae0afca9b1c899c2fe841d",
   appSecret: "C899BFAE0ACAE5A3C2A086ECDCF801",
   safariCollection: "aaaabfae0ad0da86f2dde3bba761",
@@ -19,6 +20,7 @@ var RTP_INFO = {
 };
 var PLATFORM_INFO = {
   serverAddress: "https://platform.clearblade.com",
+  messagingURI: "platform.clearblade.com",
   appKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
   appSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801',
   safariCollection: "82f7f8aa0ab8929ab1c3cad7e534",
@@ -41,7 +43,8 @@ describe("ClearBlade initialization should", function () {
     var initOptions = {
       appKey: TargetPlatform.appKey,
       appSecret: TargetPlatform.appSecret,
-      URI: TargetPlatform.serverAddress
+      URI: TargetPlatform.serverAddress,
+      messagingURI: TargetPlatform.messagingURI
     };
     ClearBlade.init(initOptions);
   });
@@ -76,12 +79,14 @@ describe("ClearBlade users should", function () {
     initOptions = {
       appKey: TargetPlatform.appKey,
       appSecret: TargetPlatform.appSecret,
-      URI: TargetPlatform.serverAddress
+      URI: TargetPlatform.serverAddress,
+      messagingURI: TargetPlatform.messagingURI
     };
   });
   it("have anonymous user authenticated when no options given", function () {
     var authenticated = false;
     initOptions.onSuccess = function() {
+      console.log(arguments);
       authenticated = true;
       expect(ClearBlade.user).toBeDefined();
     };
@@ -98,7 +103,8 @@ describe("ClearBlade collections fetching", function () {
     var initOptions = {
       appKey: TargetPlatform.appKey,
       appSecret: TargetPlatform.appSecret,
-      URI: TargetPlatform.serverAddress
+      URI: TargetPlatform.serverAddress,
+      messagingURI: TargetPlatform.messagingURI
     };
     ClearBlade.init(initOptions);
     col = new ClearBlade.Collection(TargetPlatform.generalCollection);
@@ -146,7 +152,8 @@ describe("ClearBlade collections CRUD should", function () {
     var initOptions = {
       appKey: TargetPlatform.appKey,
       appSecret: TargetPlatform.appSecret,
-      URI: TargetPlatform.serverAddress
+      URI: TargetPlatform.serverAddress,
+      messagingURI: TargetPlatform.messagingURI
     };
     ClearBlade.init(initOptions);
     col = new ClearBlade.Collection(collection);
@@ -287,7 +294,8 @@ describe("Query objects should", function () {
     var initOptions = {
       appKey: TargetPlatform.appKey,
       appSecret: TargetPlatform.appSecret,
-      URI: TargetPlatform.serverAddress
+      URI: TargetPlatform.serverAddress,
+      messagingURI: TargetPlatform.messagingURI
     };
     ClearBlade.init(initOptions);
     if(window.navigator.userAgent.indexOf("Firefox") > 0) {
@@ -409,7 +417,8 @@ describe("The ClearBlade Messaging module", function() {
     var initOptions = {
       appKey: TargetPlatform.appKey,
       appSecret: TargetPlatform.appSecret,
-      URI: TargetPlatform.serverAddress
+      URI: TargetPlatform.serverAddress,
+      messagingURI: TargetPlatform.messagingURI
     };
     ClearBlade.init(initOptions);
   });
