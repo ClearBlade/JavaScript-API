@@ -197,7 +197,6 @@ if (!window.console) {
     ClearBlade.request({
       method: 'POST',
       endpoint: 'api/user/reg',
-      isPlainText: true,
       useUser: false,
       body: { "email": email, "password": password }
     }, function (err, response) {
@@ -209,11 +208,36 @@ if (!window.console) {
     });
   };
   
+  ClearBlade.isCurrentUserAuthenticated = function(callback) {
+    ClearBlade.request({
+      method: 'POST',
+      endpoint: 'api/user/checkAuth'
+    }, function (err, response) {
+      if (err) {
+	execute(true, response, callback);
+      } else {
+	execute(false, response === "true", callback);
+      }
+    });
+  };
+  
+  ClearBlade.logoutUser = function(callback) {
+    ClearBlade.request({
+      method: 'POST',
+      endpoint: 'api/user/logout'
+    }, function(err, response) {
+      if (err) {
+	execute(true, response, callback);
+      } else {
+	execute(false, "User Logged out", callback);
+      }
+    });
+  };
+  
   
   ClearBlade.loginAnon = function(callback) {
     ClearBlade.request({
       method: 'POST',
-      isPlainText: true,
       useUser: false,
       endpoint: 'api/user/anon'
     }, function(err, response) {
@@ -230,7 +254,6 @@ if (!window.console) {
     _validateEmailPassword(email, paswword);
     ClearBlade.request({
       method: 'POST',
-      isPlainText: true,
       useUser: false,
       endpoint: 'api/user/auth',
       body: { "email": email, "password": password }
@@ -304,7 +327,6 @@ if (!window.console) {
     var url = options.URI || self.URI;
     var useUser = options.useUser || true;
     var authToken = useUser && options.authToken;
-    var isPlainText = options.isPlainText || false;
     if (useUser && !authToken && ClearBlade.user && ClearBlade.user.authToken) {
       authToken = ClearBlade.user.authToken;
     }
@@ -387,8 +409,6 @@ if (!window.console) {
           if (httpRequest.responseText == '[{}]' || httpRequest.responseText == '[]') {
             error = true;
             execute(error, "query returned nothing", callback);
-          } else if (isPlainText) {
-            execute(error, httpRequest.responseText, callback);
 	  } else {
             try {  
               response = JSON.parse(httpRequest.responseText);
