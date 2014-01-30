@@ -11,6 +11,7 @@ var TEST_TIMEOUT = 30000;
 var RTP_INFO = {
   serverAddress: "https://rtp.clearblade.com",
   messagingURI: "rtp.clearblade.com",
+  messagingPort: 8904,
   appKey: "c899bfae0afca9b1c899c2fe841d",
   appSecret: "C899BFAE0ACAE5A3C2A086ECDCF801",
   safariCollection: "aaaabfae0ad0da86f2dde3bba761",
@@ -28,7 +29,7 @@ var PLATFORM_INFO = {
   firefoxCollection:"d8f6f8aa0ababdbbc5b8fdf49356",
   generalCollection:'90f6f8aa0a86969ced80c0a8b03e'
 }
-var TargetPlatform = RTP_INFO;
+var TargetPlatform = PLATFORM_INFO;
 
 describe("ClearBlade API", function () {
   it("should return the correct API version", function () {
@@ -94,7 +95,6 @@ describe("ClearBlade users should", function () {
   it("have anonymous user authenticated when no options given", function () {
     var authenticated = false;
     initOptions.callback = function() {
-      console.log(arguments);
       authenticated = true;
       expect(ClearBlade.user).toBeDefined();
     };
@@ -133,13 +133,15 @@ describe("ClearBlade collections fetching", function () {
   it("should return the stuff I entered before", function () {
     var flag, returnedData, isAaronCreated;
     runs(function () {
-      col.create({
-        name: "aaron"
-      }, function(err, response) {
-        if (err) {
-        } else {
+      var query = new ClearBlade.Query();
+      query.equalTo('name', 'aaron');
+      col.remove(query,function() {
+	col.create({
+          name: "aaron"
+	}, function(err, response) {
+	  expect(err).toEqual(false);
           isAaronCreated = true;
-        }
+	});
       });
     });
 

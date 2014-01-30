@@ -135,7 +135,7 @@ if (!window.console) {
      * @prpopert messagingPort
      * @type Number
      */
-    ClearBlade.messagingPort = options.messagingPort || 1883;
+    ClearBlade.messagingPort = options.messagingPort || 8904;
     /**
      * This is the property that tells the API whether or not the API will log to the console
      * This should be left `false` in production
