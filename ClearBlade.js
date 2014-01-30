@@ -129,6 +129,13 @@ if (!window.console) {
      * @type String
      */
     ClearBlade.messagingURI = options.messagingURI || "platform.clearblade.com";
+    
+    /**
+     * This is the default port used when connecting to the messaging server
+     * @prpopert messagingPort
+     * @type Number
+     */
+    ClearBlade.messagingPort = options.messagingPort || 1883;
     /**
      * This is the property that tells the API whether or not the API will log to the console
      * This should be left `false` in production
@@ -143,33 +150,28 @@ if (!window.console) {
      * @private
      */
     ClearBlade._callTimeout =  options.callTimeout || 30000; //default to 30 seconds
+
+    ClearBlade.user = null;
     
     if (options.useUser) {
       ClearBlade.user = options.useUser;
     } else if (options.registerUser) {
       ClearBlade.registerUser(options.email, options.password, function(err, response) {
 	if (err) {
-	  execute(err, response, callback);
+	  execute(err, response, options.callback);
 	} else {
 	  ClearBlade.loginUser(options.email, options.password, function(err, user) {
-	    if (err) {
-	      execute(err, user, callback);
-	    } else {
-	      execute(false, user, callback);
-	    }
+	    execute(err, user, options.callback);
 	  });
 	}
       });
     } else if (options.email) {
       ClearBlade.loginUser(options.email, options.password, function(err, user) {
-	if (err) {
-	  execute(err, user, callback);
-	} else {
-	  execute(false, user, callback);
-	}
+	execute(err, user, options.callback);
       });
     } else {
       ClearBlade.loginAnon(function(err, user) {
+	execute(err, user, options.callback);
       });
     }
   };
@@ -195,6 +197,8 @@ if (!window.console) {
     ClearBlade.request({
       method: 'POST',
       endpoint: 'api/user/reg',
+      isPlainText: true,
+      useUser: false,
       body: { "email": email, "password": password }
     }, function (err, response) {
       if (err) {
@@ -209,6 +213,8 @@ if (!window.console) {
   ClearBlade.loginAnon = function(callback) {
     ClearBlade.request({
       method: 'POST',
+      isPlainText: true,
+      useUser: false,
       endpoint: 'api/user/anon'
     }, function(err, response) {
       if (err) {
@@ -224,6 +230,8 @@ if (!window.console) {
     _validateEmailPassword(email, paswword);
     ClearBlade.request({
       method: 'POST',
+      isPlainText: true,
+      useUser: false,
       endpoint: 'api/user/auth',
       body: { "email": email, "password": password }
     }, function (err, response) {
@@ -296,6 +304,7 @@ if (!window.console) {
     var url = options.URI || self.URI;
     var useUser = options.useUser || true;
     var authToken = useUser && options.authToken;
+    var isPlainText = options.isPlainText || false;
     if (useUser && !authToken && ClearBlade.user && ClearBlade.user.authToken) {
       authToken = ClearBlade.user.authToken;
     }
@@ -333,10 +342,11 @@ if (!window.console) {
     }
 
     // Set Credentials; Maybe some encryption later
-    httpRequest.setRequestHeader("CLEARBLADE-APPKEY", ClearBlade.appKey);
-    httpRequest.setRequestHeader("CLEARBLADE-APPSECRET", ClearBlade.appSecret);
     if (authToken) {
       httpRequest.setRequestHeader("CLEARBLADE-USERTOKEN", authToken);
+    } else {
+      httpRequest.setRequestHeader("CLEARBLADE-APPKEY", ClearBlade.appKey);
+      httpRequest.setRequestHeader("CLEARBLADE-APPSECRET", ClearBlade.appSecret);
     }
 
     if (!isObjectEmpty(body) || params) {
@@ -377,7 +387,9 @@ if (!window.console) {
           if (httpRequest.responseText == '[{}]' || httpRequest.responseText == '[]') {
             error = true;
             execute(error, "query returned nothing", callback);
-          } else {
+          } else if (isPlainText) {
+            execute(error, httpRequest.responseText, callback);
+	  } else {
             try {  
               response = JSON.parse(httpRequest.responseText);
               parsedResponse = [];
@@ -1106,12 +1118,12 @@ if (!window.console) {
     var that = this;
     //roll through the config
     var conf = {};
-    conf.userName = ClearBlade.appKey;
+    conf.userName = ClearBlade.user.authToken;
     conf.password = ClearBlade.appSecret;
     conf.cleanSession = options.cleanSession || true;
     conf.useSSL = options.useSSL || false; //up for debate. ole' perf vs sec argument
     conf.hosts = options.hosts || [ClearBlade.messagingURI];
-    conf.ports = options.ports || [1337];
+    conf.ports = options.ports || [ClearBlade.messagingPort];
     
     var onConnectionLost = function(){
       console.log("ClearBlade Messaging connection lost- attempting to reestablish");

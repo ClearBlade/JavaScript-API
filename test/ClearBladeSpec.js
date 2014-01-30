@@ -40,13 +40,21 @@ describe("ClearBlade API", function () {
 
 describe("ClearBlade initialization should", function () {
   beforeEach(function () {
+    var isClearBladeInit = false;
     var initOptions = {
       appKey: TargetPlatform.appKey,
       appSecret: TargetPlatform.appSecret,
       URI: TargetPlatform.serverAddress,
-      messagingURI: TargetPlatform.messagingURI
+      messagingURI: TargetPlatform.messagingURI,
+      callback: function(err, user) {
+	expect(err).toEqual(false);
+	isClearBladeInit = true;
+      }
     };
     ClearBlade.init(initOptions);
+    waitsFor(function() {
+      return isClearBladeInit;
+    }, "ClearBlade should be initialized", TEST_TIMEOUT);
   });
 
   it("have the appKey stored", function () {
@@ -80,12 +88,12 @@ describe("ClearBlade users should", function () {
       appKey: TargetPlatform.appKey,
       appSecret: TargetPlatform.appSecret,
       URI: TargetPlatform.serverAddress,
-      messagingURI: TargetPlatform.messagingURI
+      messagingURI: TargetPlatform.messagingURI,
     };
   });
   it("have anonymous user authenticated when no options given", function () {
     var authenticated = false;
-    initOptions.onSuccess = function() {
+    initOptions.callback = function() {
       console.log(arguments);
       authenticated = true;
       expect(ClearBlade.user).toBeDefined();
@@ -100,14 +108,22 @@ describe("ClearBlade users should", function () {
 describe("ClearBlade collections fetching", function () {
   var col;
   beforeEach(function () {
+    var isClearBladeInit = false;
     var initOptions = {
       appKey: TargetPlatform.appKey,
       appSecret: TargetPlatform.appSecret,
       URI: TargetPlatform.serverAddress,
-      messagingURI: TargetPlatform.messagingURI
+      messagingURI: TargetPlatform.messagingURI,
+      callback: function(err, user) {
+	expect(err).toEqual(false);
+	isClearBladeInit = true;
+	col = new ClearBlade.Collection(TargetPlatform.generalCollection);
+      }
     };
     ClearBlade.init(initOptions);
-    col = new ClearBlade.Collection(TargetPlatform.generalCollection);
+    waitsFor(function() {
+      return isClearBladeInit;
+    }, "ClearBlade should be initialized", TEST_TIMEOUT);
   });
 
   it("should have the collectionID stored", function () {
@@ -115,7 +131,21 @@ describe("ClearBlade collections fetching", function () {
   });
 
   it("should return the stuff I entered before", function () {
-    var flag, returnedData;  
+    var flag, returnedData, isAaronCreated;
+    runs(function () {
+      col.create({
+        name: "aaron"
+      }, function(err, response) {
+        if (err) {
+        } else {
+          isAaronCreated = true;
+        }
+      });
+    });
+
+    waitsFor(function () {
+      return isAaronCreated;
+    }, "aaron should be created", TEST_TIMEOUT);
     
     runs(function () {
       flag = false;
@@ -149,17 +179,23 @@ describe("ClearBlade collections CRUD should", function () {
     }
 
   beforeEach(function () {
+    var finishedRemoval = false;
     var initOptions = {
       appKey: TargetPlatform.appKey,
       appSecret: TargetPlatform.appSecret,
       URI: TargetPlatform.serverAddress,
-      messagingURI: TargetPlatform.messagingURI
+      messagingURI: TargetPlatform.messagingURI,
+      callback: function (err, user) {
+	col = new ClearBlade.Collection(collection);
+	var query = new ClearBlade.Query();
+	query.equalTo('name', 'John');
+	col.remove(query, function (err, data) { finishedRemoval = true; });
+      }
     };
     ClearBlade.init(initOptions);
-    col = new ClearBlade.Collection(collection);
-    var query = new ClearBlade.Query();
-    query.equalTo('name', 'John');
-    col.remove(query, function (err, data) {});
+    waitsFor(function() {
+      return finishedRemoval;
+    }, "John should be removed.", TEST_TIMEOUT);
   });
 
   it("successfully create an item", function () {
@@ -295,27 +331,29 @@ describe("Query objects should", function () {
       appKey: TargetPlatform.appKey,
       appSecret: TargetPlatform.appSecret,
       URI: TargetPlatform.serverAddress,
-      messagingURI: TargetPlatform.messagingURI
+      messagingURI: TargetPlatform.messagingURI,
+      callback: function (err, user) {
+	if(window.navigator.userAgent.indexOf("Firefox") > 0) {
+	  collection = TargetPlatform.firefoxCollection; 
+	} else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
+	  collection = TargetPlatform.chromeCollection;
+	} else if(window.navigator.userAgent.indexOf("Safari") > 0){
+	  collection = TargetPlatform.safariCollection; 
+	}
+	col = new ClearBlade.Collection(collection);
+	var newItem = {
+	  name: 'John',
+	  age: 34
+	};
+	col.create(newItem, function (err, data) {
+	  if (err) {
+	  } else {
+	    isJohnInserted = true;
+	  }
+	});
+      }
     };
     ClearBlade.init(initOptions);
-    if(window.navigator.userAgent.indexOf("Firefox") > 0) {
-      collection = TargetPlatform.firefoxCollection; 
-    } else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
-      collection = TargetPlatform.chromeCollection;
-    } else if(window.navigator.userAgent.indexOf("Safari") > 0){
-      collection = TargetPlatform.safariCollection; 
-    }
-    col = new ClearBlade.Collection(collection);
-    var newItem = {
-      name: 'John',
-      age: 34
-    };
-    var callback = function (err, data) {
-      if (err) {
-      } 
-      isJohnInserted = true;
-    };
-    col.create(newItem, callback);
     waitsFor(function() {
       return isJohnInserted;
     }, "John should be inserted", TEST_TIMEOUT);
@@ -414,13 +452,21 @@ describe("The ClearBlade Messaging module", function() {
   };
 
   beforeEach(function () {
+    var isClearBladeInit = false;
     var initOptions = {
       appKey: TargetPlatform.appKey,
       appSecret: TargetPlatform.appSecret,
       URI: TargetPlatform.serverAddress,
-      messagingURI: TargetPlatform.messagingURI
+      messagingURI: TargetPlatform.messagingURI,
+      callback: function(err, user) {
+	expect(err).toEqual(false);
+	isClearBladeInit = true;
+      }
     };
     ClearBlade.init(initOptions);
+    waitsFor(function() {
+      return isClearBladeInit;
+    }, "ClearBlade should be initialized", TEST_TIMEOUT);
   });
 
   it("should be able to subscribe and send/receive a message", function () {
@@ -452,8 +498,8 @@ describe("The ClearBlade Messaging module", function() {
 
     // Custom success callback to use in Subscribe options
     var onSuccess = function(data) {
-      flag = true;
       successMsg = 'EXECUTED';
+      flag = true;
     };
 
     runs(function() {
