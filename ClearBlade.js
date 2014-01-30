@@ -971,7 +971,7 @@ if (!window.console) {
     conf.cleanSession = options.cleanSession || true;
     conf.useSSL = options.useSSL || false; //up for debate. ole' perf vs sec argument
     conf.hosts = options.hosts || ["platform.clearblade.com"];
-    conf.ports = options.ports || [1337];
+    conf.ports = options.ports || [8904];
     
     var onConnectionLost = function(){
       console.log("ClearBlade Messaging connection lost- attempting to reestablish");
