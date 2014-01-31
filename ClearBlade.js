@@ -193,7 +193,7 @@ if (!window.console) {
   };
 
   ClearBlade.registerUser = function(email, password, callback) {
-    _validateEmailPassword(email, paswword);
+    _validateEmailPassword(email, password);
     ClearBlade.request({
       method: 'POST',
       endpoint: 'api/user/reg',
@@ -203,7 +203,7 @@ if (!window.console) {
       if (err) {
 	execute(true, response, callback);
       } else {
-	execute(false, "User successfully authenticated", callback);
+	execute(false, "User successfully registered", callback);
       }
     });
   };
@@ -211,12 +211,12 @@ if (!window.console) {
   ClearBlade.isCurrentUserAuthenticated = function(callback) {
     ClearBlade.request({
       method: 'POST',
-      endpoint: 'api/user/checkAuth'
+      endpoint: 'api/user/checkauth'
     }, function (err, response) {
       if (err) {
 	execute(true, response, callback);
       } else {
-	execute(false, response === "true", callback);
+	execute(false, response.is_authenticated, callback);
       }
     });
   };
@@ -244,14 +244,14 @@ if (!window.console) {
       if (err) {
 	execute(true, response, callback);
       } else {
-	ClearBlade.setUser(null, response);
+	ClearBlade.setUser(null, response.user_token);
 	execute(false, ClearBlade.user, callback);
       }
     });
   };
     
   ClearBlade.loginUser = function(email, password, callback) {
-    _validateEmailPassword(email, paswword);
+    _validateEmailPassword(email, password);
     ClearBlade.request({
       method: 'POST',
       useUser: false,
@@ -261,7 +261,7 @@ if (!window.console) {
       if (err) {
 	execute(true, response, callback);
       } else {
-	ClearBlade.setUser(email, response);
+	ClearBlade.setUser(email, response.user_token);
 	execute(false, ClearBlade.user, callback);
       }
     });

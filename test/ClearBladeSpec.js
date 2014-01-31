@@ -103,6 +103,33 @@ describe("ClearBlade users should", function () {
       return authenticated;
     }, "user should be defined", TEST_TIMEOUT);
   });
+  it("have anonymous user authenticated with email and password", function () {
+    var authenticated = false;
+    initOptions.email = "test_" + Math.floor(Math.random() * 10000) + "@test.com";
+    initOptions.password = "password";
+    initOptions.registerUser = true;
+    initOptions.callback = function(err, response) {
+      expect(ClearBlade.user).toBeDefined();
+      expect(ClearBlade.user.email).toEqual(initOptions.email);
+      expect(ClearBlade.user.authToken).toBeDefined();
+      ClearBlade.isCurrentUserAuthenticated(function(err, isAuthenticated) {
+	expect(err).toEqual(false);
+	expect(isAuthenticated).toEqual(true);
+	ClearBlade.logoutUser(function(err, response) {
+	  expect(err).toEqual(false);
+	  ClearBlade.isCurrentUserAuthenticated(function(err, isAuthenticated) {
+	    expect(err).toEqual(false);
+	    expect(isAuthenticated).toEqual(false);
+	    authenticated = true;
+	  });
+	});
+      });
+    };
+    ClearBlade.init(initOptions)
+    waitsFor(function() {
+      return authenticated;
+    }, "user should be defined", TEST_TIMEOUT);
+  });
 });
 
 describe("ClearBlade collections fetching", function () {
