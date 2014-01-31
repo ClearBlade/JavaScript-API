@@ -59,7 +59,42 @@ if (!window.console) {
 
     //check for optional params.
     if (options.logging && typeof options.logging !== 'boolean')
-      throw new Error('logging must be a boolean');
+      throw new Error('logging must be a true boolean if present');
+    
+    if (options.callback && typeof options.callback !== 'function') {
+      throw new Error('callback must be a function');
+    }
+    if (options.email && typeof options.email !== 'string') {
+      throw new Error('email must be a string');
+    }
+    if (options.password && typeof options.password !== 'string') {
+      throw new Error('password must be a string');
+    }
+    if (options.registerUser && typeof options.registerUser !== 'boolean') {
+      throw new Error('registerUser must be a true boolean if present');
+    }
+
+    if (options.useUser && (!options.useUser.email || !options.useUser.authToken)) {
+      throw new Error('useUser must contain both an email and an authToken ' +
+		      '{"email":email,"authToken":authToken}');
+    }
+    
+    if (options.email && !options.password) {
+      throw new Error('Must provide a password for email');
+    }
+
+    if (options.password && !options.email) {
+      throw new Error('Must provide a email for password');
+    }
+    
+    if (options.registerUser && !options.email) {
+      throw new Error('Cannot register anonymous user. Must provide an email');
+    }
+    
+    if (options.useUser && (options.email || options.password || options.registerUser)) {
+      throw new Error('Cannot authenticate or register a new user when useUser is set');
+    }
+    
 
     // store keys
     /**
@@ -87,6 +122,20 @@ if (!window.console) {
      * @type String
      */
     ClearBlade.URI = options.URI || "https://platform.clearblade.com";
+    
+    /**
+     * This is the URI used to identify where the Messaging server is located
+     * @property messagingURI
+     * @type String
+     */
+    ClearBlade.messagingURI = options.messagingURI || "platform.clearblade.com";
+    
+    /**
+     * This is the default port used when connecting to the messaging server
+     * @prpopert messagingPort
+     * @type Number
+     */
+    ClearBlade.messagingPort = options.messagingPort || 8904;
     /**
      * This is the property that tells the API whether or not the API will log to the console
      * This should be left `false` in production
@@ -102,6 +151,120 @@ if (!window.console) {
      */
     ClearBlade._callTimeout =  options.callTimeout || 30000; //default to 30 seconds
 
+    ClearBlade.user = null;
+    
+    if (options.useUser) {
+      ClearBlade.user = options.useUser;
+    } else if (options.registerUser) {
+      ClearBlade.registerUser(options.email, options.password, function(err, response) {
+	if (err) {
+	  execute(err, response, options.callback);
+	} else {
+	  ClearBlade.loginUser(options.email, options.password, function(err, user) {
+	    execute(err, user, options.callback);
+	  });
+	}
+      });
+    } else if (options.email) {
+      ClearBlade.loginUser(options.email, options.password, function(err, user) {
+	execute(err, user, options.callback);
+      });
+    } else {
+      ClearBlade.loginAnon(function(err, user) {
+	execute(err, user, options.callback);
+      });
+    }
+  };
+  
+  var _validateEmailPassword = function(email, password) {
+    if (email == null || email == undefined || typeof email != 'string') {
+      throw new Error("Email must be given and must be a string");
+    }
+    if (password == null || password == undefined || typeof password != 'string') {
+      throw new Error("Password must be given and must be a string");
+    }
+  };
+  
+  ClearBlade.setUser = function(email, authToken) {
+    ClearBlade.user = {
+      "email": email,
+      "authToken": authToken
+    };
+  };
+
+  ClearBlade.registerUser = function(email, password, callback) {
+    _validateEmailPassword(email, password);
+    ClearBlade.request({
+      method: 'POST',
+      endpoint: 'api/user/reg',
+      useUser: false,
+      body: { "email": email, "password": password }
+    }, function (err, response) {
+      if (err) {
+	execute(true, response, callback);
+      } else {
+	execute(false, "User successfully registered", callback);
+      }
+    });
+  };
+  
+  ClearBlade.isCurrentUserAuthenticated = function(callback) {
+    ClearBlade.request({
+      method: 'POST',
+      endpoint: 'api/user/checkauth'
+    }, function (err, response) {
+      if (err) {
+	execute(true, response, callback);
+      } else {
+	execute(false, response.is_authenticated, callback);
+      }
+    });
+  };
+  
+  ClearBlade.logoutUser = function(callback) {
+    ClearBlade.request({
+      method: 'POST',
+      endpoint: 'api/user/logout'
+    }, function(err, response) {
+      if (err) {
+	execute(true, response, callback);
+      } else {
+	execute(false, "User Logged out", callback);
+      }
+    });
+  };
+  
+  
+  ClearBlade.loginAnon = function(callback) {
+    ClearBlade.request({
+      method: 'POST',
+      useUser: false,
+      endpoint: 'api/user/anon'
+    }, function(err, response) {
+      if (err) {
+	execute(true, response, callback);
+      } else {
+	ClearBlade.setUser(null, response.user_token);
+	execute(false, ClearBlade.user, callback);
+      }
+    });
+  };
+    
+  ClearBlade.loginUser = function(email, password, callback) {
+    _validateEmailPassword(email, password);
+    ClearBlade.request({
+      method: 'POST',
+      useUser: false,
+      endpoint: 'api/user/auth',
+      body: { "email": email, "password": password }
+    }, function (err, response) {
+      if (err) {
+	execute(true, response, callback);
+      } else {
+	ClearBlade.setUser(email, response.user_token);
+	execute(false, ClearBlade.user, callback);
+      }
+    });
   };
 
   /*
@@ -162,6 +325,11 @@ if (!window.console) {
     var body = options.body || {};
     var qs = options.qs || '';
     var url = options.URI || self.URI;
+    var useUser = options.useUser || true;
+    var authToken = useUser && options.authToken;
+    if (useUser && !authToken && ClearBlade.user && ClearBlade.user.authToken) {
+      authToken = ClearBlade.user.authToken;
+    }
     var params = qs;
       if (endpoint) {
         url +=  ('/' + endpoint);
@@ -196,8 +364,12 @@ if (!window.console) {
     }
 
     // Set Credentials; Maybe some encryption later
-    httpRequest.setRequestHeader("CLEARBLADE-APPKEY", ClearBlade.appKey);
-    httpRequest.setRequestHeader("CLEARBLADE-APPSECRET", ClearBlade.appSecret);
+    if (authToken) {
+      httpRequest.setRequestHeader("CLEARBLADE-USERTOKEN", authToken);
+    } else {
+      httpRequest.setRequestHeader("CLEARBLADE-APPKEY", ClearBlade.appKey);
+      httpRequest.setRequestHeader("CLEARBLADE-APPSECRET", ClearBlade.appSecret);
+    }
 
     if (!isObjectEmpty(body) || params) {
 
@@ -237,7 +409,7 @@ if (!window.console) {
           if (httpRequest.responseText == '[{}]' || httpRequest.responseText == '[]') {
             error = true;
             execute(error, "query returned nothing", callback);
-          } else {
+	  } else {
             try {  
               response = JSON.parse(httpRequest.responseText);
               parsedResponse = [];
@@ -950,7 +1122,7 @@ if (!window.console) {
    * <p>{object} [invocationContext] An object to wrap all the important variables needed for the onFalure and onSuccess functions. The default is empty.</p>
    * <p>{function} [onSuccess] A callback to operate on the result of a sucessful connect. In beta the default is just the invoking of the `callback` parameter with the data from the connection.</p>
    * <p>{function} [onFailure] A callback to operate on the result of an unsuccessful connect. In beta the default is just the invoking of the `callback` parameter with the data from the connection.</p>
-   * <p>{Object} [hosts] An array of hosts to attempt to connect too. Sticks to the first one that works. The default is ["platform.clearblade.com"].</p>
+   * <p>{Object} [hosts] An array of hosts to attempt to connect too. Sticks to the first one that works. The default is [ClearBlade.messagingURI].</p>
    * <p>{Object} [ports] An array of ports to try, it also sticks to thef first one that works. The default is [1337].</p>
    *</p>
    * @param {function} callback Callback to be run upon either succeessful or
@@ -966,12 +1138,12 @@ if (!window.console) {
     var that = this;
     //roll through the config
     var conf = {};
-    conf.userName = ClearBlade.appKey;
+    conf.userName = ClearBlade.user.authToken;
     conf.password = ClearBlade.appSecret;
     conf.cleanSession = options.cleanSession || true;
     conf.useSSL = options.useSSL || false; //up for debate. ole' perf vs sec argument
-    conf.hosts = options.hosts || ["platform.clearblade.com"];
-    conf.ports = options.ports || [1337];
+    conf.hosts = options.hosts || [ClearBlade.messagingURI];
+    conf.ports = options.ports || [ClearBlade.messagingPort];
     
     var onConnectionLost = function(){
       console.log("ClearBlade Messaging connection lost- attempting to reestablish");
