@@ -432,7 +432,7 @@ describe("Query objects should", function () {
       expect(returnedData[0].data.name).toEqual('John');
     });
   });
-  it("receive updated dated upon successful update", function () {
+  it("receive updated item upon successful update", function () {
     // This tests the update callback itself to confirm that the data received
     // in the callback is the updated item
     var flag, returnedData;
