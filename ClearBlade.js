@@ -40,6 +40,9 @@ if (!window.console) {
     return '0.0.2';
   };
 
+  ClearBlade.MESSAGING_QOS_AT_MOST_ONCE = 0;
+  ClearBlade.MESSAGING_QOS_AT_LEAST_ONCE = 1;
+  ClearBlade.MESSAGING_QOS_EXACTLY_ONCE = 2;
   /**
    * This method initializes the ClearBlade module with the values needed to connect to the platform
    * @method ClearBlade.init
