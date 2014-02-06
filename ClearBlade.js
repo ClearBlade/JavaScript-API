@@ -143,6 +143,8 @@ if (!window.console) {
      * @type Boolean
      */
     ClearBlade.logging = options.logging || false;
+    
+    ClearBlade.defaultQoS = options.defaultQoS || 0;
     /**
      * This is the amount of time that the API will use to determine a timeout
      * @property _callTimeout=30000
@@ -1144,6 +1146,11 @@ if (!window.console) {
     conf.useSSL = options.useSSL || false; //up for debate. ole' perf vs sec argument
     conf.hosts = options.hosts || [ClearBlade.messagingURI];
     conf.ports = options.ports || [ClearBlade.messagingPort];
+    if (options.qos !== undefined && options.qos !== null) {
+      this._qos = options.qos;
+    } else {
+      this._qos = ClearBlade.defaultQoS;
+    }
     
     var onConnectionLost = function(){
       console.log("ClearBlade Messaging connection lost- attempting to reestablish");
@@ -1195,6 +1202,7 @@ if (!window.console) {
   ClearBlade.Messaging.prototype.Publish = function(topic, payload){
     var msg = new Messaging.Message(payload);
     msg.destinationName = topic;
+    msg.qos = this._qos;
     this.client.send(msg);
   };
 
@@ -1220,7 +1228,7 @@ if (!window.console) {
 
     var onSuccess = function() {
       var conf = {};
-      conf["qos"] = 0; //options["qos"] || 0;
+      conf["qos"] = this._qos || 0;
       conf["invocationContext"] = options["invocationContext"] ||  {};
       conf["onSuccess"] = options["onSuccess"] || null;
       conf["onFailure"] = options["onFailure"] || null;
