@@ -152,6 +152,68 @@ describe("ClearBlade anonymous users", function () {
   });
 });
 
+describe("ClearBlade collection fetching with users", function () {
+  it("should be able to fetch data as an authenticated user", function () {
+    var flag, returnedData, isAaronCreated;
+    var isClearBladeInit = false;
+    var initOptions = {
+      appKey: TargetPlatform.appKey,
+      appSecret: TargetPlatform.appSecret,
+      URI: TargetPlatform.serverAddress,
+      messagingURI: TargetPlatform.messagingURI,
+      email: "test_" + Math.floor(Math.random() * 10000) + "@test.com",
+      password: "password",
+      registerUser: true,
+      callback: function(err, user) {
+        expect(err).toEqual(false);
+        isClearBladeInit = true;
+        col = new ClearBlade.Collection(TargetPlatform.generalCollection);
+      }
+    };
+    ClearBlade.init(initOptions);
+    waitsFor(function() {
+      return isClearBladeInit;
+    }, "ClearBlade should be initialized", TEST_TIMEOUT);
+
+    runs(function () {
+      var query = new ClearBlade.Query();
+      query.equalTo('name', 'aaron');
+      col.remove(query,function() {
+        col.create({
+          name: "aaron"
+        }, function(err, response) {
+          expect(err).toEqual(false);
+          isAaronCreated = true;
+        });
+      });
+    });
+
+    waitsFor(function () {
+      return isAaronCreated;
+    }, "aaron should be created", TEST_TIMEOUT);
+
+    runs(function () {
+      flag = false;
+      var callback = function (err, data) {
+        flag = true;
+        if (err) {
+        } else {
+          returnedData = data;
+        }
+      };
+      col.fetch(callback);
+    });
+
+    waitsFor(function () {
+      return flag;
+    }, "returnedData should not be undefined", TEST_TIMEOUT);
+
+    runs(function () {
+      expect(returnedData[0].data.name).toEqual('aaron');
+    });
+  });
+});
+
 describe("ClearBlade collections fetching", function () {
   var col;
   beforeEach(function () {
