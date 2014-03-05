@@ -491,8 +491,8 @@ describe("The ClearBlade Messaging module", function() {
   beforeEach(function () {
     var isClearBladeInit = false;
     var initOptions = {
-      appKey: TargetPlatform.appKey,
-      appSecret: TargetPlatform.appSecret,
+      appKey: TargetPlatform.noAuthAppKey,
+      appSecret: TargetPlatform.noAuthAppSecret,
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function(err, user) {
