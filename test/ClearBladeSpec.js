@@ -38,7 +38,6 @@ describe("ClearBlade API", function () {
   });
 });
 
-
 describe("ClearBlade initialization should", function () {
   beforeEach(function () {
     var isClearBladeInit = false;
@@ -48,8 +47,8 @@ describe("ClearBlade initialization should", function () {
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function(err, user) {
-	expect(err).toEqual(false);
-	isClearBladeInit = true;
+        expect(err).toEqual(false);
+        isClearBladeInit = true;
       }
     };
     ClearBlade.init(initOptions);
@@ -82,6 +81,7 @@ describe("ClearBlade initialization should", function () {
     expect(ClearBlade._callTimeout).toEqual(30000);
   });
 });
+
 describe("ClearBlade users should", function () {
   var initOptions;
   beforeEach(function () {
@@ -92,17 +92,19 @@ describe("ClearBlade users should", function () {
       messagingURI: TargetPlatform.messagingURI,
     };
   });
+
   it("have anonymous user authenticated when no options given", function () {
     var authenticated = false;
     initOptions.callback = function() {
       authenticated = true;
       expect(ClearBlade.user).toBeDefined();
     };
-    ClearBlade.init(initOptions)
+    ClearBlade.init(initOptions);
     waitsFor(function() {
       return authenticated;
     }, "user should be defined", TEST_TIMEOUT);
   });
+
   it("have anonymous user authenticated with email and password", function () {
     var authenticated = false;
     initOptions.email = "test_" + Math.floor(Math.random() * 10000) + "@test.com";
@@ -113,19 +115,19 @@ describe("ClearBlade users should", function () {
       expect(ClearBlade.user.email).toEqual(initOptions.email);
       expect(ClearBlade.user.authToken).toBeDefined();
       ClearBlade.isCurrentUserAuthenticated(function(err, isAuthenticated) {
-	expect(err).toEqual(false);
-	expect(isAuthenticated).toEqual(true);
-	ClearBlade.logoutUser(function(err, response) {
-	  expect(err).toEqual(false);
-	  ClearBlade.isCurrentUserAuthenticated(function(err, isAuthenticated) {
-	    expect(err).toEqual(false);
-	    expect(isAuthenticated).toEqual(false);
-	    authenticated = true;
-	  });
-	});
+        expect(err).toEqual(false);
+        expect(isAuthenticated).toEqual(true);
+        ClearBlade.logoutUser(function(err, response) {
+          expect(err).toEqual(false);
+          ClearBlade.isCurrentUserAuthenticated(function(err, isAuthenticated) {
+            expect(err).toEqual(false);
+            expect(isAuthenticated).toEqual(false);
+            authenticated = true;
+          });
+        });
       });
     };
-    ClearBlade.init(initOptions)
+    ClearBlade.init(initOptions);
     waitsFor(function() {
       return authenticated;
     }, "user should be defined", TEST_TIMEOUT);
@@ -142,9 +144,9 @@ describe("ClearBlade collections fetching", function () {
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function(err, user) {
-	expect(err).toEqual(false);
-	isClearBladeInit = true;
-	col = new ClearBlade.Collection(TargetPlatform.generalCollection);
+        expect(err).toEqual(false);
+        isClearBladeInit = true;
+        col = new ClearBlade.Collection(TargetPlatform.generalCollection);
       }
     };
     ClearBlade.init(initOptions);
@@ -163,19 +165,19 @@ describe("ClearBlade collections fetching", function () {
       var query = new ClearBlade.Query();
       query.equalTo('name', 'aaron');
       col.remove(query,function() {
-	col.create({
-          name: "aaron"
-	}, function(err, response) {
-	  expect(err).toEqual(false);
+      col.create({
+        name: "aaron"
+      }, function(err, response) {
+        expect(err).toEqual(false);
           isAaronCreated = true;
-	});
+        });
       });
     });
 
     waitsFor(function () {
       return isAaronCreated;
     }, "aaron should be created", TEST_TIMEOUT);
-    
+
     runs(function () {
       flag = false;
       var callback = function (err, data) {
@@ -197,14 +199,15 @@ describe("ClearBlade collections fetching", function () {
     });
   });
 });
+
 describe("ClearBlade collections CRUD should", function () {
   var collection, col;
   if(window.navigator.userAgent.indexOf("Firefox") > 0) {
-        collection = TargetPlatform.firefoxCollection; 
+        collection = TargetPlatform.firefoxCollection;
     } else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
         collection = TargetPlatform.chromeCollection;
     } else if(window.navigator.userAgent.indexOf("Safari") > 0){
-        collection = TargetPlatform.safariCollection; 
+        collection = TargetPlatform.safariCollection;
     }
 
   beforeEach(function () {
@@ -215,10 +218,10 @@ describe("ClearBlade collections CRUD should", function () {
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function (err, user) {
-	col = new ClearBlade.Collection(collection);
-	var query = new ClearBlade.Query();
-	query.equalTo('name', 'John');
-	col.remove(query, function (err, data) { finishedRemoval = true; });
+        col = new ClearBlade.Collection(collection);
+        var query = new ClearBlade.Query();
+        query.equalTo('name', 'John');
+        col.remove(query, function (err, data) { finishedRemoval = true; });
       }
     };
     ClearBlade.init(initOptions);
@@ -228,8 +231,8 @@ describe("ClearBlade collections CRUD should", function () {
   });
 
   it("successfully create an item", function () {
-    var flag, returnedData, secondFlag;  
-    
+    var flag, returnedData, secondFlag;
+
     runs(function () {
       flag = false;
       var callback = function (err, data) {
@@ -247,7 +250,7 @@ describe("ClearBlade collections CRUD should", function () {
     waitsFor(function () {
       return flag;
     }, "returnedData should not be undefined", TEST_TIMEOUT);
-    
+
     runs(function () {
       secondFlag = false;
       var callback = function (err, data) {
@@ -272,8 +275,8 @@ describe("ClearBlade collections CRUD should", function () {
   it("successfully update an item", function () {
     // This tests an update and then a fetch to get the updated item, as
     // opposed to checking the updated item in the update callback itself
-    var flag, returnedData, secondFlag;  
-    
+    var flag, returnedData, secondFlag;
+
     runs(function () {
       flag = false;
       var callback = function (err, data) {
@@ -292,7 +295,7 @@ describe("ClearBlade collections CRUD should", function () {
     waitsFor(function () {
       return flag;
     }, "returnedData should not be undefined", TEST_TIMEOUT);
-    
+
     runs(function () {
       secondFlag = false;
       var callback = function (err, data) {
@@ -315,14 +318,14 @@ describe("ClearBlade collections CRUD should", function () {
   });
 
   it("successfully delete an item", function () {
-    var flag, returnedData, secondFlag;  
-    
+    var flag, returnedData, secondFlag;
+
     runs(function () {
       flag = false;
       var callback = function (err, data) {
         flag = true;
         if (err) {
-        } 
+        }
       };
       var query = new ClearBlade.Query();
       query.equalTo('name', 'john');
@@ -332,7 +335,7 @@ describe("ClearBlade collections CRUD should", function () {
     waitsFor(function () {
       return flag;
     }, "returnedData should not be undefined", TEST_TIMEOUT);
-    
+
     runs(function () {
       secondFlag = false;
       var callback = function (err, data) {
@@ -362,24 +365,24 @@ describe("Query objects should", function () {
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function (err, user) {
-	if(window.navigator.userAgent.indexOf("Firefox") > 0) {
-	  collection = TargetPlatform.firefoxCollection; 
-	} else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
-	  collection = TargetPlatform.chromeCollection;
-	} else if(window.navigator.userAgent.indexOf("Safari") > 0){
-	  collection = TargetPlatform.safariCollection; 
-	}
-	col = new ClearBlade.Collection(collection);
-	var newItem = {
-	  name: 'John',
-	  age: 34
-	};
-	col.create(newItem, function (err, data) {
-	  if (err) {
-	  } else {
-	    isJohnInserted = true;
-	  }
-	});
+        if(window.navigator.userAgent.indexOf("Firefox") > 0) {
+          collection = TargetPlatform.firefoxCollection;
+        } else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
+          collection = TargetPlatform.chromeCollection;
+        } else if(window.navigator.userAgent.indexOf("Safari") > 0){
+          collection = TargetPlatform.safariCollection;
+        }
+        col = new ClearBlade.Collection(collection);
+        var newItem = {
+          name: 'John',
+          age: 34
+        };
+        col.create(newItem, function (err, data) {
+          if (err) {
+          } else {
+            isJohnInserted = true;
+          }
+        });
       }
     };
     ClearBlade.init(initOptions);
@@ -394,14 +397,13 @@ describe("Query objects should", function () {
     query.equalTo('name', 'John');
     var callback = function (err, data) {
       if (err) {
-      } 
+      }
       isJohnRemoved = true;
     };
     col.remove(query, callback);
     waitsFor(function() {
       return isJohnRemoved;
     }, "John should be removed", TEST_TIMEOUT);
-    
   });
 
   it("successfully fetch an item", function () {
@@ -423,7 +425,7 @@ describe("Query objects should", function () {
       };
       query.fetch(callback);
     });
-    
+
     waitsFor(function () {
       return flag;
     }, "returned data should not be undefined", TEST_TIMEOUT);
@@ -454,7 +456,7 @@ describe("Query objects should", function () {
         } else {
           returnedData = data;
         }
-      });  
+      });
     });
 
     waitsFor(function () {
@@ -473,7 +475,7 @@ describe("The ClearBlade Messaging module", function() {
   var onMessageArrived = function(message) {
     flag = true;
     msgReceived = message;
-  };  
+  };
   var onConnect = function(data) {
     flag = true;
     // Once a connection has been made, make a subscription and send a message.
@@ -488,8 +490,8 @@ describe("The ClearBlade Messaging module", function() {
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function(err, user) {
-	expect(err).toEqual(false);
-	isClearBladeInit = true;
+        expect(err).toEqual(false);
+        isClearBladeInit = true;
       }
     };
     ClearBlade.init(initOptions);
@@ -516,7 +518,7 @@ describe("The ClearBlade Messaging module", function() {
     waitsFor(function() {
       return flag;
     }, "Did not publish", 3000);
-  
+
     runs(function() {
       expect(msgReceived).toEqual('hello');
     });
