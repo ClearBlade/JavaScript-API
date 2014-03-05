@@ -99,18 +99,6 @@ describe("ClearBlade users should", function () {
     };
   });
 
-  it("have anonymous user authenticated when no options given", function () {
-    var authenticated = false;
-    initOptions.callback = function() {
-      authenticated = true;
-      expect(ClearBlade.user).toBeDefined();
-    };
-    ClearBlade.init(initOptions);
-    waitsFor(function() {
-      return authenticated;
-    }, "user should be defined", TEST_TIMEOUT);
-  });
-
   it("have anonymous user authenticated with email and password", function () {
     var authenticated = false;
     initOptions.email = "test_" + Math.floor(Math.random() * 10000) + "@test.com";
@@ -132,6 +120,30 @@ describe("ClearBlade users should", function () {
           });
         });
       });
+    };
+    ClearBlade.init(initOptions);
+    waitsFor(function() {
+      return authenticated;
+    }, "user should be defined", TEST_TIMEOUT);
+  });
+});
+
+describe("ClearBlade anonymous users", function () {
+  var initOptions;
+  beforeEach(function () {
+    initOptions = {
+      appKey: TargetPlatform.noAuthAppKey,
+      appSecret: TargetPlatform.noAuthAppSecret,
+      URI: TargetPlatform.serverAddress,
+      messagingURI: TargetPlatform.messagingURI,
+    };
+  });
+
+  it("should have anonymous user authenticated when no options given", function () {
+    var authenticated = false;
+    initOptions.callback = function() {
+      authenticated = true;
+      expect(ClearBlade.user).toBeDefined();
     };
     ClearBlade.init(initOptions);
     waitsFor(function() {
@@ -209,18 +221,18 @@ describe("ClearBlade collections fetching", function () {
 describe("ClearBlade collections CRUD should", function () {
   var collection, col;
   if(window.navigator.userAgent.indexOf("Firefox") > 0) {
-        collection = TargetPlatform.firefoxCollection;
+        collection = TargetPlatform.firefoxNoAuthCollection;
     } else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
-        collection = TargetPlatform.chromeCollection;
+        collection = TargetPlatform.chromeNoAuthCollection;
     } else if(window.navigator.userAgent.indexOf("Safari") > 0){
-        collection = TargetPlatform.safariCollection;
+        collection = TargetPlatform.safariNoAuthCollection;
     }
 
   beforeEach(function () {
     var finishedRemoval = false;
     var initOptions = {
-      appKey: TargetPlatform.appKey,
-      appSecret: TargetPlatform.appSecret,
+      appKey: TargetPlatform.noAuthAppKey,
+      appSecret: TargetPlatform.noAuthAppSecret,
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function (err, user) {
@@ -366,17 +378,17 @@ describe("Query objects should", function () {
   beforeEach(function () {
     var isJohnInserted = false;
     var initOptions = {
-      appKey: TargetPlatform.appKey,
-      appSecret: TargetPlatform.appSecret,
+      appKey: TargetPlatform.noAuthAppKey,
+      appSecret: TargetPlatform.noAuthAppSecret,
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function (err, user) {
         if(window.navigator.userAgent.indexOf("Firefox") > 0) {
-          collection = TargetPlatform.firefoxCollection;
+          collection = TargetPlatform.firefoxNoAuthCollection;
         } else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
-          collection = TargetPlatform.chromeCollection;
+          collection = TargetPlatform.chromeNoAuthCollection;
         } else if(window.navigator.userAgent.indexOf("Safari") > 0){
-          collection = TargetPlatform.safariCollection;
+          collection = TargetPlatform.safariNoAuthCollection;
         }
         col = new ClearBlade.Collection(collection);
         var newItem = {

@@ -162,21 +162,21 @@ if (!window.console) {
       ClearBlade.user = options.useUser;
     } else if (options.registerUser) {
       ClearBlade.registerUser(options.email, options.password, function(err, response) {
-	if (err) {
-	  execute(err, response, options.callback);
-	} else {
-	  ClearBlade.loginUser(options.email, options.password, function(err, user) {
-	    execute(err, user, options.callback);
-	  });
-	}
+        if (err) {
+          execute(err, response, options.callback);
+        } else {
+          ClearBlade.loginUser(options.email, options.password, function(err, user) {
+            execute(err, user, options.callback);
+          });
+        }
       });
     } else if (options.email) {
       ClearBlade.loginUser(options.email, options.password, function(err, user) {
-	execute(err, user, options.callback);
+        execute(err, user, options.callback);
       });
     } else {
       ClearBlade.loginAnon(function(err, user) {
-	execute(err, user, options.callback);
+        execute(err, user, options.callback);
       });
     }
   };
@@ -414,7 +414,7 @@ if (!window.console) {
           if (httpRequest.responseText == '[{}]' || httpRequest.responseText == '[]') {
             error = true;
             execute(error, "query returned nothing", callback);
-	  } else {
+          } else {
             try {  
               response = JSON.parse(httpRequest.responseText);
               parsedResponse = [];
