@@ -24,11 +24,17 @@ var PLATFORM_INFO = {
   messagingURI: "platform.clearblade.com",
   appKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
   appSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801',
+  noAuthAppKey: "b48abbb10af2f9bfffd9f793dc9a01",
+  noAuthAppSecret: "B48ABBB10AE8EB9AD7D1B3B7FC62",
   safariCollection: "82f7f8aa0ab8929ab1c3cad7e534",
   chromeCollection:"84f6f8aa0abcf9fbb6ae97a6c9da01",
   firefoxCollection:"d8f6f8aa0ababdbbc5b8fdf49356",
-  generalCollection:'90f6f8aa0a86969ced80c0a8b03e'
-}
+  generalCollection:'90f6f8aa0a86969ced80c0a8b03e',
+  firefoxNoAuthCollection: "f28fbbb10a8ca5a5f2f5acd297cc01",
+  safariNoAuthCollection: "a690bbb10abadbb387efdcc0b09e01",
+  generalNoAuthCollection: "ba90bbb10aba93f7bde8cbd2cfe201",
+  chromeNoAuthCollection: "e08fbbb10ae0efadd4e2f68cf39701"
+};
 var TargetPlatform = PLATFORM_INFO;
 
 describe("ClearBlade API", function () {
@@ -42,8 +48,8 @@ describe("ClearBlade initialization should", function () {
   beforeEach(function () {
     var isClearBladeInit = false;
     var initOptions = {
-      appKey: TargetPlatform.appKey,
-      appSecret: TargetPlatform.appSecret,
+      appKey: TargetPlatform.noAuthAppKey,
+      appSecret: TargetPlatform.noAuthAppSecret,
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function(err, user) {
@@ -58,11 +64,11 @@ describe("ClearBlade initialization should", function () {
   });
 
   it("have the appKey stored", function () {
-    expect(ClearBlade.appKey).toEqual(TargetPlatform.appKey);
+    expect(ClearBlade.appKey).toEqual(TargetPlatform.noAuthAppKey);
   });
 
   it("have the appSecret stored", function () {
-    expect(ClearBlade.appSecret).toEqual(TargetPlatform.appSecret);
+    expect(ClearBlade.appSecret).toEqual(TargetPlatform.noAuthAppSecret);
   });
 
   // it("have defaulted the URI to the Platform", function () {
@@ -139,14 +145,14 @@ describe("ClearBlade collections fetching", function () {
   beforeEach(function () {
     var isClearBladeInit = false;
     var initOptions = {
-      appKey: TargetPlatform.appKey,
-      appSecret: TargetPlatform.appSecret,
+      appKey: TargetPlatform.noAuthAppKey,
+      appSecret: TargetPlatform.noAuthAppSecret,
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function(err, user) {
         expect(err).toEqual(false);
         isClearBladeInit = true;
-        col = new ClearBlade.Collection(TargetPlatform.generalCollection);
+        col = new ClearBlade.Collection(TargetPlatform.generalNoAuthCollection);
       }
     };
     ClearBlade.init(initOptions);
@@ -156,7 +162,7 @@ describe("ClearBlade collections fetching", function () {
   });
 
   it("should have the collectionID stored", function () {
-    expect(col.ID).toEqual(TargetPlatform.generalCollection);
+    expect(col.ID).toEqual(TargetPlatform.generalNoAuthCollection);
   });
 
   it("should return the stuff I entered before", function () {
@@ -169,8 +175,8 @@ describe("ClearBlade collections fetching", function () {
         name: "aaron"
       }, function(err, response) {
         expect(err).toEqual(false);
-          isAaronCreated = true;
-        });
+        isAaronCreated = true;
+      });
       });
     });
 
