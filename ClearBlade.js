@@ -313,10 +313,16 @@ if (!window.console) {
   };
 
   var addFilterToQuery = function (queryObj, condition, key, value) {
+    var newObj = {};
+    newObj[key] = value;
     if (typeof queryObj.query.filters === 'undefined') {
       queryObj.query.filters = [];
+      var newFilter = {};
+      newFilter[condition] = [newObj];
+      queryObj.query.filters.push(newFilter);
+    } else if (queryObj.query.filters.hasOwnProperty(condition)) {
+      queryObj.query.filters[condition].push(newObj);
     }
-    queryObj.query.filters.push({condtion: [{key: value}]});
   };
 
   var addSortToQuery = function(queryObj, direction, column) {
@@ -730,12 +736,12 @@ if (!window.console) {
   };
 
   ClearBlade.Query.prototype.ascending = function (field) {
-    addToQuery(this, "SORT", makeKVPair("ASC", field));
+    addSortToQuery(this, "ASC", field);
     return this;
   };
 
   ClearBlade.Query.prototype.descending = function (field) {
-    addToQuery(this, "SORT", makeKVPair("DESC", field));
+    addSortToQuery(this, "DESC", field);
     return this;
   };
 
@@ -1071,7 +1077,6 @@ if (!window.console) {
       if (err) {
         throw new Error (data);
       } else {
-        console.log(data);
         self.data = data[0].data;
       }
     };
@@ -1087,7 +1092,6 @@ if (!window.console) {
       if (err) {
         throw new Error (data);
       } else {
-        console.log(data);
         self.data = data[0].data;
       }
     };
@@ -1274,7 +1278,6 @@ if (!window.console) {
     conf["onFailure"] = options["onFailure"] || function(){};//null;
     conf["timeout"] = options["timeout"] || 60;
     this.client.unsubscribe(topic,conf);
-    console.log("we unsubscribed")
   };
 
   /**

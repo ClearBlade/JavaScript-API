@@ -237,7 +237,7 @@ describe("ClearBlade Query fetching with anonymous user", function() {
 
   // Make sure it exists by creating it.
   it("should return existing data", function() {
-    var flag, returnedData, isAaronCreated;
+    var returnedData, isAaronCreated;
     runs(function () {
       var query = new ClearBlade.Query();
       query.equalTo('name', 'aaron');
@@ -339,33 +339,28 @@ describe("ClearBlade Query fetching with anonymous user", function() {
   });
 
   it("should allow pagination options", function() {
-    var flag, returnedData, isAaronCreated;
-    runs(function () {
-      var query = new ClearBlade.Query();
-      query.equalTo('name', 'aaron');
-      col.remove(query,function() {
-        col.create({
-          name: "aaron",
-          age: 25
-        }, function(err, response) {
-          expect(err).toEqual(false);
-          isAaronCreated = true;
-        });
-      });
-    });
-
-    waitsFor(function() {
-      return isAaronCreated;
-    }, "aaron should be created", TEST_TIMEOUT);
-
-    var queryDone, queryDone2;
-    // Negative case -- should return nothing
     runs(function() {
       var query = new ClearBlade.Query();
       query.equalTo('name', 'aaron');
       query.setPage(10, 1);
       expect(query.query.PAGESIZE).toEqual(10);
       expect(query.query.PAGENUM).toEqual(1);
+    });
+  });
+
+  it("should allow sorting options", function() {
+    runs(function() {
+      var query = new ClearBlade.Query();
+      query.equalTo('name', 'aaron');
+      query.collection = col.ID;
+      query.ascending('name');
+      expect(query.query.SORT).toEqual([{"ASC": "name"}]);
+    });
+    runs(function() {
+      var query = new ClearBlade.Query();
+      query.equalTo('name', 'aaron');
+      query.descending('name');
+      expect(query.query.SORT).toEqual([{"DESC": "name"}]);
     });
   });
 });
@@ -525,6 +520,7 @@ describe("ClearBlade collections CRUD should", function () {
       var newThing = {
         name: 'john'
       };
+      debugger;
       col.update(query, newThing, callback);
     });
 
@@ -670,6 +666,7 @@ describe("Query objects should", function () {
       expect(returnedData[0].data.name).toEqual('John');
     });
   });
+
   it("receive updated item upon successful update", function () {
     // This tests the update callback itself to confirm that the data received
     // in the callback is the updated item
