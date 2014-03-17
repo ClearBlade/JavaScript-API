@@ -245,12 +245,12 @@ describe("ClearBlade collections fetching", function () {
       var query = new ClearBlade.Query();
       query.equalTo('name', 'aaron');
       col.remove(query,function() {
-      col.create({
-        name: "aaron"
-      }, function(err, response) {
-        expect(err).toEqual(false);
-        isAaronCreated = true;
-      });
+        col.create({
+          name: "aaron"
+        }, function(err, response) {
+          expect(err).toEqual(false);
+          isAaronCreated = true;
+        });
       });
     });
 
