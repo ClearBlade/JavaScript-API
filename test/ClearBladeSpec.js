@@ -214,6 +214,69 @@ describe("ClearBlade collection fetching with users", function () {
   });
 });
 
+describe("ClearBlade Query fetching with anonymous user", function() {
+  var col;
+  beforeEach(function () {
+    var isClearBladeInit = false;
+    var initOptions = {
+      appKey: TargetPlatform.noAuthAppKey,
+      appSecret: TargetPlatform.noAuthAppSecret,
+      URI: TargetPlatform.serverAddress,
+      messagingURI: TargetPlatform.messagingURI,
+      callback: function(err, user) {
+        expect(err).toEqual(false);
+        isClearBladeInit = true;
+        col = new ClearBlade.Collection(TargetPlatform.generalNoAuthCollection);
+      }
+    };
+    ClearBlade.init(initOptions);
+    waitsFor(function() {
+      return isClearBladeInit;
+    }, "ClearBlade should be initialized", TEST_TIMEOUT);
+  });
+
+  // Make sure it exists by creating it.
+  it("should return existing data", function() {
+    var flag, returnedData, isAaronCreated;
+    runs(function () {
+      var query = new ClearBlade.Query();
+      query.equalTo('name', 'aaron');
+      col.remove(query,function() {
+        col.create({
+          name: "aaron"
+        }, function(err, response) {
+          expect(err).toEqual(false);
+          isAaronCreated = true;
+        });
+      });
+    });
+
+    waitsFor(function() {
+      return isAaronCreated;
+    }, "aaron should be created", TEST_TIMEOUT);
+
+    var queryDone;
+    runs(function() {
+      var query = new ClearBlade.Query();
+      query.equalTo('name', 'aaron');
+      query.collection = col.ID;
+      query.execute('GET', function(error, data) {
+        expect(error).toBeFalsy();
+        queryDone = true;
+        returnedData = data;
+      });
+    });
+
+    waitsFor(function() {
+      return queryDone;
+    }, "Query should be finished", TEST_TIMEOUT);
+
+    runs(function() {
+      expect(returnedData[0].name).toEqual('aaron');
+    });
+  });
+});
+
 describe("ClearBlade collections fetching", function () {
   var col;
   beforeEach(function () {
@@ -239,7 +302,7 @@ describe("ClearBlade collections fetching", function () {
     expect(col.ID).toEqual(TargetPlatform.generalNoAuthCollection);
   });
 
-  it("should return the stuff I entered before", function () {
+  it("should return existing data", function () {
     var flag, returnedData, isAaronCreated;
     runs(function () {
       var query = new ClearBlade.Query();
