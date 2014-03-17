@@ -291,7 +291,6 @@ if (!window.console) {
     return;
   };
 
-
   var isObjectEmpty = function (object) {
     /*jshint forin:false */
     if (typeof object !== 'object') {
@@ -302,18 +301,29 @@ if (!window.console) {
     }
     return true;
   };
+
   var makeKVPair = function (key, value) {
     var KVPair = {};
     KVPair[key] = value;
     return KVPair;
   };
 
-  var addToQuery = function (queryObj, condition, KVPair) {
+  var addToQuery = function(queryObj, key, value) {
+    queryObj.query.key = value;
+  };
 
-    if (typeof queryObj.query[condition] === 'undefined') {
-      queryObj.query[condition] = [];
+  var addFilterToQuery = function (queryObj, condition, key, value) {
+    if (typeof queryObj.query.filters === 'undefined') {
+      queryObj.query.filters = [];
     }
-    queryObj.query[condition].push(KVPair);
+    queryObj.query.filters.push({condtion: [{key: value}]});
+  };
+
+  var addSortToQuery = function(queryObj, direction, column) {
+    if (typeof queryObj.query.SORT === 'undefined') {
+      queryObj.query.SORT = [];
+    }
+    queryObj.query.SORT.push(makeKVPair(direction, column));
   };
 
   /*
@@ -551,7 +561,7 @@ if (!window.console) {
      * However, '_query' is an optional parameter, so I have to check if 'callback' is undefined
      * in order to see weather or not _query is defined.
      */
-    if (callback == undefined) {
+    if (callback === undefined) {
       callback = _query;
       query = {
         OR: []
@@ -681,7 +691,7 @@ if (!window.console) {
    */
   ClearBlade.Collection.prototype.remove = function (_query, callback) {
     var query;
-    if (_query == undefined) {
+    if (_query === undefined) {
       throw new Error("no query defined!");
     } else {
       query = 'query=' + _parseQuery(_query.OR);
@@ -706,9 +716,6 @@ if (!window.console) {
    * @param {Object} options Object that has configuration values used when instantiating a Query object
    */
   ClearBlade.Query = function (options) {
-    /*  if (!collection || typeof collection !== 'string') {
-      throw new Error("options.type must be defined and of type 'String'");
-      } */
     if (!options) {
       options = {};
     }
@@ -718,7 +725,6 @@ if (!window.console) {
     this.query = {};
     this.OR = [];
     this.OR.push([this.query]);
-    //this.collection = collection;
     this.offset = options.offset || 0;
     this.limit = options.limit || 10;
   };
@@ -744,7 +750,7 @@ if (!window.console) {
    * //will only match if an item has an attribute 'name' that is equal to 'John'
    */
   ClearBlade.Query.prototype.equalTo = function (field, value) {
-    addToQuery(this, "EQ", makeKVPair(field, value));
+    addFilterToQuery(this, "EQ", field, value);
     return this;
   };
 
@@ -759,7 +765,7 @@ if (!window.console) {
    * //will only match if an item has an attribute 'age' that is greater than 21
    */
   ClearBlade.Query.prototype.greaterThan = function (field, value) {
-    addToQuery(this, "GT",  makeKVPair(field, value));
+    addFilterToQuery(this, "GT", field, value);
     return this;
   };
 
@@ -774,7 +780,7 @@ if (!window.console) {
    * //will only match if an item has an attribute 'age' that is greater than or equal to 21
    */
   ClearBlade.Query.prototype.greaterThanEqualTo = function (field, value) {
-    addToQuery(this, "GTE",  makeKVPair(field, value));
+    addFilterToQuery(this, "GTE", field, value);
     return this;
   };
 
@@ -789,7 +795,7 @@ if (!window.console) {
    * //will only match if an item has an attribute 'age' that is less than 50
    */
   ClearBlade.Query.prototype.lessThan = function (field, value) {
-    addToQuery(this, "LT",  makeKVPair(field, value));
+    addFilterToQuery(this, "LT", field, value);
     return this;
   };
 
@@ -804,8 +810,7 @@ if (!window.console) {
    * //will only match if an item has an attribute 'age' that is less than or equal to 50
    */
   ClearBlade.Query.prototype.lessThanEqualTo = function (field, value) {
-
-    addToQuery(this, "LTE",  makeKVPair(field, value));
+    addToQuery(this, "LTE", field, value);
     return this;
   };
 
@@ -820,8 +825,7 @@ if (!window.console) {
    * //will only match if an item has an attribute 'name' that is not equal to 'Jim'
    */
   ClearBlade.Query.prototype.notEqualTo = function (field, value) {
-
-    addToQuery(this, "NEQ",  makeKVPair(field, value));
+    addToQuery(this, "NEQ", field, value);
     return this;
   };
 
@@ -842,13 +846,20 @@ if (!window.console) {
     return this;
   };
 
+  /**
+   * TODO: ???
+   */
   ClearBlade.Query.prototype.setLimit = function (limit) {
     this.limit = limit;
     return this;
   };
 
-  ClearBlade.Query.prototype.setOffset = function (offset) {
-    this.offset = offset;
+  /**
+   * TODO: Write docs
+   */
+  ClearBlade.Query.prototype.setPage = function (pageSize, pageNum) {
+    addToQuery(this, "PAGESIZE", pageSize);
+    addToQuery(this, "PAGENUM", pageNum);
     return this;
   };
 
@@ -869,9 +880,8 @@ if (!window.console) {
         break;
       default:
         throw new Error("The method " + method + " does not exist");
-        break;
     }
-    if (this.collection == undefined || this.collection == "") {
+    if (this.collection === undefined || this.collection === "") {
       throw new Error("No collection was defined");
     } else {
       reqOptions.endpoint = "api/" + this.collection;
@@ -916,7 +926,7 @@ if (!window.console) {
       qs: 'query=' + _parseQuery(this.OR)
     };
 
-    if (this.collection == undefined || this.collection == "") {
+    if (this.collection === undefined || this.collection === "") {
       throw new Error("No collection was defined");
     } else {
       reqOptions.endpoint = "api/" + this.collection;
