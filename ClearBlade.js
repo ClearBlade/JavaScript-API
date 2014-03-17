@@ -309,7 +309,7 @@ if (!window.console) {
   };
 
   var addToQuery = function(queryObj, key, value) {
-    queryObj.query.key = value;
+    queryObj.query[key] = value;
   };
 
   var addFilterToQuery = function (queryObj, condition, key, value) {
@@ -843,14 +843,6 @@ if (!window.console) {
    */
   ClearBlade.Query.prototype.or = function (that) {
     this.OR.push([that.query]);
-    return this;
-  };
-
-  /**
-   * TODO: ???
-   */
-  ClearBlade.Query.prototype.setLimit = function (limit) {
-    this.limit = limit;
     return this;
   };
 

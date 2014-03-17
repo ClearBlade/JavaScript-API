@@ -337,6 +337,37 @@ describe("ClearBlade Query fetching with anonymous user", function() {
       expect(returnedData[0].name).toEqual('aaron');
     });
   });
+
+  it("should allow pagination options", function() {
+    var flag, returnedData, isAaronCreated;
+    runs(function () {
+      var query = new ClearBlade.Query();
+      query.equalTo('name', 'aaron');
+      col.remove(query,function() {
+        col.create({
+          name: "aaron",
+          age: 25
+        }, function(err, response) {
+          expect(err).toEqual(false);
+          isAaronCreated = true;
+        });
+      });
+    });
+
+    waitsFor(function() {
+      return isAaronCreated;
+    }, "aaron should be created", TEST_TIMEOUT);
+
+    var queryDone, queryDone2;
+    // Negative case -- should return nothing
+    runs(function() {
+      var query = new ClearBlade.Query();
+      query.equalTo('name', 'aaron');
+      query.setPage(10, 1);
+      expect(query.query.PAGESIZE).toEqual(10);
+      expect(query.query.PAGENUM).toEqual(1);
+    });
+  });
 });
 
 describe("ClearBlade collections fetching", function () {
