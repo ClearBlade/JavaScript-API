@@ -867,7 +867,6 @@ if (!window.console) {
     var reqOptions = {
       method: method
     };
-    console.log(this);
     switch(method) {
       case "GET":
         reqOptions.qs = 'query=' + _parseQuery(this.OR);
