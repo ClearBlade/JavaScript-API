@@ -302,6 +302,7 @@ if (!window.console) {
     }
     return true;
   };
+
   var makeKVPair = function (key, value) {
     var KVPair = {};
     KVPair[key] = value;
@@ -309,7 +310,6 @@ if (!window.console) {
   };
 
   var addToQuery = function (queryObj, condition, KVPair) {
-
     if (typeof queryObj.query[condition] === 'undefined') {
       queryObj.query[condition] = [];
     }

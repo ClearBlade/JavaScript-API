@@ -275,6 +275,68 @@ describe("ClearBlade Query fetching with anonymous user", function() {
       expect(returnedData[0].name).toEqual('aaron');
     });
   });
+
+  it("should allow multiple query parts", function() {
+    var flag, returnedData, isAaronCreated;
+    runs(function () {
+      var query = new ClearBlade.Query();
+      query.equalTo('name', 'aaron');
+      col.remove(query,function() {
+        col.create({
+          name: "aaron",
+          age: 25
+        }, function(err, response) {
+          expect(err).toEqual(false);
+          isAaronCreated = true;
+        });
+      });
+    });
+
+    waitsFor(function() {
+      return isAaronCreated;
+    }, "aaron should be created", TEST_TIMEOUT);
+
+    var queryDone, queryDone2;
+    // Negative case -- should return nothing
+    runs(function() {
+      var query = new ClearBlade.Query();
+      query.equalTo('name', 'aaron').equalTo('age', 30);
+      query.collection = col.ID;
+      query.execute('GET', function(error, data) {
+        expect(error).toBeFalsy();
+        queryDone = true;
+        returnedData = data;
+      });
+    });
+
+    waitsFor(function() {
+      return queryDone;
+    }, "Query should be finished", TEST_TIMEOUT);
+
+    runs(function() {
+      expect(returnedData).toEqual([]);
+    });
+
+    // Positive case -- should return an item
+    runs(function() {
+      var query = new ClearBlade.Query();
+      query.equalTo('name', 'aaron').equalTo('age', 25);
+      query.collection = col.ID;
+      query.execute('GET', function(error, data) {
+        expect(error).toBeFalsy();
+        queryDone2 = true;
+        returnedData = data;
+      });
+    });
+
+    waitsFor(function() {
+      return queryDone2;
+    }, "Query should be finished", TEST_TIMEOUT);
+
+    runs(function() {
+      expect(returnedData[0].name).toEqual('aaron');
+    });
+  });
 });
 
 describe("ClearBlade collections fetching", function () {
