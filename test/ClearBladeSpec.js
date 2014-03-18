@@ -397,12 +397,7 @@ describe("ClearBlade Query fetching with anonymous user", function() {
       var query2 = new ClearBlade.Query();
       query2.equalTo('name', 'charlie');
       col.remove(query2, function() {
-        col.create({
-          name: "charlie"
-        }, function(err, response) {
-          expect(err).toEqual(false);
-          isCharlieDeleted = true;
-        });
+        isCharlieDeleted = true;
       });
     });
 
