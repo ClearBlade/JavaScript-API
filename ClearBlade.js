@@ -322,6 +322,9 @@ if (!window.console) {
       queryObj.query.filters.push(newFilter);
     } else if (queryObj.query.filters.hasOwnProperty(condition)) {
       queryObj.query.filters[condition].push(newObj);
+    } else {
+      queryObj.query.filters[condition] = [];
+      queryObj.query.filters[condition].push(newObj);
     }
   };
 
