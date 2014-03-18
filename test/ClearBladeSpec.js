@@ -337,6 +337,79 @@ describe("ClearBlade Query fetching with anonymous user", function() {
       expect(returnedData[0].name).toEqual('aaron');
     });
   });
+
+  it("should allow or-based queries", function() {
+    var flag, returnedData, isAaronCreated, isCharlieCreated;
+    runs(function () {
+      var query = new ClearBlade.Query();
+      query.equalTo('name', 'aaron');
+      col.remove(query,function() {
+        col.create({
+          name: "aaron"
+        }, function(err, response) {
+          expect(err).toEqual(false);
+          isAaronCreated = true;
+        });
+      });
+      var query2 = new ClearBlade.Query();
+      query2.equalTo('name', 'charlie');
+      col.remove(query2, function() {
+        col.create({
+          name: "charlie"
+        }, function(err, response) {
+          expect(err).toEqual(false);
+          isCharlieCreated = true;
+        });
+      });
+    });
+
+    waitsFor(function() {
+      return isAaronCreated;
+    }, "aaron should be created", TEST_TIMEOUT);
+
+    waitsFor(function() {
+      return isCharlieCreated;
+    }, "charlie should be created", TEST_TIMEOUT);
+
+    var queryDone;
+    runs(function() {
+      var query = new ClearBlade.Query();
+      query.equalTo('name', 'aaron');
+      var orQuery = new ClearBlade.Query();
+      orQuery.equalTo('name', 'charlie');
+      query.or(orQuery);
+      query.collection = col.ID;
+      query.execute('GET', function(error, data) {
+        expect(error).toBeFalsy();
+        queryDone = true;
+        returnedData = data;
+      });
+    });
+
+    waitsFor(function() {
+      return queryDone;
+    }, "Query should be finished", TEST_TIMEOUT);
+
+    // Cleanup
+    var isCharlieDeleted;
+    runs(function() {
+      expect(returnedData.length).toEqual(2);
+      var query2 = new ClearBlade.Query();
+      query2.equalTo('name', 'charlie');
+      col.remove(query2, function() {
+        col.create({
+          name: "charlie"
+        }, function(err, response) {
+          expect(err).toEqual(false);
+          isCharlieDeleted = true;
+        });
+      });
+    });
+
+    waitsFor(function() {
+      return isCharlieDeleted;
+    }, "charlie should be deleted", TEST_TIMEOUT);
+  });
 });
 
 describe("ClearBlade collections fetching", function () {
