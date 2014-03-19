@@ -315,17 +315,12 @@ if (!window.console) {
   var addFilterToQuery = function (queryObj, condition, key, value) {
     var newObj = {};
     newObj[key] = value;
+    var newFilter = {};
+    newFilter[condition] = [newObj];
     if (typeof queryObj.query.filters === 'undefined') {
       queryObj.query.filters = [];
-      var newFilter = {};
-      newFilter[condition] = [newObj];
-      queryObj.query.filters.push(newFilter);
-    } else if (queryObj.query.filters.hasOwnProperty(condition)) {
-      queryObj.query.filters[condition].push(newObj);
-    } else {
-      queryObj.query.filters[condition] = [];
-      queryObj.query.filters[condition].push(newObj);
     }
+    queryObj.query.filters.push(newFilter);
   };
 
   var addSortToQuery = function(queryObj, direction, column) {
@@ -838,6 +833,7 @@ if (!window.console) {
     return this;
   };
 
+  // TODO
   /**
    * chains an existing query object to the Query object in an or
    * @method ClearBlade.Query.prototype.or
@@ -856,9 +852,15 @@ if (!window.console) {
   };
 
   /**
-   * TODO: Write docs
+   * Set the pagination options for a Query.
+   * @method ClearBlade.Query.prototype.setPage
+   * @param {int} pageSize Number of items per response page. The default is
+   * 100.
+   * @param {int} pageNum  Page number, taking into account the page size. The
+   * default is 1.
    */
   ClearBlade.Query.prototype.setPage = function (pageSize, pageNum) {
+    pageSize = pageSize - 1; // TODO: Get rid of this if the backend changes
     addToQuery(this, "PAGESIZE", pageSize);
     addToQuery(this, "PAGENUM", pageNum);
     return this;
@@ -906,17 +908,6 @@ if (!window.console) {
    *         console.log(data);
    *     }
    * };
-   *
-   * @example <caption>Fetching data from a collection</caption>
-   * var returnedData = [];
-   * var callback = function (err, data) {
-   *     if (err) {
-   *         throw new Error (data);
-   *     } else {
-   *         returnedData = data;
-   *     }
-   * };
-   *
    * query.fetch(callback);
    * //this will give returnedData the value of what ever was returned from the server.
    */
@@ -933,16 +924,7 @@ if (!window.console) {
     }
     var colID = this.collection;
     var callCallback = function (err, data) {
-      if (err) {
-        callback(err, data);
-      } else {
-        var itemArray = [];
-        for (var i in data) {
-          var newItem = new ClearBlade.Item(data[i], colID);
-          itemArray.push(newItem);
-        }
-        callback(err, itemArray);
-      }
+      callback(err, data);
     };
 
     if (typeof callback === 'function') {

@@ -214,7 +214,7 @@ describe("ClearBlade collection fetching with users", function () {
   });
 });
 
-describe("ClearBlade Query fetching with anonymous user", function() {
+describe("ClearBlade Query usage with anonymous user", function() {
   var col;
   beforeEach(function () {
     var isClearBladeInit = false;
