@@ -260,7 +260,7 @@ describe("ClearBlade Query fetching with anonymous user", function() {
       var query = new ClearBlade.Query();
       query.equalTo('name', 'aaron');
       query.collection = col.ID;
-      query.execute('GET', function(error, data) {
+      query.fetch(function(error, data) {
         expect(error).toBeFalsy();
         queryDone = true;
         returnedData = data;
@@ -272,7 +272,7 @@ describe("ClearBlade Query fetching with anonymous user", function() {
     }, "Query should be finished", TEST_TIMEOUT);
 
     runs(function() {
-      expect(returnedData[0].name).toEqual('aaron');
+      expect(returnedData[0].data.name).toEqual('aaron');
     });
   });
 
@@ -302,7 +302,7 @@ describe("ClearBlade Query fetching with anonymous user", function() {
       var query = new ClearBlade.Query();
       query.equalTo('name', 'aaron').equalTo('age', 30);
       query.collection = col.ID;
-      query.execute('GET', function(error, data) {
+      query.fetch(function(error, data) {
         expect(error).toBeFalsy();
         queryDone = true;
         returnedData = data;
@@ -322,7 +322,7 @@ describe("ClearBlade Query fetching with anonymous user", function() {
       var query = new ClearBlade.Query();
       query.equalTo('name', 'aaron').equalTo('age', 25);
       query.collection = col.ID;
-      query.execute('GET', function(error, data) {
+      query.fetch(function(error, data) {
         expect(error).toBeFalsy();
         queryDone2 = true;
         returnedData = data;
@@ -334,7 +334,7 @@ describe("ClearBlade Query fetching with anonymous user", function() {
     }, "Query should be finished", TEST_TIMEOUT);
 
     runs(function() {
-      expect(returnedData[0].name).toEqual('aaron');
+      expect(returnedData[0].data.name).toEqual('aaron');
     });
   });
 
@@ -379,7 +379,7 @@ describe("ClearBlade Query fetching with anonymous user", function() {
       orQuery.equalTo('name', 'charlie');
       query.or(orQuery);
       query.collection = col.ID;
-      query.execute('GET', function(error, data) {
+      query.fetch(function(error, data) {
         expect(error).toBeFalsy();
         queryDone = true;
         returnedData = data;
@@ -390,10 +390,10 @@ describe("ClearBlade Query fetching with anonymous user", function() {
       return queryDone;
     }, "Query should be finished", TEST_TIMEOUT);
 
-    // Cleanup
     var isCharlieDeleted;
     runs(function() {
       expect(returnedData.length).toEqual(2);
+      // Cleanup
       var query2 = new ClearBlade.Query();
       query2.equalTo('name', 'charlie');
       col.remove(query2, function() {
