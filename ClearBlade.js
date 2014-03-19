@@ -573,16 +573,7 @@ if (!window.console) {
     };
     var colID = this.ID;
     var callCallback = function (err, data) {
-      if (err) {
-        callback(err, data);
-      } else {
-        var itemArray = [];
-        for (var i in data) {
-          var newItem = new ClearBlade.Item(data[i], colID);
-          itemArray.push(newItem);
-        }
-        callback(err, itemArray);
-      }
+      callback(err, data);
     };
     if (typeof callback === 'function') {
       _request(reqOptions, callCallback);
@@ -824,7 +815,6 @@ if (!window.console) {
     return this;
   };
 
-  // TODO
   /**
    * chains an existing query object to the Query object in an or
    * @method ClearBlade.Query.prototype.or
@@ -838,7 +828,9 @@ if (!window.console) {
    * //will match if an item has an attribute 'name' that is equal to 'John' or 'Jim'
    */
   ClearBlade.Query.prototype.or = function (that) {
-    this.OR.push([that.query]);
+    for (var i = 0; i < that.query.filters.length; i++) {
+      this.query.filters.push(that.query.filters[i]);
+    }
     return this;
   };
 
@@ -863,13 +855,13 @@ if (!window.console) {
     };
     switch(method) {
       case "GET":
-        reqOptions.qs = 'query=' + _parseQuery(this.OR);
+        reqOptions.qs = 'query=' + _parseQuery(this.query);
         break;
       case "PUT":
-        reqOptions.body = this.OR;
+        reqOptions.body = this.query;
         break;
       case "DELETE":
-        reqOptions.qs = 'query=' + _parseQuery(this.OR);
+        reqOptions.qs = 'query=' + _parseQuery(this.query);
         break;
       default:
         throw new Error("The method " + method + " does not exist");
@@ -905,9 +897,10 @@ if (!window.console) {
   ClearBlade.Query.prototype.fetch = function (callback) {
     var reqOptions = {
       method: 'GET',
-      qs: 'query=' + _parseQuery(this.OR)
+      qs: 'query=' + _parseQuery(this.query)
     };
 
+    console.log(reqOptions.qs);
     if (this.collection === undefined || this.collection === "") {
       throw new Error("No collection was defined");
     } else {
@@ -952,7 +945,7 @@ if (!window.console) {
   ClearBlade.Query.prototype.update = function (changes, callback) {
     var reqOptions = {
       method: 'PUT',
-      body: {query: this.OR, $set: changes}
+      body: {query: this.query, $set: changes}
     };
 
     var colID = this.collection;
@@ -1003,7 +996,7 @@ if (!window.console) {
   ClearBlade.Query.prototype.remove = function (callback) {
     var reqOptions = {
       method: 'DELETE',
-      qs: 'query=' + _parseQuery(this.OR)
+      qs: 'query=' + _parseQuery(this.query)
     };
 
     var colID = this.collection;
