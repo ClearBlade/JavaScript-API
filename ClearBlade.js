@@ -317,10 +317,10 @@ if (!window.console) {
     newObj[key] = value;
     var newFilter = {};
     newFilter[condition] = [newObj];
-    if (typeof queryObj.query.filters === 'undefined') {
-      queryObj.query.filters = [];
+    if (typeof queryObj.query.FILTERS === 'undefined') {
+      queryObj.query.FILTERS = [];
     }
-    queryObj.query.filters.push(newFilter);
+    queryObj.query.FILTERS.push(newFilter);
   };
 
   var addSortToQuery = function(queryObj, direction, column) {
@@ -559,11 +559,11 @@ if (!window.console) {
     if (callback === undefined) {
       callback = _query;
       query = {
-        OR: []
+        FILTERS: []
       };
-      query = 'query='+ _parseQuery(query.OR);
+      query = 'query='+ _parseQuery(query);
     } else {
-      query = 'query='+ _parseQuery(_query.OR);
+      query = 'query='+ _parseQuery(_query.query);
     }
 
     var reqOptions = {
@@ -828,8 +828,8 @@ if (!window.console) {
    * //will match if an item has an attribute 'name' that is equal to 'John' or 'Jim'
    */
   ClearBlade.Query.prototype.or = function (that) {
-    for (var i = 0; i < that.query.filters.length; i++) {
-      this.query.filters.push(that.query.filters[i]);
+    for (var i = 0; i < that.query.FILTERS.length; i++) {
+      this.query.FILTERS.push(that.query.FILTERS[i]);
     }
     return this;
   };
@@ -900,7 +900,6 @@ if (!window.console) {
       qs: 'query=' + _parseQuery(this.query)
     };
 
-    console.log(reqOptions.qs);
     if (this.collection === undefined || this.collection === "") {
       throw new Error("No collection was defined");
     } else {
