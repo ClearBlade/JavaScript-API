@@ -532,17 +532,8 @@ if (!window.console) {
   /**
    * Reqests an item or a set of items from the collection.
    * @method ClearBlade.Collection.prototype.fetch
-   * @param {Query} _query Used to request a specific item or subset of items from the collection on the server
+   * @param {Query} _query Used to request a specific item or subset of items from the collection on the server. Optional.
    * @param {function} callback Supplies processing for what to do with the data that is returned from the collection
-   * @example <caption>The typical callback</caption>
-   * var callback = function (err, data) {
-   *     if (err) {
-   *         //error handling
-   *     } else {
-   *         console.log(data);
-   *     }
-   * };
-   *
    * @example <caption>Fetching data from a collection</caption>
    * var returnedData = [];
    * var callback = function (err, data) {
