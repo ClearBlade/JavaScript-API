@@ -201,7 +201,7 @@ if (!window.console) {
     _validateEmailPassword(email, password);
     ClearBlade.request({
       method: 'POST',
-      endpoint: 'api/v1/user/reg',
+      endpoint: 'api/v/1/user/reg',
       useUser: false,
       body: { "email": email, "password": password }
     }, function (err, response) {
@@ -216,7 +216,7 @@ if (!window.console) {
   ClearBlade.isCurrentUserAuthenticated = function(callback) {
     ClearBlade.request({
       method: 'POST',
-      endpoint: 'api/v1/user/checkauth'
+      endpoint: 'api/v/1/user/checkauth'
     }, function (err, response) {
       if (err) {
         execute(true, response, callback);
@@ -229,7 +229,7 @@ if (!window.console) {
   ClearBlade.logoutUser = function(callback) {
     ClearBlade.request({
       method: 'POST',
-      endpoint: 'api/v1/user/logout'
+      endpoint: 'api/v/1/user/logout'
     }, function(err, response) {
       if (err) {
         execute(true, response, callback);
@@ -244,7 +244,7 @@ if (!window.console) {
     ClearBlade.request({
       method: 'POST',
       useUser: false,
-      endpoint: 'api/v1/user/anon'
+      endpoint: 'api/v/1/user/anon'
     }, function(err, response) {
       if (err) {
         execute(true, response, callback);
@@ -260,7 +260,7 @@ if (!window.console) {
     ClearBlade.request({
       method: 'POST',
       useUser: false,
-      endpoint: 'api/v1/user/auth',
+      endpoint: 'api/v/1/user/auth',
       body: { "email": email, "password": password }
     }, function (err, response) {
       if (err) {
@@ -568,7 +568,7 @@ if (!window.console) {
 
     var reqOptions = {
       method: 'GET',
-      endpoint: 'api/v1/data/' + this.ID,
+      endpoint: 'api/v/1/data/' + this.ID,
       qs: query
     };
     var colID = this.ID;
@@ -608,7 +608,7 @@ if (!window.console) {
   ClearBlade.Collection.prototype.create = function (newItem, callback) {
     var reqOptions = {
       method: 'POST',
-      endpoint: 'api/v1/data/' + this.ID,
+      endpoint: 'api/v/1/data/' + this.ID,
       body: newItem
     };
     if (typeof callback === 'function') {
@@ -645,7 +645,7 @@ if (!window.console) {
   ClearBlade.Collection.prototype.update = function (_query, changes, callback) {
     var reqOptions = {
       method: 'PUT',
-      endpoint: 'api/v1/data/' + this.ID,
+      endpoint: 'api/v/1/data/' + this.ID,
       body: {query: _query.OR, $set: changes}
     };
     if (typeof callback === 'function') {
@@ -685,7 +685,7 @@ if (!window.console) {
 
     var reqOptions = {
       method: 'DELETE',
-      endpoint: 'api/v1/data/' + this.ID,
+      endpoint: 'api/v/1/data/' + this.ID,
       qs: query
     };
     if (typeof callback === 'function') {
@@ -869,7 +869,7 @@ if (!window.console) {
     if (this.collection === undefined || this.collection === "") {
       throw new Error("No collection was defined");
     } else {
-      reqOptions.endpoint = "api/v1/data/" + this.collection;
+      reqOptions.endpoint = "api/v/1/data/" + this.collection;
     }
     if (typeof callback === 'function') {
       _request(reqOptions, callback);
@@ -903,7 +903,7 @@ if (!window.console) {
     if (this.collection === undefined || this.collection === "") {
       throw new Error("No collection was defined");
     } else {
-      reqOptions.endpoint = "api/v1/data/" + this.collection;
+      reqOptions.endpoint = "api/v/1/data/" + this.collection;
     }
     var colID = this.collection;
     var callCallback = function (err, data) {
@@ -964,7 +964,7 @@ if (!window.console) {
     if (this.collection === undefined || this.collection === "") {
       throw new Error("No collection was defined");
     } else {
-      reqOptions.endpoint = "api/v1/data/" + this.collection;
+      reqOptions.endpoint = "api/v/1/data/" + this.collection;
     }
     if (typeof callback === 'function') {
       _request(reqOptions, callCallback);
@@ -1015,7 +1015,7 @@ if (!window.console) {
     if (this.collection == undefined || this.collection == "") {
       throw new Error("No collection was defined");
     } else {
-      reqOptions.endpoint = "api/v1/data/" + this.collection;
+      reqOptions.endpoint = "api/v/1/data/" + this.collection;
     }
     if (typeof callback === 'function') {
       _request(reqOptions, callCallback);
