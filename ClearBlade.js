@@ -319,8 +319,21 @@ if (!window.console) {
     newFilter[condition] = [newObj];
     if (typeof queryObj.query.FILTERS === 'undefined') {
       queryObj.query.FILTERS = [];
+      queryObj.query.FILTERS.push([newFilter]);
+      return;
+    } else {
+      for (var i = 0; i < queryObj.query.FILTERS[0].length; i++) {
+        for (var k in queryObj.query.FILTERS[0][i]) {
+          if (queryObj.query.FILTERS[0][i].hasOwnProperty(k)) {
+            if (k === condition) {
+              queryObj.query.FILTERS[0][i][k].push(newObj);
+              return;
+            }
+          }
+        }
+      }
+      queryObj.query.FILTERS[0].push(newFilter);
     }
-    queryObj.query.FILTERS.push(newFilter);
   };
 
   var addSortToQuery = function(queryObj, direction, column) {
@@ -357,7 +370,6 @@ if (!window.console) {
     if (params) {
       url += "?" + params;
     }
-
     //begin XMLHttpRequest
     var httpRequest;
 
@@ -386,8 +398,8 @@ if (!window.console) {
     if (authToken) {
       httpRequest.setRequestHeader("CLEARBLADE-USERTOKEN", authToken);
     } else {
-      httpRequest.setRequestHeader("CLEARBLADE-APPKEY", ClearBlade.appKey);
-      httpRequest.setRequestHeader("CLEARBLADE-APPSECRET", ClearBlade.appSecret);
+      httpRequest.setRequestHeader("ClearBlade-SystemKey", ClearBlade.appKey);
+      httpRequest.setRequestHeader("ClearBlade-SystemSecret", ClearBlade.appSecret);
     }
 
     if (!isObjectEmpty(body) || params) {
@@ -512,6 +524,10 @@ if (!window.console) {
     }
 
     _request(options, callback);
+  };
+
+  var _parseOperationQuery = function(_query) {
+    return encodeURIComponent(JSON.stringify(_query.query.FILTERS));
   };
 
   var _parseQuery = function(_query) {
@@ -646,7 +662,7 @@ if (!window.console) {
     var reqOptions = {
       method: 'PUT',
       endpoint: 'api/v/1/data/' + this.ID,
-      body: {query: _query.OR, $set: changes}
+      body: {query: _query.query.FILTERS, $set: changes}
     };
     if (typeof callback === 'function') {
       _request(reqOptions, callback);
@@ -680,7 +696,7 @@ if (!window.console) {
     if (_query === undefined) {
       throw new Error("no query defined!");
     } else {
-      query = 'query=' + _parseQuery(_query.OR);
+      query = 'query=' + _parseOperationQuery(_query);
     }
 
     var reqOptions = {
@@ -796,7 +812,7 @@ if (!window.console) {
    * //will only match if an item has an attribute 'age' that is less than or equal to 50
    */
   ClearBlade.Query.prototype.lessThanEqualTo = function (field, value) {
-    addToQuery(this, "LTE", field, value);
+    addFilterToQuery(this, "LTE", field, value);
     return this;
   };
 
@@ -811,7 +827,7 @@ if (!window.console) {
    * //will only match if an item has an attribute 'name' that is not equal to 'Jim'
    */
   ClearBlade.Query.prototype.notEqualTo = function (field, value) {
-    addToQuery(this, "NEQ", field, value);
+    addFilterToQuery(this, "NEQ", field, value);
     return this;
   };
 
@@ -843,7 +859,6 @@ if (!window.console) {
    * default is 1.
    */
   ClearBlade.Query.prototype.setPage = function (pageSize, pageNum) {
-    pageSize = pageSize - 1; // TODO: Get rid of this if the backend changes
     addToQuery(this, "PAGESIZE", pageSize);
     addToQuery(this, "PAGENUM", pageNum);
     return this;
@@ -858,10 +873,10 @@ if (!window.console) {
         reqOptions.qs = 'query=' + _parseQuery(this.query);
         break;
       case "PUT":
-        reqOptions.body = this.query;
+        reqOptions.body = this.query; // TOOD: check this shit
         break;
       case "DELETE":
-        reqOptions.qs = 'query=' + _parseQuery(this.query);
+        reqOptions.qs = 'query=' + _parseOperationQuery(this.query);
         break;
       default:
         throw new Error("The method " + method + " does not exist");
@@ -944,7 +959,7 @@ if (!window.console) {
   ClearBlade.Query.prototype.update = function (changes, callback) {
     var reqOptions = {
       method: 'PUT',
-      body: {query: this.query, $set: changes}
+      body: {query: this.query.FILTERS, $set: changes}
     };
 
     var colID = this.collection;
@@ -995,7 +1010,7 @@ if (!window.console) {
   ClearBlade.Query.prototype.remove = function (callback) {
     var reqOptions = {
       method: 'DELETE',
-      qs: 'query=' + _parseQuery(this.query)
+      qs: 'query=' + _parseOperationQuery(this.query)
     };
 
     var colID = this.collection;
