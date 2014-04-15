@@ -25,6 +25,23 @@ var RTP_INFO = {
   generalCollection: "9cd296b40acac5e2f797a485ec8e01",
   chromeCollection: "bcd196b40ade8ddb9491b494fd9f01"
 };
+var STAGING_INFO = {
+  serverAddress: "https://staging.clearblade.com",
+  messagingURI: "staging.clearblade.com",
+  messagingPort: 8904,
+  noAuthAppKey: "8889ecb40aeeedb08cb5c79ede6a",
+  noAuthAppSecret: "8889ECB40A98A1A38CEBECC8EA8401",
+  safariNoAuthCollection: "9c8aecb40a82fed18a8cdcd8e935",
+  chromeNoAuthCollection: "fc89ecb40aaaded2dd90aed2c2e601",
+  generalNoAuthCollection: "be89ecb40a9acd8fa1cdbd86f4ee01",
+  firefoxNoAuthCollection: "8c8aecb40aa6f49cd7d0f9a6e4b301",
+  appKey: "ea88ecb40af4f29cbb8183b0cb12",
+  appSecret: "EA88ECB40AA0CB9BE99F92DBB2E001",
+  safariCollection: "ae8decb40ab4a9c7e1a6a8ebd5a901",
+  firefoxCollection: "948eecb40a82b7e2eaaad7fa9e36",
+  generalCollection: "888decb40a84cff684d9d2e7df9201",
+  chromeCollection: "e68decb40af0bbccc3b5e691baa301"
+};
 var PLATFORM_INFO = {
   serverAddress: "https://platform.clearblade.com",
   messagingURI: "platform.clearblade.com",
@@ -41,7 +58,7 @@ var PLATFORM_INFO = {
   generalNoAuthCollection: "ba90bbb10aba93f7bde8cbd2cfe201",
   chromeNoAuthCollection: "e08fbbb10ae0efadd4e2f68cf39701"
 };
-var TargetPlatform = PLATFORM_INFO;
+var TargetPlatform = STAGING_INFO;
 
 describe("ClearBlade API", function () {
   it("should return the correct API version", function () {
