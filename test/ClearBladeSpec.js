@@ -58,7 +58,7 @@ var PLATFORM_INFO = {
   generalNoAuthCollection: "ba90bbb10aba93f7bde8cbd2cfe201",
   chromeNoAuthCollection: "e08fbbb10ae0efadd4e2f68cf39701"
 };
-var TargetPlatform = STAGING_INFO;
+var TargetPlatform = PLATFORM_INFO;
 
 describe("ClearBlade API", function () {
   it("should return the correct API version", function () {
