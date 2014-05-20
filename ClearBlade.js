@@ -527,7 +527,7 @@ if (!window.console) {
   };
 
   var _parseOperationQuery = function(_query) {
-    return encodeURIComponent(JSON.stringify(_query.query.FILTERS));
+    return encodeURIComponent(JSON.stringify(_query.FILTERS));
   };
 
   var _parseQuery = function(_query) {
