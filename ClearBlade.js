@@ -21,7 +21,7 @@ if (!window.console) {
    * This is the base module for the ClearBlade Platform API
    * @namespace ClearBlade
    * @example <caption>Initialize ClearBladeAPI</caption>
-   * initOptions = {appKey: 'asdfknafikjasd3853n34kj2vc', appSecret: 'SHHG245F6GH7SDFG823HGSDFG9'};
+   * initOptions = {systemKey: 'asdfknafikjasd3853n34kj2vc', systemSecret: 'SHHG245F6GH7SDFG823HGSDFG9'};
    * ClearBlade.init(initOptions);
    *
    */
@@ -54,11 +54,11 @@ if (!window.console) {
     if (!options || typeof options !== 'object')
       throw new Error('Options must be an object or it is undefined');
 
-    if (!options.appKey || typeof options.appKey !== 'string')
-      throw new Error('appKey must be defined/a string');
+    if (!options.systemKey || typeof options.systemKey !== 'string')
+      throw new Error('systemKey must be defined/a string');
 
-    if (!options.appSecret || typeof options.appSecret !== 'string')
-      throw new Error('appSecret must be defined/a string');
+    if (!options.systemSecret || typeof options.systemSecret !== 'string')
+      throw new Error('systemSecret must be defined/a string');
 
     //check for optional params.
     if (options.logging && typeof options.logging !== 'boolean')
@@ -102,16 +102,16 @@ if (!window.console) {
     // store keys
     /**
      * This is the app key that will identify your app in order to connect to the Platform
-     * @property appKey
+     * @property systemKey
      * @type String
      */
-    ClearBlade.appKey = options.appKey;
+    ClearBlade.systemKey = options.systemKey;
     /**
-     * This is the app secret that will be used in combination with the appKey to authenticate your app
-     * @property appSecret
+     * This is the app secret that will be used in combination with the systemKey to authenticate your app
+     * @property systemSecret
      * @type String
      */
-    ClearBlade.appSecret = options.appSecret;
+    ClearBlade.systemSecret = options.systemSecret;
     /**
      * This is the master secret that is used during development to test many apps at a time
      * This is not currently not in use
@@ -398,8 +398,8 @@ if (!window.console) {
     if (authToken) {
       httpRequest.setRequestHeader("CLEARBLADE-USERTOKEN", authToken);
     } else {
-      httpRequest.setRequestHeader("ClearBlade-SystemKey", ClearBlade.appKey);
-      httpRequest.setRequestHeader("ClearBlade-SystemSecret", ClearBlade.appSecret);
+      httpRequest.setRequestHeader("ClearBlade-SystemKey", ClearBlade.systemKey);
+      httpRequest.setRequestHeader("ClearBlade-SystemSecret", ClearBlade.systemSecret);
     }
 
     if (!isObjectEmpty(body) || params) {
@@ -415,7 +415,7 @@ if (!window.console) {
       //set Authorization header
       if (typeof ClearBlade.masterSecret === 'String') {
         // if masterSecret exists as a string use it for Authorization
-        httpRequest.setRequestHeader("Authorization", "Basic " + window.btoa(ClearBlade.appKey + ':' + ClearBlade.masterSecret));
+        httpRequest.setRequestHeader("Authorization", "Basic " + window.btoa(ClearBlade.systemKey + ':' + ClearBlade.masterSecret));
       } else if (currentUser && currentUser.getToken()) {
         // if there is a current user then use the current Access token
         httpRequest.setRequestHeader("Authorization", "Bearer " + self.getToken());
@@ -1106,7 +1106,7 @@ if (!window.console) {
   ClearBlade.Code.execute = function(name, params, callback){
     var reqOptions = {
       method: 'POST',
-      endpoint: 'api/v/1/code/' + ClearBlade.appKey + '/' + name,
+      endpoint: 'api/v/1/code/' + ClearBlade.systemKey + '/' + name,
       body: params
     };
     if (typeof callback === 'function') {
@@ -1176,7 +1176,7 @@ if (!window.console) {
     //roll through the config
     var conf = {};
     conf.userName = ClearBlade.user.authToken;
-    conf.password = ClearBlade.appSecret;
+    conf.password = ClearBlade.systemSecret;
     conf.cleanSession = options.cleanSession || true;
     conf.useSSL = options.useSSL || false; //up for debate. ole' perf vs sec argument
     conf.hosts = options.hosts || [ClearBlade.messagingURI];

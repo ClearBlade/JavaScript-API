@@ -12,14 +12,14 @@ var RTP_INFO = {
   serverAddress: "https://rtp.clearblade.com",
   messagingURI: "rtp.clearblade.com",
   messagingPort: 8904,
-  noAuthAppKey: "8cc896b40a82d0d2b4e18bbbed0f",
-  noAuthAppSecret: "8CC896B40A90DEA898C197B5E357",
+  noAuthsystemKey: "8cc896b40a82d0d2b4e18bbbed0f",
+  noAuthsystemSecret: "8CC896B40A90DEA898C197B5E357",
   safariNoAuthCollection: "ccc896b40ae083ea8af480d4868401",
   chromeNoAuthCollection: "e8c896b40a90bfcd9bc78df5ca5d",
   generalNoAuthCollection: "82c996b40a90fab0dbf7ff83e312",
   firefoxNoAuthCollection: "a8c996b40aacdd919dadce92c430",
-  appKey: "d6d096b40ab4f3c7ddb4899b8a30",
-  appSecret: "D6D096B40ADAA885E0BF8F8D93CB01",
+  systemKey: "d6d096b40ab4f3c7ddb4899b8a30",
+  systemSecret: "D6D096B40ADAA885E0BF8F8D93CB01",
   safariCollection: "84d196b40aa883bec8cfdaf697df01",
   firefoxCollection: "9ed196b40a8083efa485e58aa9b901",
   generalCollection: "9cd296b40acac5e2f797a485ec8e01",
@@ -29,14 +29,14 @@ var STAGING_INFO = {
   serverAddress: "https://staging.clearblade.com",
   messagingURI: "staging.clearblade.com",
   messagingPort: 8904,
-  noAuthAppKey: "e6a1c1ba0a8690f7a6aaacde9fff01",
-  noAuthAppSecret: "E6A1C1BA0A98E3D384D7D8F6C6F901",
+  noAuthsystemKey: "e6a1c1ba0a8690f7a6aaacde9fff01",
+  noAuthsystemSecret: "E6A1C1BA0A98E3D384D7D8F6C6F901",
   safariNoAuthCollection: "bea3c1ba0ae8cc97f2d0e897e6cb01",
   chromeNoAuthCollection: "aea2c1ba0a8495d2bdb7d0e3bca701",
   generalNoAuthCollection: "90a3c1ba0ab2e3dcfccab5d8bbb101",
   firefoxNoAuthCollection: "dca2c1ba0aa0ecd89bbe80ba8b8501",
-  appKey: "8c9ac1ba0adeb7f68fced7fb9049",
-  appSecret: "8C9AC1BA0AE2D697A0DCA78DC179",
+  systemKey: "8c9ac1ba0adeb7f68fced7fb9049",
+  systemSecret: "8C9AC1BA0AE2D697A0DCA78DC179",
   safariCollection: "d49dc1ba0a8ae8dfb5b5f6a996c301",
   firefoxCollection: "fe9bc1ba0af08893def9f9fceeef01",
   generalCollection: "b49cc1ba0adac69fc9f4d8a0fe52",
@@ -45,10 +45,10 @@ var STAGING_INFO = {
 var PLATFORM_INFO = {
   serverAddress: "https://platform.clearblade.com",
   messagingURI: "platform.clearblade.com",
-  appKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
-  appSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801',
-  noAuthAppKey: "b48abbb10af2f9bfffd9f793dc9a01",
-  noAuthAppSecret: "B48ABBB10AE8EB9AD7D1B3B7FC62",
+  systemKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
+  systemSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801',
+  noAuthsystemKey: "b48abbb10af2f9bfffd9f793dc9a01",
+  noAuthsystemSecret: "B48ABBB10AE8EB9AD7D1B3B7FC62",
   safariCollection: "82f7f8aa0ab8929ab1c3cad7e534",
   chromeCollection:"84f6f8aa0abcf9fbb6ae97a6c9da01",
   firefoxCollection:"d8f6f8aa0ababdbbc5b8fdf49356",
@@ -71,8 +71,8 @@ describe("ClearBlade initialization should", function () {
   beforeEach(function () {
     var isClearBladeInit = false;
     var initOptions = {
-      appKey: TargetPlatform.noAuthAppKey,
-      appSecret: TargetPlatform.noAuthAppSecret,
+      systemKey: TargetPlatform.noAuthsystemKey,
+      systemSecret: TargetPlatform.noAuthsystemSecret,
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function(err, user) {
@@ -86,12 +86,12 @@ describe("ClearBlade initialization should", function () {
     }, "ClearBlade should be initialized", TEST_TIMEOUT);
   });
 
-  it("have the appKey stored", function () {
-    expect(ClearBlade.appKey).toEqual(TargetPlatform.noAuthAppKey);
+  it("have the systemKey stored", function () {
+    expect(ClearBlade.systemKey).toEqual(TargetPlatform.noAuthsystemKey);
   });
 
-  it("have the appSecret stored", function () {
-    expect(ClearBlade.appSecret).toEqual(TargetPlatform.noAuthAppSecret);
+  it("have the systemSecret stored", function () {
+    expect(ClearBlade.systemSecret).toEqual(TargetPlatform.noAuthsystemSecret);
   });
 
   // it("have defaulted the URI to the Platform", function () {
@@ -115,8 +115,8 @@ describe("ClearBlade users should", function () {
   var initOptions;
   beforeEach(function () {
     initOptions = {
-      appKey: TargetPlatform.appKey,
-      appSecret: TargetPlatform.appSecret,
+      systemKey: TargetPlatform.systemKey,
+      systemSecret: TargetPlatform.systemSecret,
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
     };
@@ -155,8 +155,8 @@ describe("ClearBlade anonymous users", function () {
   var initOptions;
   beforeEach(function () {
     initOptions = {
-      appKey: TargetPlatform.noAuthAppKey,
-      appSecret: TargetPlatform.noAuthAppSecret,
+      systemKey: TargetPlatform.noAuthsystemKey,
+      systemSecret: TargetPlatform.noAuthsystemSecret,
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
     };
@@ -180,8 +180,8 @@ describe("ClearBlade collection fetching with users", function () {
     var flag, returnedData, isAaronCreated;
     var isClearBladeInit = false;
     var initOptions = {
-      appKey: TargetPlatform.appKey,
-      appSecret: TargetPlatform.appSecret,
+      systemKey: TargetPlatform.systemKey,
+      systemSecret: TargetPlatform.systemSecret,
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       email: "test_" + Math.floor(Math.random() * 10000) + "@test.com",
@@ -242,8 +242,8 @@ describe("ClearBlade Query usage with anonymous user", function() {
   beforeEach(function () {
     var isClearBladeInit = false;
     var initOptions = {
-      appKey: TargetPlatform.noAuthAppKey,
-      appSecret: TargetPlatform.noAuthAppSecret,
+      systemKey: TargetPlatform.noAuthsystemKey,
+      systemSecret: TargetPlatform.noAuthsystemSecret,
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function(err, user) {
@@ -461,8 +461,8 @@ describe("ClearBlade collections fetching", function () {
   beforeEach(function () {
     var isClearBladeInit = false;
     var initOptions = {
-      appKey: TargetPlatform.noAuthAppKey,
-      appSecret: TargetPlatform.noAuthAppSecret,
+      systemKey: TargetPlatform.noAuthsystemKey,
+      systemSecret: TargetPlatform.noAuthsystemSecret,
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function(err, user) {
@@ -535,8 +535,8 @@ describe("ClearBlade collections CRUD should", function () {
   beforeEach(function () {
     var finishedRemoval = false;
     var initOptions = {
-      appKey: TargetPlatform.noAuthAppKey,
-      appSecret: TargetPlatform.noAuthAppSecret,
+      systemKey: TargetPlatform.noAuthsystemKey,
+      systemSecret: TargetPlatform.noAuthsystemSecret,
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function (err, user) {
@@ -684,8 +684,8 @@ describe("Query objects should", function () {
   beforeEach(function () {
     var isJohnInserted = false;
     var initOptions = {
-      appKey: TargetPlatform.noAuthAppKey,
-      appSecret: TargetPlatform.noAuthAppSecret,
+      systemKey: TargetPlatform.noAuthsystemKey,
+      systemSecret: TargetPlatform.noAuthsystemSecret,
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function (err, user) {
@@ -811,8 +811,8 @@ describe("The ClearBlade Messaging module", function() {
   beforeEach(function () {
     var isClearBladeInit = false;
     var initOptions = {
-      appKey: TargetPlatform.noAuthAppKey,
-      appSecret: TargetPlatform.noAuthAppSecret,
+      systemKey: TargetPlatform.noAuthsystemKey,
+      systemSecret: TargetPlatform.noAuthsystemSecret,
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function(err, user) {
