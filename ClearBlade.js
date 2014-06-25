@@ -435,7 +435,7 @@ if (!window.console) {
         if (httpRequest.status >= 200 &&  httpRequest.status < 300) {
           var parsedResponse;
           var response;
-          var flag = false;
+          var flag = true;
           // try to parse response, it should be JSON
           if (httpRequest.responseText == '[{}]' || httpRequest.responseText == '[]') {
             error = true;
@@ -696,7 +696,7 @@ if (!window.console) {
     if (_query === undefined) {
       throw new Error("no query defined!");
     } else {
-      query = 'query=' + _parseOperationQuery(_query);
+      query = 'query=' + _parseOperationQuery(_query.query);
     }
 
     var reqOptions = {
@@ -1100,6 +1100,50 @@ if (!window.console) {
     delete this;
   };
 
+
+  //ClearBlade.Code.exe = function(){};
+  ClearBlade.Code = function(){};
+  ClearBlade.Code.execute = function(name, params, callback){
+    var reqOptions = {
+      method: 'POST',
+      endpoint: 'api/v/1/code/' + ClearBlade.appKey + '/' + name,
+      body: params
+    };
+    if (typeof callback === 'function') {
+      _request(reqOptions, callback);
+    } else {
+      logger("No callback was defined!");
+    }
+
+  };
+
+  //ClearBlade.Code.exe = function(){};
+  ClearBlade.User = function(){};
+  ClearBlade.User.getUser = function(callback){
+    var reqOptions = {
+      method: 'GET',
+      endpoint: 'api/v/1/user/info'
+    };
+    if (typeof callback === 'function') {
+      _request(reqOptions, callback);
+    } else {
+      logger("No callback was defined!");
+    }
+
+  };
+  ClearBlade.User.setUser = function(data, callback){
+    var reqOptions = {
+      method: 'PUT',
+      endpoint: 'api/v/1/user/info',
+      body: data
+    };
+    if (typeof callback === 'function') {
+      _request(reqOptions, callback);
+    } else {
+      logger("No callback was defined!");
+    }
+
+  };
 
   /**
    * Initializes the ClearBlade messaging object and connects to a server.

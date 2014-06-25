@@ -25,22 +25,22 @@ var RTP_INFO = {
   generalCollection: "9cd296b40acac5e2f797a485ec8e01",
   chromeCollection: "bcd196b40ade8ddb9491b494fd9f01"
 };
-var STAGING_INFO = {
+var STAGING_INFO = { 
   serverAddress: "https://staging.clearblade.com",
   messagingURI: "staging.clearblade.com",
   messagingPort: 8904,
-  noAuthAppKey: "8889ecb40aeeedb08cb5c79ede6a",
-  noAuthAppSecret: "8889ECB40A98A1A38CEBECC8EA8401",
-  safariNoAuthCollection: "9c8aecb40a82fed18a8cdcd8e935",
-  chromeNoAuthCollection: "fc89ecb40aaaded2dd90aed2c2e601",
-  generalNoAuthCollection: "be89ecb40a9acd8fa1cdbd86f4ee01",
-  firefoxNoAuthCollection: "8c8aecb40aa6f49cd7d0f9a6e4b301",
-  appKey: "ea88ecb40af4f29cbb8183b0cb12",
-  appSecret: "EA88ECB40AA0CB9BE99F92DBB2E001",
-  safariCollection: "ae8decb40ab4a9c7e1a6a8ebd5a901",
-  firefoxCollection: "948eecb40a82b7e2eaaad7fa9e36",
-  generalCollection: "888decb40a84cff684d9d2e7df9201",
-  chromeCollection: "e68decb40af0bbccc3b5e691baa301"
+  noAuthAppKey: "e6a1c1ba0a8690f7a6aaacde9fff01",
+  noAuthAppSecret: "E6A1C1BA0A98E3D384D7D8F6C6F901",
+  safariNoAuthCollection: "bea3c1ba0ae8cc97f2d0e897e6cb01",
+  chromeNoAuthCollection: "aea2c1ba0a8495d2bdb7d0e3bca701",
+  generalNoAuthCollection: "90a3c1ba0ab2e3dcfccab5d8bbb101",
+  firefoxNoAuthCollection: "dca2c1ba0aa0ecd89bbe80ba8b8501",
+  appKey: "8c9ac1ba0adeb7f68fced7fb9049",
+  appSecret: "8C9AC1BA0AE2D697A0DCA78DC179",
+  safariCollection: "d49dc1ba0a8ae8dfb5b5f6a996c301",
+  firefoxCollection: "fe9bc1ba0af08893def9f9fceeef01",
+  generalCollection: "b49cc1ba0adac69fc9f4d8a0fe52",
+  chromeCollection: "d69ac1ba0a9293bbc9fdb486e38d01"
 };
 var PLATFORM_INFO = {
   serverAddress: "https://platform.clearblade.com",
