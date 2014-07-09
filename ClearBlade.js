@@ -565,7 +565,6 @@ if (!window.console) {
    */
   ClearBlade.Collection.prototype.fetch = function (_query, callback) {
     var query;
-    var self = this;
     /*
      * The following logic may look funny, but it is intentional.
      * I do this because it is typeical for the callback to be the last parameter.
@@ -1117,7 +1116,6 @@ if (!window.console) {
 
   };
 
-  //ClearBlade.Code.exe = function(){};
   ClearBlade.User = function(){};
   ClearBlade.User.getUser = function(callback){
     var reqOptions = {
@@ -1129,8 +1127,8 @@ if (!window.console) {
     } else {
       logger("No callback was defined!");
     }
-
   };
+  
   ClearBlade.User.setUser = function(data, callback){
     var reqOptions = {
       method: 'PUT',
@@ -1142,7 +1140,30 @@ if (!window.console) {
     } else {
       logger("No callback was defined!");
     }
+  };
 
+  ClearBlade.User.allUsers = function(_query, callback) {
+    var query;
+    if (callback === undefined) {
+      callback = _query;
+      query = 'query=' + _parseQuery({FILTERS:[]});
+    } else {
+      query = 'query=' + _parseQuery(_query.query);
+    }
+
+    var reqOptions = {
+      method: 'GET',
+      endpoint: 'api/v/1/user',
+      qs: query
+    };
+    var callCallback = function(err, data) {
+      callback(err, data);
+    };
+    if (typeof callback === 'function') {
+      _request(reqOptions, callCallback);
+    } else {
+      logger('No callback was defined!');
+    }
   };
 
   /**
