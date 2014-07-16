@@ -25,7 +25,7 @@ var RTP_INFO = {
   generalCollection: "9cd296b40acac5e2f797a485ec8e01",
   chromeCollection: "bcd196b40ade8ddb9491b494fd9f01"
 };
-var STAGING_INFO = { 
+var STAGING_INFO = {
   serverAddress: "https://staging.clearblade.com",
   messagingURI: "staging.clearblade.com",
   messagingPort: 8904,
@@ -870,6 +870,44 @@ describe("The ClearBlade Messaging module", function() {
 
     runs(function() {
       expect(successMsg).toEqual('EXECUTED');
+    });
+  });
+});
+
+describe("User queries", function() {
+  it("should be able to fetch users without a query", function() {
+    var returnedUsers, usersRetrieved;
+    var isClearBladeInit = false;
+    var initOptions = {
+      systemKey: TargetPlatform.systemKey,
+      systemSecret: TargetPlatform.systemSecret,
+      URI: TargetPlatform.serverAddress,
+      messagingURI: TargetPlatform.messagingURI,
+      callback: function(err, user) {
+        expect(err).toEqual(false);
+        isClearBladeInit = true;
+      }
+    };
+    ClearBlade.init(initOptions);
+    waitsFor(function() {
+      return isClearBladeInit;
+    }, "ClearBlade should be initialized", TEST_TIMEOUT);
+
+    runs(function() {
+      var userObj = new ClearBlade.User();
+      userObj.allUsers(function(err, data) {
+        expect(err).toEqual(false);
+        returnedUsers = data;
+        usersRetrieved = true;
+      });
+    });
+
+    waitsFor(function() {
+      return usersRetrieved;
+    }, "Users should be retrieved", TEST_TIMEOUT);
+
+    runs(function() {
+      expect(returnedUsers.Data).not.toBeNull();
     });
   });
 });

@@ -1116,8 +1116,9 @@ if (!window.console) {
 
   };
 
-  ClearBlade.User = function(){};
-  ClearBlade.User.getUser = function(callback){
+  ClearBlade.User = function(){
+  };
+  ClearBlade.User.prototype.getUser = function(callback){
     var reqOptions = {
       method: 'GET',
       endpoint: 'api/v/1/user/info'
@@ -1129,7 +1130,7 @@ if (!window.console) {
     }
   };
   
-  ClearBlade.User.setUser = function(data, callback){
+  ClearBlade.User.prototype.setUser = function(data, callback){
     var reqOptions = {
       method: 'PUT',
       endpoint: 'api/v/1/user/info',
@@ -1142,7 +1143,7 @@ if (!window.console) {
     }
   };
 
-  ClearBlade.User.allUsers = function(_query, callback) {
+  ClearBlade.User.prototype.allUsers = function(_query, callback) {
     var query;
     if (callback === undefined) {
       callback = _query;
