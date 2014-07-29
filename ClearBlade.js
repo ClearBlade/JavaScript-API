@@ -565,7 +565,6 @@ if (!window.console) {
    */
   ClearBlade.Collection.prototype.fetch = function (_query, callback) {
     var query;
-    var self = this;
     /*
      * The following logic may look funny, but it is intentional.
      * I do this because it is typeical for the callback to be the last parameter.
@@ -844,10 +843,18 @@ if (!window.console) {
    * //will match if an item has an attribute 'name' that is equal to 'John' or 'Jim'
    */
   ClearBlade.Query.prototype.or = function (that) {
-    for (var i = 0; i < that.query.FILTERS.length; i++) {
-      this.query.FILTERS.push(that.query.FILTERS[i]);
+    if (this.query.hasOwnProperty('FILTERS') && that.query.hasOwnProperty('FILTERS')) {
+      for (var i = 0; i < that.query.FILTERS.length; i++) {
+        this.query.FILTERS.push(that.query.FILTERS[i]);
+      }
+      return this;
+    } else if (!this.query.hasOwnProperty('FILTERS') && that.query.hasOwnProperty('FILTERS')) {
+      for (var j = 0; j < that.query.FILTERS.length; j++) {
+        this.query.FILTERS = [];
+        this.query.FILTERS.push(that.query.FILTERS[j]);
+      }
+      return this;
     }
-    return this;
   };
 
   /**
@@ -1117,9 +1124,9 @@ if (!window.console) {
 
   };
 
-  //ClearBlade.Code.exe = function(){};
-  ClearBlade.User = function(){};
-  ClearBlade.User.getUser = function(callback){
+  ClearBlade.User = function(){
+  };
+  ClearBlade.User.prototype.getUser = function(callback){
     var reqOptions = {
       method: 'GET',
       endpoint: 'api/v/1/user/info'
@@ -1129,9 +1136,9 @@ if (!window.console) {
     } else {
       logger("No callback was defined!");
     }
-
   };
-  ClearBlade.User.setUser = function(data, callback){
+  
+  ClearBlade.User.prototype.setUser = function(data, callback){
     var reqOptions = {
       method: 'PUT',
       endpoint: 'api/v/1/user/info',
@@ -1142,7 +1149,30 @@ if (!window.console) {
     } else {
       logger("No callback was defined!");
     }
+  };
 
+  ClearBlade.User.prototype.allUsers = function(_query, callback) {
+    var query;
+    if (callback === undefined) {
+      callback = _query;
+      query = 'query=' + _parseQuery({FILTERS:[]});
+    } else {
+      query = 'query=' + _parseQuery(_query.query);
+    }
+
+    var reqOptions = {
+      method: 'GET',
+      endpoint: 'api/v/1/user',
+      qs: query
+    };
+    var callCallback = function(err, data) {
+      callback(err, data);
+    };
+    if (typeof callback === 'function') {
+      _request(reqOptions, callCallback);
+    } else {
+      logger('No callback was defined!');
+    }
   };
 
   /**
