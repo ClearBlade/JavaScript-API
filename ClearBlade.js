@@ -1155,7 +1155,7 @@ if (!window.console) {
     var query;
     if (callback === undefined) {
       callback = _query;
-      query = 'query=' + _parseQuery({FILTERS:[]});
+      query = '';
     } else {
       query = 'query=' + _parseQuery(_query.query);
     }
