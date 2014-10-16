@@ -9,21 +9,21 @@
 
 var TEST_TIMEOUT = 30000;
 var RTP_INFO = {
-  serverAddress: "https://rtp.clearblade.com",
+  serverAddress: "https://rtp.clearblade.com:4433",
   messagingURI: "rtp.clearblade.com",
   messagingPort: 8904,
-  noAuthsystemKey: "8cc896b40a82d0d2b4e18bbbed0f",
-  noAuthsystemSecret: "8CC896B40A90DEA898C197B5E357",
-  safariNoAuthCollection: "ccc896b40ae083ea8af480d4868401",
-  chromeNoAuthCollection: "e8c896b40a90bfcd9bc78df5ca5d",
-  generalNoAuthCollection: "82c996b40a90fab0dbf7ff83e312",
-  firefoxNoAuthCollection: "a8c996b40aacdd919dadce92c430",
-  systemKey: "d6d096b40ab4f3c7ddb4899b8a30",
-  systemSecret: "D6D096B40ADAA885E0BF8F8D93CB01",
-  safariCollection: "84d196b40aa883bec8cfdaf697df01",
-  firefoxCollection: "9ed196b40a8083efa485e58aa9b901",
-  generalCollection: "9cd296b40acac5e2f797a485ec8e01",
-  chromeCollection: "bcd196b40ade8ddb9491b494fd9f01"
+  systemKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
+  systemSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801',
+  noAuthsystemKey: "b48abbb10af2f9bfffd9f793dc9a01",
+  noAuthsystemSecret: "B48ABBB10AE8EB9AD7D1B3B7FC62",
+  safariCollection: "82f7f8aa0ab8929ab1c3cad7e534",
+  chromeCollection:"84f6f8aa0abcf9fbb6ae97a6c9da01",
+  firefoxCollection:"d8f6f8aa0ababdbbc5b8fdf49356",
+  generalCollection:'90f6f8aa0a86969ced80c0a8b03e',
+  firefoxNoAuthCollection: "f28fbbb10a8ca5a5f2f5acd297cc01",
+  safariNoAuthCollection: "a690bbb10abadbb387efdcc0b09e01",
+  generalNoAuthCollection: "ba90bbb10aba93f7bde8cbd2cfe201",
+  chromeNoAuthCollection: "e08fbbb10ae0efadd4e2f68cf39701"
 };
 var STAGING_INFO = {
   serverAddress: "https://staging.clearblade.com",
@@ -45,14 +45,14 @@ var STAGING_INFO = {
 var PLATFORM_INFO = {
   serverAddress: "https://platform.clearblade.com",
   messagingURI: "platform.clearblade.com",
-  systemKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
-  systemSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801',
+  systemKey: 'a29a80c40a9680da8ddccef0ee4a',
+  systemSecret: 'A29A80C40AE8A6F59286F19380DE01',
   noAuthsystemKey: "b48abbb10af2f9bfffd9f793dc9a01",
   noAuthsystemSecret: "B48ABBB10AE8EB9AD7D1B3B7FC62",
-  safariCollection: "82f7f8aa0ab8929ab1c3cad7e534",
-  chromeCollection:"84f6f8aa0abcf9fbb6ae97a6c9da01",
-  firefoxCollection:"d8f6f8aa0ababdbbc5b8fdf49356",
-  generalCollection:'90f6f8aa0a86969ced80c0a8b03e',
+  safariCollection: "84bb80c40ab6f395f2eac0a08260",
+  chromeCollection:"b2a080c40ad8d0e08681dbe8edcd01",
+  firefoxCollection:"eca080c40aaaabdfcaeeeaf29cc201",
+  generalCollection:'88af80c40a8aa4e4a08c929ff248',
   firefoxNoAuthCollection: "f28fbbb10a8ca5a5f2f5acd297cc01",
   safariNoAuthCollection: "a690bbb10abadbb387efdcc0b09e01",
   generalNoAuthCollection: "ba90bbb10aba93f7bde8cbd2cfe201",
@@ -60,15 +60,10 @@ var PLATFORM_INFO = {
 };
 var TargetPlatform = PLATFORM_INFO;
 
-describe("ClearBlade API", function () {
-  it("should return the correct API version", function () {
-    var APIversion = ClearBlade.getApiVersion();
-    expect(APIversion).toEqual('0.0.2');
-  });
-});
-
 describe("ClearBlade initialization should", function () {
+  var cbObj;
   beforeEach(function () {
+    cbObj = new ClearBlade();
     var isClearBladeInit = false;
     var initOptions = {
       systemKey: TargetPlatform.noAuthsystemKey,
@@ -80,18 +75,18 @@ describe("ClearBlade initialization should", function () {
         isClearBladeInit = true;
       }
     };
-    ClearBlade.init(initOptions);
+    cbObj.init(initOptions);
     waitsFor(function() {
       return isClearBladeInit;
     }, "ClearBlade should be initialized", TEST_TIMEOUT);
   });
 
   it("have the systemKey stored", function () {
-    expect(ClearBlade.systemKey).toEqual(TargetPlatform.noAuthsystemKey);
+    expect(cbObj.systemKey).toEqual(TargetPlatform.noAuthsystemKey);
   });
 
   it("have the systemSecret stored", function () {
-    expect(ClearBlade.systemSecret).toEqual(TargetPlatform.noAuthsystemSecret);
+    expect(cbObj.systemSecret).toEqual(TargetPlatform.noAuthsystemSecret);
   });
 
   // it("have defaulted the URI to the Platform", function () {
@@ -99,21 +94,18 @@ describe("ClearBlade initialization should", function () {
   // });
 
   it("have defaulted the logging to false", function () {
-    expect(ClearBlade.logging).toEqual(false);
-  });
-
-  it("have defaulted the masterSecret to null", function () {
-    expect(ClearBlade.masterSecret).toEqual(null);
+    expect(cbObj.logging).toEqual(false);
   });
 
   it("have defaulted the callTimeout to 30000", function () {
-    expect(ClearBlade._callTimeout).toEqual(30000);
+    expect(cbObj._callTimeout).toEqual(30000);
   });
 });
 
 describe("ClearBlade users should", function () {
-  var initOptions;
+  var initOptions, cbObj;
   beforeEach(function () {
+    cbObj = new ClearBlade();
     initOptions = {
       systemKey: TargetPlatform.systemKey,
       systemSecret: TargetPlatform.systemSecret,
@@ -122,21 +114,21 @@ describe("ClearBlade users should", function () {
     };
   });
 
-  it("have anonymous user authenticated with email and password", function () {
+  it("register new user and be authenticated with email and password", function () {
     var authenticated = false;
     initOptions.email = "test_" + Math.floor(Math.random() * 10000) + "@test.com";
     initOptions.password = "password";
     initOptions.registerUser = true;
     initOptions.callback = function(err, response) {
-      expect(ClearBlade.user).toBeDefined();
-      expect(ClearBlade.user.email).toEqual(initOptions.email);
-      expect(ClearBlade.user.authToken).toBeDefined();
-      ClearBlade.isCurrentUserAuthenticated(function(err, isAuthenticated) {
+      expect(cbObj.user).toBeDefined();
+      expect(cbObj.user.email).toEqual(initOptions.email);
+      expect(cbObj.user.authToken).toBeDefined();
+      cbObj.isCurrentUserAuthenticated(function(err, isAuthenticated) {
         expect(err).toEqual(false);
         expect(isAuthenticated).toEqual(true);
-        ClearBlade.logoutUser(function(err, response) {
+        cbObj.logoutUser(function(err, response) {
           expect(err).toEqual(false);
-          ClearBlade.isCurrentUserAuthenticated(function(err, isAuthenticated) {
+          cbObj.isCurrentUserAuthenticated(function(err, isAuthenticated) {
             expect(err).toEqual(false);
             expect(isAuthenticated).toEqual(false);
             authenticated = true;
@@ -144,7 +136,7 @@ describe("ClearBlade users should", function () {
         });
       });
     };
-    ClearBlade.init(initOptions);
+    cbObj.init(initOptions);
     waitsFor(function() {
       return authenticated;
     }, "user should be defined", TEST_TIMEOUT);
@@ -152,8 +144,9 @@ describe("ClearBlade users should", function () {
 });
 
 describe("ClearBlade anonymous users", function () {
-  var initOptions;
+  var initOptions, cbObj;
   beforeEach(function () {
+    cbObj = new ClearBlade();
     initOptions = {
       systemKey: TargetPlatform.noAuthsystemKey,
       systemSecret: TargetPlatform.noAuthsystemSecret,
@@ -166,9 +159,9 @@ describe("ClearBlade anonymous users", function () {
     var authenticated = false;
     initOptions.callback = function() {
       authenticated = true;
-      expect(ClearBlade.user).toBeDefined();
+      expect(cbObj.user).toBeDefined();
     };
-    ClearBlade.init(initOptions);
+    cbObj.init(initOptions);
     waitsFor(function() {
       return authenticated;
     }, "user should be defined", TEST_TIMEOUT);
@@ -176,6 +169,7 @@ describe("ClearBlade anonymous users", function () {
 });
 
 describe("ClearBlade collection fetching with users", function () {
+  var cbObj = new ClearBlade();
   it("should be able to fetch data as an authenticated user", function () {
     var flag, returnedData, isAaronCreated;
     var isClearBladeInit = false;
@@ -190,16 +184,16 @@ describe("ClearBlade collection fetching with users", function () {
       callback: function(err, user) {
         expect(err).toEqual(false);
         isClearBladeInit = true;
-        col = new ClearBlade.Collection(TargetPlatform.generalCollection);
+        col = cbObj.Collection(TargetPlatform.generalCollection);
       }
     };
-    ClearBlade.init(initOptions);
+    cbObj.init(initOptions);
     waitsFor(function() {
       return isClearBladeInit;
     }, "ClearBlade should be initialized", TEST_TIMEOUT);
 
     runs(function () {
-      var query = new ClearBlade.Query();
+      var query = cbObj.Query();
       query.equalTo('name', 'aaron');
       col.remove(query,function() {
         col.create({
@@ -238,8 +232,9 @@ describe("ClearBlade collection fetching with users", function () {
 });
 
 describe("ClearBlade Query usage with anonymous user", function() {
-  var col;
+  var col, cbObj;
   beforeEach(function () {
+    cbObj = new ClearBlade();
     var isClearBladeInit = false;
     var initOptions = {
       systemKey: TargetPlatform.noAuthsystemKey,
@@ -249,10 +244,10 @@ describe("ClearBlade Query usage with anonymous user", function() {
       callback: function(err, user) {
         expect(err).toEqual(false);
         isClearBladeInit = true;
-        col = new ClearBlade.Collection(TargetPlatform.generalNoAuthCollection);
+        col = cbObj.Collection(TargetPlatform.generalNoAuthCollection);
       }
     };
-    ClearBlade.init(initOptions);
+    cbObj.init(initOptions);
     waitsFor(function() {
       return isClearBladeInit;
     }, "ClearBlade should be initialized", TEST_TIMEOUT);
@@ -262,7 +257,7 @@ describe("ClearBlade Query usage with anonymous user", function() {
   it("should return existing data", function() {
     var returnedData, isAaronCreated;
     runs(function () {
-      var query = new ClearBlade.Query();
+      var query = cbObj.Query();
       query.equalTo('name', 'aaron');
       col.remove(query,function() {
         col.create({
@@ -280,7 +275,7 @@ describe("ClearBlade Query usage with anonymous user", function() {
 
     var queryDone;
     runs(function() {
-      var query = new ClearBlade.Query();
+      var query = cbObj.Query();
       query.equalTo('name', 'aaron');
       query.collection = col.ID;
       query.fetch(function(error, data) {
@@ -302,7 +297,7 @@ describe("ClearBlade Query usage with anonymous user", function() {
   it("should allow multiple query parts", function() {
     var flag, returnedData, isAaronCreated;
     runs(function () {
-      var query = new ClearBlade.Query();
+      var query = cbObj.Query();
       query.equalTo('name', 'aaron');
       col.remove(query,function() {
         col.create({
@@ -322,7 +317,7 @@ describe("ClearBlade Query usage with anonymous user", function() {
     var queryDone, queryDone2;
     // Negative case -- should return nothing
     runs(function() {
-      var query = new ClearBlade.Query();
+      var query = cbObj.Query();
       query.equalTo('name', 'aaron').equalTo('age', 30);
       query.collection = col.ID;
       query.fetch(function(error, data) {
@@ -342,7 +337,7 @@ describe("ClearBlade Query usage with anonymous user", function() {
 
     // Positive case -- should return an item
     runs(function() {
-      var query = new ClearBlade.Query();
+      var query = cbObj.Query();
       query.equalTo('name', 'aaron').equalTo('age', 25);
       query.collection = col.ID;
       query.fetch(function(error, data) {
@@ -364,7 +359,7 @@ describe("ClearBlade Query usage with anonymous user", function() {
   it("should allow or-based queries", function() {
     var flag, returnedData, isAaronCreated, isCharlieCreated;
     runs(function () {
-      var query = new ClearBlade.Query();
+      var query = cbObj.Query();
       query.equalTo('name', 'aaron');
       col.remove(query,function() {
         col.create({
@@ -374,7 +369,7 @@ describe("ClearBlade Query usage with anonymous user", function() {
           isAaronCreated = true;
         });
       });
-      var query2 = new ClearBlade.Query();
+      var query2 = cbObj.Query();
       query2.equalTo('name', 'charlie');
       col.remove(query2, function() {
         col.create({
@@ -396,9 +391,9 @@ describe("ClearBlade Query usage with anonymous user", function() {
 
     var queryDone;
     runs(function() {
-      var query = new ClearBlade.Query();
+      var query = cbObj.Query();
       query.equalTo('name', 'aaron');
-      var orQuery = new ClearBlade.Query();
+      var orQuery = cbObj.Query();
       orQuery.equalTo('name', 'charlie');
       query.or(orQuery);
       query.collection = col.ID;
@@ -417,7 +412,7 @@ describe("ClearBlade Query usage with anonymous user", function() {
     runs(function() {
       expect(returnedData.DATA.length).toEqual(2);
       // Cleanup
-      var query2 = new ClearBlade.Query();
+      var query2 = cbObj.Query();
       query2.equalTo('name', 'charlie');
       col.remove(query2, function() {
         isCharlieDeleted = true;
@@ -431,7 +426,7 @@ describe("ClearBlade Query usage with anonymous user", function() {
 
   it("should allow pagination options", function() {
     runs(function() {
-      var query = new ClearBlade.Query();
+      var query = cbObj.Query();
       query.equalTo('name', 'aaron');
       query.setPage(10, 1);
       expect(query.query.PAGESIZE).toEqual(10);
@@ -441,14 +436,14 @@ describe("ClearBlade Query usage with anonymous user", function() {
 
   it("should allow sorting options", function() {
     runs(function() {
-      var query = new ClearBlade.Query();
+      var query = cbObj.Query();
       query.equalTo('name', 'aaron');
       query.collection = col.ID;
       query.ascending('name');
       expect(query.query.SORT).toEqual([{"ASC": "name"}]);
     });
     runs(function() {
-      var query = new ClearBlade.Query();
+      var query = cbObj.Query();
       query.equalTo('name', 'aaron');
       query.descending('name');
       expect(query.query.SORT).toEqual([{"DESC": "name"}]);
@@ -457,8 +452,9 @@ describe("ClearBlade Query usage with anonymous user", function() {
 });
 
 describe("ClearBlade collections fetching", function () {
-  var col;
+  var col, cbObj;
   beforeEach(function () {
+    cbObj = new ClearBlade();
     var isClearBladeInit = false;
     var initOptions = {
       systemKey: TargetPlatform.noAuthsystemKey,
@@ -468,10 +464,10 @@ describe("ClearBlade collections fetching", function () {
       callback: function(err, user) {
         expect(err).toEqual(false);
         isClearBladeInit = true;
-        col = new ClearBlade.Collection(TargetPlatform.generalNoAuthCollection);
+        col = cbObj.Collection(TargetPlatform.generalNoAuthCollection);
       }
     };
-    ClearBlade.init(initOptions);
+    cbObj.init(initOptions);
     waitsFor(function() {
       return isClearBladeInit;
     }, "ClearBlade should be initialized", TEST_TIMEOUT);
@@ -484,7 +480,7 @@ describe("ClearBlade collections fetching", function () {
   it("should return existing data", function () {
     var flag, returnedData, isAaronCreated;
     runs(function () {
-      var query = new ClearBlade.Query();
+      var query = cbObj.Query();
       query.equalTo('name', 'aaron');
       col.remove(query,function() {
         col.create({
@@ -523,7 +519,7 @@ describe("ClearBlade collections fetching", function () {
 });
 
 describe("ClearBlade collections CRUD should", function () {
-  var collection, col;
+  var collection, col, cbObj;
   if(window.navigator.userAgent.indexOf("Firefox") > 0) {
         collection = TargetPlatform.firefoxNoAuthCollection;
     } else if(window.navigator.userAgent.indexOf("Chrome") > 0) {
@@ -533,6 +529,7 @@ describe("ClearBlade collections CRUD should", function () {
     }
 
   beforeEach(function () {
+    cbObj = new ClearBlade();
     var finishedRemoval = false;
     var initOptions = {
       systemKey: TargetPlatform.noAuthsystemKey,
@@ -540,13 +537,13 @@ describe("ClearBlade collections CRUD should", function () {
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function (err, user) {
-        col = new ClearBlade.Collection(collection);
-        var query = new ClearBlade.Query();
+        col = cbObj.Collection(collection);
+        var query = cbObj.Query();
         query.equalTo('name', 'John');
         col.remove(query, function (err, data) { finishedRemoval = true; });
       }
     };
-    ClearBlade.init(initOptions);
+    cbObj.init(initOptions);
     waitsFor(function() {
       return finishedRemoval;
     }, "John should be removed.", TEST_TIMEOUT);
@@ -607,7 +604,7 @@ describe("ClearBlade collections CRUD should", function () {
         if (err) {
         }
       };
-      var query = new ClearBlade.Query();
+      var query = cbObj.Query();
       query.equalTo('name', 'jim');
       var newThing = {
         name: 'john'
@@ -651,7 +648,7 @@ describe("ClearBlade collections CRUD should", function () {
         if (err) {
         }
       };
-      var query = new ClearBlade.Query();
+      var query = cbObj.Query();
       query.equalTo('name', 'john');
       col.remove(query, callback);
     });
@@ -680,8 +677,9 @@ describe("ClearBlade collections CRUD should", function () {
 });
 
 describe("Query objects should", function () {
-  var collection, col;
+  var collection, col, cbObj;
   beforeEach(function () {
+    cbObj = new ClearBlade();
     var isJohnInserted = false;
     var initOptions = {
       systemKey: TargetPlatform.noAuthsystemKey,
@@ -696,7 +694,7 @@ describe("Query objects should", function () {
         } else if(window.navigator.userAgent.indexOf("Safari") > 0){
           collection = TargetPlatform.safariNoAuthCollection;
         }
-        col = new ClearBlade.Collection(collection);
+        col = cbObj.Collection(collection);
         var newItem = {
           name: 'John',
           age: 34
@@ -709,14 +707,14 @@ describe("Query objects should", function () {
         });
       }
     };
-    ClearBlade.init(initOptions);
+    cbObj.init(initOptions);
     waitsFor(function() {
       return isJohnInserted;
     }, "John should be inserted", TEST_TIMEOUT);
   });
 
   afterEach(function () {
-    var query = new ClearBlade.Query();
+    var query = cbObj.Query();
     var isJohnRemoved = false;
     query.equalTo('name', 'John');
     var callback = function (err, data) {
@@ -736,7 +734,7 @@ describe("Query objects should", function () {
       collection: collection
     };
 
-    var query = new ClearBlade.Query(options);
+    var query = cbObj.Query(options);
     query.equalTo('name', 'John');
     flag = false;
     runs(function () {
@@ -766,7 +764,7 @@ describe("Query objects should", function () {
     var options = {
       collection: collection
     };
-    var query = new ClearBlade.Query(options);
+    var query = cbObj.Query(options);
     query.equalTo('name', 'John');
 
     flag = false;
@@ -796,23 +794,24 @@ describe("Query objects should", function () {
 });
 
 describe("The ClearBlade Messaging module", function() {
-  var flag, messaging, msgReceived;
+  var firstFlag, secondFlag, messageObj, msgReceived, cbObj;
 
   var onMessageArrived = function(message) {
-    flag = true;
+    secondFlag = true;
     msgReceived = message;
   };
   var onConnect = function(data) {
-    flag = true;
+    firstFlag = true;
     // Once a connection has been made, make a subscription and send a message.
-    messaging.Subscribe('/test', {}, onMessageArrived);
+    messageObj.Subscribe('test', {}, onMessageArrived);
   };
 
   beforeEach(function () {
+    cbObj = new ClearBlade();
     var isClearBladeInit = false;
     var initOptions = {
-      systemKey: TargetPlatform.noAuthsystemKey,
-      systemSecret: TargetPlatform.noAuthsystemSecret,
+      systemKey: TargetPlatform.systemKey,
+      systemSecret: TargetPlatform.systemSecret,
       URI: TargetPlatform.serverAddress,
       messagingURI: TargetPlatform.messagingURI,
       callback: function(err, user) {
@@ -820,7 +819,7 @@ describe("The ClearBlade Messaging module", function() {
         isClearBladeInit = true;
       }
     };
-    ClearBlade.init(initOptions);
+    cbObj.init(initOptions);
     waitsFor(function() {
       return isClearBladeInit;
     }, "ClearBlade should be initialized", TEST_TIMEOUT);
@@ -828,21 +827,21 @@ describe("The ClearBlade Messaging module", function() {
 
   it("should be able to subscribe and send/receive a message", function () {
     runs(function() {
-      flag = false;
-      messaging = new ClearBlade.Messaging({}, onConnect);
+      firstFlag = false;
+      messageObj = cbObj.Messaging({}, onConnect);
     });
 
     waitsFor(function() {
-      return flag;
+      return firstFlag;
     }, "Did not connect", 3000);
 
     runs(function() {
-      flag = false;
-      messaging.Publish('/test', 'hello');
+      secondFlag = false;
+      messageObj.Publish('test', 'hello');
     });
 
     waitsFor(function() {
-      return flag;
+      return secondFlag;
     }, "Did not publish", 3000);
 
     runs(function() {
@@ -861,7 +860,7 @@ describe("The ClearBlade Messaging module", function() {
 
     runs(function() {
       flag = false;
-      messaging = new ClearBlade.Messaging({onSuccess:onSuccess}, onConnect);
+      messaging = cbObj.Messaging({onSuccess:onSuccess}, onConnect);
     });
 
     waitsFor(function() {
@@ -872,10 +871,24 @@ describe("The ClearBlade Messaging module", function() {
       expect(successMsg).toEqual('EXECUTED');
     });
   });
+
+  it("should fetch message histories", function() {
+    messaging = cbObj.Messaging({}, onConnect);
+    var flag = false;
+    waitsFor(function() {
+      return flag;
+    }, "Did not get message history", 3000);
+    var theTime = Math.floor(new Date().getTime() / 1000);
+    messaging.getMessageHistory("test", Math.floor(theTime), 10, function(err, history) {
+      expect(err).toEqual(false);
+      flag = true;
+    });
+  });
 });
 
 describe("User queries", function() {
   it("should be able to fetch users without a query", function() {
+    var cbObj = new ClearBlade();
     var returnedUsers, usersRetrieved;
     var isClearBladeInit = false;
     var initOptions = {
@@ -888,13 +901,13 @@ describe("User queries", function() {
         isClearBladeInit = true;
       }
     };
-    ClearBlade.init(initOptions);
+    cbObj.init(initOptions);
     waitsFor(function() {
       return isClearBladeInit;
     }, "ClearBlade should be initialized", TEST_TIMEOUT);
 
     runs(function() {
-      var userObj = new ClearBlade.User();
+      var userObj = cbObj.User();
       userObj.allUsers(function(err, data) {
         expect(err).toEqual(false);
         returnedUsers = data;
