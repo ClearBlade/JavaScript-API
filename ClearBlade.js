@@ -261,7 +261,7 @@ if (!window.console) {
         execute(true, response, callback);
       } else {
         _this.setUser(null, response.user_token);
-        execute(false, ClearBlade.user, callback);
+        execute(false, _this.user, callback);
       }
     });
   };
@@ -283,7 +283,7 @@ if (!window.console) {
         execute(true, response, callback);
       } else {
         _this.setUser(email, response.user_token);
-        execute(false, ClearBlade.user, callback);
+        execute(false, _this.user, callback);
       }
     });
   };
@@ -680,7 +680,7 @@ if (!window.console) {
     return collection;
   };
 
- 
+
 
   /**
    * creates and returns a Query object that can be used in Collection methods or on its own to operate on items on the server
@@ -825,7 +825,7 @@ if (!window.console) {
       addFilterToQuery(this, "LTE", field, value);
       return this;
     };
-    
+
     /**
      * Creates a not equal clause in the query object
      * @method ClearBlade.Query.prototype.notEqualTo
@@ -867,7 +867,7 @@ if (!window.console) {
         return this;
       }
     };
-    
+
     /**
      * Set the pagination options for a Query.
      * @method ClearBlade.Query.prototype.setPage
@@ -1060,7 +1060,7 @@ if (!window.console) {
       };
       query.update(this.data, callback);
     };
-    
+
     item.refresh = function () {
       //do a get to make the local item reflect the database
       var self = this;
