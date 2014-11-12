@@ -226,7 +226,7 @@ describe("ClearBlade collection fetching with users", function () {
     }, "returnedData should not be undefined", TEST_TIMEOUT);
 
     runs(function () {
-      expect(returnedData.DATA[0].name).toEqual('aaron');
+      expect(returnedData[0].data.name).toEqual('aaron');
     });
   });
 });
@@ -290,7 +290,7 @@ describe("ClearBlade Query usage with anonymous user", function() {
     }, "Query should be finished", TEST_TIMEOUT);
 
     runs(function() {
-      expect(returnedData.DATA[0].name).toEqual('aaron');
+      expect(returnedData[0].data.name).toEqual('aaron');
     });
   });
 
@@ -332,7 +332,7 @@ describe("ClearBlade Query usage with anonymous user", function() {
     }, "Query should be finished", TEST_TIMEOUT);
 
     runs(function() {
-      expect(returnedData.DATA).toEqual([]);
+      expect(returnedData).toEqual([]);
     });
 
     // Positive case -- should return an item
@@ -352,7 +352,7 @@ describe("ClearBlade Query usage with anonymous user", function() {
     }, "Query should be finished", TEST_TIMEOUT);
 
     runs(function() {
-      expect(returnedData.DATA[0].name).toEqual('aaron');
+      expect(returnedData[0].data.name).toEqual('aaron');
     });
   });
 
@@ -410,7 +410,7 @@ describe("ClearBlade Query usage with anonymous user", function() {
 
     var isCharlieDeleted;
     runs(function() {
-      expect(returnedData.DATA.length).toEqual(2);
+      expect(returnedData.length).toEqual(2);
       // Cleanup
       var query2 = cbObj.Query();
       query2.equalTo('name', 'charlie');
@@ -513,7 +513,7 @@ describe("ClearBlade collections fetching", function () {
     }, "returnedData should not be undefined", TEST_TIMEOUT);
 
     runs(function () {
-      expect(returnedData.DATA[0].name).toEqual('aaron');
+      expect(returnedData[0].data.name).toEqual('aaron');
     });
   });
 });
@@ -588,7 +588,7 @@ describe("ClearBlade collections CRUD should", function () {
     }, "returnedData should not be undefined", TEST_TIMEOUT);
 
     runs(function () {
-      expect(returnedData.DATA[0].name).toEqual('jim');
+      expect(returnedData[0].data.name).toEqual('jim');
     });
   });
 
@@ -634,7 +634,7 @@ describe("ClearBlade collections CRUD should", function () {
     }, "returnedData should not be undefined", TEST_TIMEOUT);
 
     runs(function () {
-      expect(returnedData.DATA[0].name).toEqual('john');
+      expect(returnedData[0].data.name).toEqual('john');
     });
   });
 
@@ -671,7 +671,7 @@ describe("ClearBlade collections CRUD should", function () {
     }, "returnedData should not be undefined", TEST_TIMEOUT);
 
     runs(function () {
-      expect(returnedData.DATA).toEqual([]);
+      expect(returnedData).toEqual([]);
     });
   });
 });
@@ -753,7 +753,7 @@ describe("Query objects should", function () {
     }, "returned data should not be undefined", TEST_TIMEOUT);
 
     runs(function () {
-      expect(returnedData.DATA[0].name).toEqual('John');
+      expect(returnedData[0].data.name).toEqual('John');
     });
   });
 
@@ -788,7 +788,7 @@ describe("Query objects should", function () {
     }, "returned data should not be undefined", TEST_TIMEOUT);
 
     runs(function () {
-      expect(returnedData[0].data.age).toEqual(35);
+      expect(returnedData[0].age).toEqual(35);
     });
   });
 });

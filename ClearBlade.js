@@ -1053,7 +1053,7 @@ if (!window.console) {
         if (err) {
           callback(err, data);
         } else {
-          self.data = data[0].data;
+          self.data = data[0];
           callback(err, data);
         }
       };
@@ -1069,7 +1069,7 @@ if (!window.console) {
         if (err) {
           callback(err, data);
         } else {
-          self.data = data[0].data;
+          self.data = data[0];
           callback(err, data);
         }
       };
