@@ -98,12 +98,14 @@ if (!window.console) {
      * @property systemKey
      * @type String
      */
+    ClearBlade.prototype.systemKey = options.systemKey;
     this.systemKey = options.systemKey;
     /**
      * This is the app secret that will be used in combination with the systemKey to authenticate your app
      * @property systemSecret
      * @type String
      */
+    ClearBlade.prototype.systemSecret = options.systemSecret;
     this.systemSecret = options.systemSecret;
     /**
      * This is the master secret that is used during development to test many apps at a time
@@ -111,12 +113,14 @@ if (!window.console) {
      * @property masterSecret
      * @type String
      */
+    ClearBlade.prototype.masterSecret = options.masterSecret;
     this.masterSecret = options.masterSecret || null;
     /**
      * This is the URI used to identify where the Platform is located
      * @property URI
      * @type String
      */
+    ClearBlade.prototype.URI = options.URI;
     this.URI = options.URI || "https://platform.clearblade.com";
 
     /**
@@ -124,6 +128,7 @@ if (!window.console) {
      * @property messagingURI
      * @type String
      */
+    ClearBlade.prototype.messagingURI = options.messagingURI;
     this.messagingURI = options.messagingURI || "platform.clearblade.com";
 
     /**
@@ -131,6 +136,7 @@ if (!window.console) {
      * @prpopert messagingPort
      * @type Number
      */
+    ClearBlade.prototype.messagingPort = options.messagingPort;
     this.messagingPort = options.messagingPort || 8904;
     /**
      * This is the property that tells the API whether or not the API will log to the console
@@ -138,8 +144,10 @@ if (!window.console) {
      * @property logging
      * @type Boolean
      */
+    ClearBlade.prototype.logging = options.logging;
     this.logging = options.logging || false;
 
+    ClearBlade.prototype.defaultQoS = options.defaultQoS;
     this.defaultQoS = options.defaultQoS || 0;
     /**
      * This is the amount of time that the API will use to determine a timeout
@@ -147,12 +155,13 @@ if (!window.console) {
      * @type Number
      * @private
      */
+    ClearBlade.prototype._callTimeout = options.callTimeout;
     this._callTimeout =  options.callTimeout || 30000; //default to 30 seconds
 
     this.user = null;
 
     if (options.useUser) {
-      this.user = options.useUser;
+      _this.setUser(options.useUser.email, options.useUser.authToken);
     } else if (options.registerUser) {
       this.registerUser(options.email, options.password, function(err, response) {
         if (err) {
@@ -188,6 +197,7 @@ if (!window.console) {
       "email": email,
       "authToken": authToken
     };
+    ClearBlade.prototype.user = this.user;
   };
 
   ClearBlade.prototype.registerUser = function(email, password, callback) {
@@ -322,6 +332,18 @@ if (!window.console) {
    * request method
    *
    */
+
+   var _createItemList = function(err, data, colID, callback) {
+    if (err) {
+      callback(err, data);
+    } else {
+      var itemArray = [];
+      for (var i = 0; i < data.length; i++) {
+        itemArray.push(ClearBlade.prototype.Item(data[i], colID));
+      }
+      callback(err, itemArray);
+    }
+   }
 
   var _request = function (options, callback) {
     var method = options.method || 'GET';
@@ -552,7 +574,7 @@ if (!window.console) {
       };
       var colID = this.ID;
       var callCallback = function (err, data) {
-        callback(err, data);
+        _createItemList(err, data.DATA, collectionID, callback);
       };
       if (typeof callback === 'function') {
         _request(reqOptions, callCallback);
@@ -913,7 +935,7 @@ if (!window.console) {
       }
       var colID = this.collection;
       var callCallback = function (err, data) {
-        callback(err, data);
+        _createItemList(err, data.DATA, colID, callback);
       };
 
       if (typeof callback === 'function') {
@@ -955,18 +977,6 @@ if (!window.console) {
       };
 
       var colID = this.collection;
-      var callCallback = function (err, data) {
-        if (err) {
-          callback(err, data);
-        } else {
-          var itemArray = [];
-          for (var i = 0; i < data.length; i++) {
-            var newItem = _this.Item(data[i], colID);
-            itemArray.push(newItem);
-          }
-          callback(err, itemArray);
-        }
-      };
 
       if (this.collection === undefined || this.collection === "") {
         throw new Error("No collection was defined");
@@ -974,7 +984,7 @@ if (!window.console) {
         reqOptions.endpoint = "api/v/1/data/" + this.collection;
       }
       if (typeof callback === 'function') {
-        _request(reqOptions, callCallback);
+        _request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -1007,18 +1017,6 @@ if (!window.console) {
       };
 
       var colID = this.collection;
-      var callCallback = function (err, data) {
-        if (err) {
-          callback(err, data);
-        } else {
-          var itemArray = [];
-          for (var i in data) {
-            var newItem = _this.Item(data[i], colID);
-            itemArray.push(newItem);
-          }
-          callback(err, itemArray);
-        }
-      };
 
       if (this.collection == undefined || this.collection == "") {
         throw new Error("No collection was defined");
@@ -1026,7 +1024,7 @@ if (!window.console) {
         reqOptions.endpoint = "api/v/1/data/" + this.collection;
       }
       if (typeof callback === 'function') {
-        _request(reqOptions, callCallback);
+        _request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -1046,52 +1044,55 @@ if (!window.console) {
     item.collection = collection;
     item.data = data;
 
-    item.save = function () {
+    item.save = function (callback) {
       //do a put or a post to the database to save the item in the db
       var self = this;
-      var query = ClearBlade.Query({collection: this.collection});
-      query.equalTo('itemId', this.data.itemId);
-      var callback = function (err, data) {
+      var query = ClearBlade.prototype.Query({collection: this.collection});
+      query.equalTo('item_id', this.data.item_id);
+      var callCallback = function (err, data) {
         if (err) {
-          throw new Error (data);
+          callback(err, data);
         } else {
           self.data = data[0].data;
+          callback(err, data);
         }
       };
-      query.update(this.data, callback);
+      query.update(this.data, callCallback);
     };
 
-    item.refresh = function () {
+    item.refresh = function (callback) {
       //do a get to make the local item reflect the database
       var self = this;
-      var query = ClearBlade.Query({collection: this.collection});
-      query.equalTo('itemId', this.data.itemId);
-      var callback = function (err, data) {
+      var query = ClearBlade.prototype.Query({collection: this.collection});
+      query.equalTo('item_id', this.data.item_id);
+      var callCallback = function (err, data) {
         if (err) {
-          throw new Error (data);
+          callback(err, data);
         } else {
           self.data = data[0].data;
+          callback(err, data);
         }
       };
-      query.fetch(callback);
+      query.fetch(callCallback);
     };
 
-    item.destroy = function () {
+    item.destroy = function (callback) {
       //deletes the relative record in the DB then deletes the item locally
       var self = this;
       var query = ClearBlade.Query({collection: this.collection});
       query.equalTo('itemId', this.data.itemId);
-      var callback = function (err, data) {
+      var callCallback = function (err, data) {
         if (err) {
-          throw new Error (data);
+          callback(err, data);
         } else {
           self.data = null;
           self.collection = null;
           delete self.data;
           delete self.collection;
+          callback(err, data);
         }
       };
-      query.remove(callback);
+      query.remove(callCallback);
       delete this;
     };
 
