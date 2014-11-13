@@ -399,8 +399,8 @@ if (!window.console) {
           var flag = true;
           // try to parse response, it should be JSON
           if (httpRequest.responseText == '[{}]' || httpRequest.responseText == '[]') {
-            error = true;
-            execute(error, "query returned nothing", callback);
+            error = false;
+            execute(error, [], callback);
           } else {
             try {
               response = JSON.parse(httpRequest.responseText);
