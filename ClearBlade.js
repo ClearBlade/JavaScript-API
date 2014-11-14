@@ -22,7 +22,8 @@ if (!window.console) {
    * @namespace ClearBlade
    * @example <caption>Initialize ClearBladeAPI</caption>
    * initOptions = {systemKey: 'asdfknafikjasd3853n34kj2vc', systemSecret: 'SHHG245F6GH7SDFG823HGSDFG9'};
-   * ClearBlade.init(initOptions);
+   * var cb = ClearBlade();
+   * cb.init(initOptions);
    *
    */
 
@@ -38,7 +39,17 @@ if (!window.console) {
   /**
    * This method initializes the ClearBlade module with the values needed to connect to the platform
    * @method ClearBlade.init
-   * @param options {Object} the `options` Object
+   * @param {Object} options  This value contains the config object for initializing the ClearBlade module. A number of reasonable defaults are set for the option if none are set.
+   *<p>
+   *The connect options and their defaults are:
+   * <p>{String} [systemKey] This is the app key that will identify your app in order to connect to the Platform</p>
+   * <p>{String} [systemSecret] This is the app secret that will be used in combination with the systemKey to authenticate your app</p>
+   * <p>{String} [URI] This is the URI used to identify where the Platform is located. Default is https://platform.clearblade.com</p>
+   * <p>{String} [messagingURI] This is the URI used to identify where the Messaging server is located. Default is platform.clearblade.com</p>
+   * <p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904</p>
+   * <p>{Boolean} [logging] This is the property that tells the API whether or not the API will log to the console. This should be left `false` in production. Default is false</p>
+   * <p>{Number} [callTimeout] This is the amount of time that the API will use to determine a timeout. Default is 30 seconds</p>
+   *</p>
    */
   ClearBlade.prototype.init = function (options) {
     var _this = this;
@@ -182,7 +193,12 @@ if (!window.console) {
       throw new Error("Password must be given and must be a string");
     }
   };
-
+  /**
+  * Used when assuming the role of a user to make subsequent requests
+  * @method ClearBlade.setUser
+  * @param email {String} the email of the user
+  * @param authToken {String} the authToken for the user
+  */
   ClearBlade.prototype.setUser = function(email, authToken) {
     this.user = {
       "email": email,
@@ -190,6 +206,21 @@ if (!window.console) {
     };
   };
 
+  /**
+  * Method to register a user with the ClearBlade Platform
+  * @method ClearBlade.registerUser
+  * @param email {String} the users email
+  * @param password {String} the password for the user
+  * @param callback {function} returns a Boolean error value and a response as parameters
+  * @example <caption> Register User </caption>
+  * cb.registerUser("newUser@domain.com", "qwerty", function(err, body) {
+  *     if(err) {
+  *       //handle error
+  *     } else {
+  *       console.log(body);
+  *     }
+  *  });
+  */
   ClearBlade.prototype.registerUser = function(email, password, callback) {
     _validateEmailPassword(email, password);
     ClearBlade.request({
@@ -209,7 +240,19 @@ if (!window.console) {
       }
     });
   };
-
+  /**
+   * Method to check if the current user has an active server session
+   * @method  ClearBlade.isCurrentUserAuthenticated
+   * @param  {Function} callback
+   * @example
+   * cb.isCurrentUserAuthenticated(function(err, body) {
+   *    if(err) {
+   *      //handle error
+   *    } else {
+   *      //check authentication boolean
+   *    }
+   * })
+   */
   ClearBlade.prototype.isCurrentUserAuthenticated = function(callback) {
     ClearBlade.request({
       method: 'POST',
@@ -227,7 +270,19 @@ if (!window.console) {
       }
     });
   };
-
+  /**
+   * Method to end the server session for the current user
+   * @method  ClearBlade.logoutUser
+   * @param  {Function} callback
+   * @example
+   * cb.logoutUser(function(err, body) {
+   *    if(err) {
+   *        //handle error
+   *    } else {
+   *        //do post logout stuff
+   *    }
+   * })
+   */
   ClearBlade.prototype.logoutUser = function(callback) {
     ClearBlade.request({
       method: 'POST',
@@ -246,6 +301,19 @@ if (!window.console) {
     });
   };
 
+  /**
+   * Method to create an anonymous session with the ClearBlade Platform
+   * @method  ClearBlade.loginAnon
+   * @param  {Function} callback
+   * @example
+   * cb.loginAnon(function(err, body) {
+   *    if(err) {
+   *        //handle error
+   *    } else {
+   *        //do post login stuff
+   *    }
+   * })
+   */
   ClearBlade.prototype.loginAnon = function(callback) {
     var _this = this;
     ClearBlade.request({
@@ -265,7 +333,21 @@ if (!window.console) {
       }
     });
   };
-
+  /**
+   * Method to create an authenticated session with the ClearBlade Platform
+   * @method
+   * @param  {String}   email
+   * @param  {String}   password
+   * @param  {Function} callback
+   * @example
+   * cb.loginUser("existentUser@domain.com", "qwerty", function(err, body) {
+   *    if(err) {
+   *        //handle error
+   *    } else {
+   *        //do post login stuff
+   *    }
+   * })
+   */
   ClearBlade.prototype.loginUser = function(email, password, callback) {
     var _this = this;
     _validateEmailPassword(email, password);
@@ -500,6 +582,8 @@ if (!window.console) {
    * @class ClearBlade.Collection
    * @classdesc This class represents a server-side collection. It does not actully make a connection upon instantiation, but has all the methods necessary to do so. It also has all the methods necessary to do operations on the server-side collections.
    * @param {String} collectionID The string ID for the collection you want to represent.
+   * @example
+   * var col = cb.Collection("12asd3049qwe834qe23asdf1234");
    */
   ClearBlade.prototype.Collection = function(collectionID) {
     var collection = {};
@@ -513,6 +597,7 @@ if (!window.console) {
      * @method ClearBlade.Collection.prototype.fetch
      * @param {Query} _query Used to request a specific item or subset of items from the collection on the server. Optional.
      * @param {function} callback Supplies processing for what to do with the data that is returned from the collection
+     * @return {ClearBlade.Item} An array of ClearBlade Items
      * @example <caption>Fetching data from a collection</caption>
      * var returnedData = [];
      * var callback = function (err, data) {
@@ -887,6 +972,7 @@ if (!window.console) {
      * the Query object was initialized with a collection.
      * @method ClearBlade.Query.prototype.fetch
      * @param {function} callback Supplies processing for what to do with the data that is returned from the collection
+     * @return {ClearBlade.Item} An array of ClearBlade Items
      * @example <caption>The typical callback</caption>
      * var query = ClearBlade.Query({'collection': 'COLLECTIONID'});
      * var callback = function (err, data) {
@@ -897,7 +983,6 @@ if (!window.console) {
      *     }
      * };
      * query.fetch(callback);
-     * //this will give returnedData the value of what ever was returned from the server.
      */
     query.fetch = function (callback) {
       var reqOptions = {
@@ -1034,7 +1119,11 @@ if (!window.console) {
 
     return query;
   };
-
+  /**
+   * @class ClearBlade.Item
+   * @param {Object} data Object that contains necessary data for an item in a ClearBlade Collection
+   * @param {String} collection Collection ID of the collection the item belongs to
+   */
   ClearBlade.prototype.Item = function (data, collection) {
     var item = {};
     if (!(data instanceof Object)) {
@@ -1097,7 +1186,11 @@ if (!window.console) {
 
     return item;
   };
-
+  /**
+   * creates and returns a Code object that can be used to execute ClearBlade Code Services
+   * @class  ClearBlade.Code
+   * @returns {Object} ClearBlade.Code
+   */
   ClearBlade.prototype.Code = function(){
     var code = {};
     code.user = this.user;
@@ -1105,7 +1198,21 @@ if (!window.console) {
     code.systemKey = this.systemKey;
     code.systemSecret = this.systemSecret;
     code.callTimeout = this._callTimeout;
-
+    /**
+     * Executes a ClearBlade Code Service
+     * @method  ClearBlade.Code.prototype.execute
+     * @param  {String}   name name of the ClearBlade service
+     * @param  {Object}   params object containing parameters to be used in service
+     * @param  {Function} callback
+     * @example
+     * cb.Code().execute("ServiceName", {stringParam: "stringVal", numParam: 1, objParam: {"key": "val"}, arrayParam: ["ClearBlade", "is", "awesome"]}, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
     code.execute = function(name, params, callback){
       var reqOptions = {
         method: 'POST',
@@ -1122,7 +1229,10 @@ if (!window.console) {
 
     return code;
   };
-
+  /**
+   * @class ClearBlade.User
+   * @returns {Object} ClearBlade.User the created User object
+   */
   ClearBlade.prototype.User = function(){
     var user = {};
     user.user = this.user;
@@ -1131,6 +1241,20 @@ if (!window.console) {
     user.systemSecret = this.systemSecret;
     user.callTimeout = this._callTimeout;
 
+    /**
+     * Retrieves info on the current user
+     * @method ClearBlade.User.prototype.getUser
+     * @param  {Function} callback
+     * @example
+     * var user = cb.User();
+     * user.getUser(function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        //do stuff with user info
+     *    }
+     * });
+     */
     user.getUser = function(callback){
       var reqOptions = {
         method: 'GET',
@@ -1143,7 +1267,25 @@ if (!window.console) {
         logger("No callback was defined!");
       }
     };
-
+    /**
+     * Performs a put on the current users row
+     * @method ClearBlade.User.prototype.setUser
+     * @param {Object}   data Object containing the data to update
+     * @param {Function} callback
+     * @example
+     * var newUserInfo = {
+     *    "name": "newName",
+     *    "age": 76
+     * }
+     * var user = cb.User();
+     * user.setUser(newUserInfo, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * });
+     */
     user.setUser = function(data, callback){
       var reqOptions = {
         method: 'PUT',
@@ -1157,7 +1299,25 @@ if (!window.console) {
         logger("No callback was defined!");
       }
     };
-
+    /**
+     * Method to retrieve all the users in a system
+     * @method ClearBlade.User.prototype.allUsers
+     * @param  {ClearBlade.Query}   _query ClearBlade query used to filter users
+     * @param  {Function} callback
+     * @example
+     * var user = cb.User();
+     * var query = cb.Query();
+     * query.equalTo("name", "John");
+     * query.setPage(0,0);
+     * user.allUsers(query, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * });
+     * //returns all the users with a name property equal to "John"
+     */
     user.allUsers = function(_query, callback) {
       var query;
       if (callback === undefined) {
