@@ -22,7 +22,7 @@ if (!window.console) {
    * @namespace ClearBlade
    * @example <caption>Initialize ClearBladeAPI</caption>
    * initOptions = {systemKey: 'asdfknafikjasd3853n34kj2vc', systemSecret: 'SHHG245F6GH7SDFG823HGSDFG9'};
-   * var cb = ClearBlade();
+   * var cb = new ClearBlade();
    * cb.init(initOptions);
    *
    */
