@@ -415,13 +415,13 @@ if (!window.console) {
    *
    */
 
-   var _createItemList = function(err, data, colID, callback) {
+   var _createItemList = function(err, data, options, callback) {
     if (err) {
       callback(err, data);
     } else {
       var itemArray = [];
       for (var i = 0; i < data.length; i++) {
-        itemArray.push(ClearBlade.prototype.Item(data[i], colID));
+        itemArray.push(ClearBlade.prototype.Item(data[i], options));
       }
       callback(err, itemArray);
     }
@@ -607,9 +607,18 @@ if (!window.console) {
    * @example
    * var col = cb.Collection("12asd3049qwe834qe23asdf1234");
    */
-  ClearBlade.prototype.Collection = function(collectionID) {
+  ClearBlade.prototype.Collection = function(options) {
     var collection = {};
-    collection.ID = collectionID;
+    if(typeof options === "string") {
+      collection.endpoint = "api/v/1/data/" + options;
+      options = {collectionID: options};
+    } else if (options.collectionName && options.collectionName !== "") {
+      collection.endpoint = "api/v/1/collection/" + this.systemKey + "/" + options.collectionName;
+    } else if(options.collectionID && options.collectionID !== "") {
+      collection.endpoint = "api/v/1/data/" + options.collectionID;
+    } else {
+      throw new Error("Must supply a collectionID or collectionName key in options object");
+    }
     collection.user = this.user;
     collection.URI = this.URI;
     collection.systemKey = this.systemKey;
@@ -653,13 +662,13 @@ if (!window.console) {
 
       var reqOptions = {
         method: 'GET',
-        endpoint: 'api/v/1/data/' + this.ID,
+        endpoint: this.endpoint,
         qs: query,
         user: this.user
       };
-      var colID = this.ID;
+
       var callCallback = function (err, data) {
-        _createItemList(err, data.DATA, collectionID, callback);
+        _createItemList(err, data.DATA, options, callback);
       };
       if (typeof callback === 'function') {
         _request(reqOptions, callCallback);
@@ -694,7 +703,7 @@ if (!window.console) {
     collection.create = function (newItem, callback) {
       var reqOptions = {
         method: 'POST',
-        endpoint: 'api/v/1/data/' + this.ID,
+        endpoint: this.endpoint,
         body: newItem,
         user: this.user
       };
@@ -732,7 +741,7 @@ if (!window.console) {
     collection.update = function (_query, changes, callback) {
       var reqOptions = {
         method: 'PUT',
-        endpoint: 'api/v/1/data/' + this.ID,
+        endpoint: this.endpoint,
         body: {query: _query.query.FILTERS, $set: changes},
         user: this.user
       };
@@ -773,7 +782,7 @@ if (!window.console) {
 
       var reqOptions = {
         method: 'DELETE',
-        endpoint: 'api/v/1/data/' + this.ID,
+        endpoint: this.endpoint,
         qs: query,
         user: this.user
       };
@@ -801,8 +810,13 @@ if (!window.console) {
     if (!options) {
       options = {};
     }
-    if (options.collection !== undefined || options.collection !== "") {
-      query.collection = options.collection;
+    if(typeof options === "string") {
+      query.endpoint = "api/v/1/data/" + options;
+      options = {collectionID: options};
+    } else if (options.collectionName && options.collectionName !== "") {
+      query.endpoint = "api/v/1/collection/" + this.systemKey + "/" + options.collectionName;
+    } else if(options.collectionID && options.collectionID !== "") {
+      query.endpoint = "api/v/1/data/" + options.collectionID;
     }
     query.user = this.user;
     query.URI = this.URI;
@@ -1010,17 +1024,12 @@ if (!window.console) {
       var reqOptions = {
         method: 'GET',
         qs: 'query=' + _parseQuery(this.query),
-        user: this.user
+        user: this.user,
+        endpoint: this.endpoint
       };
 
-      if (this.collection === undefined || this.collection === "") {
-        throw new Error("No collection was defined");
-      } else {
-        reqOptions.endpoint = "api/v/1/data/" + this.collection;
-      }
-      var colID = this.collection;
       var callCallback = function (err, data) {
-        _createItemList(err, data.DATA, colID, callback);
+        _createItemList(err, data.DATA, options, callback);
       };
 
       if (typeof callback === 'function') {
@@ -1058,16 +1067,10 @@ if (!window.console) {
       var reqOptions = {
         method: 'PUT',
         body: {query: this.query.FILTERS, $set: changes},
-        user: this.user
+        user: this.user,
+        endpoint: this.endpoint
       };
 
-      var colID = this.collection;
-
-      if (this.collection === undefined || this.collection === "") {
-        throw new Error("No collection was defined");
-      } else {
-        reqOptions.endpoint = "api/v/1/data/" + this.collection;
-      }
       if (typeof callback === 'function') {
         _request(reqOptions, callback);
       } else {
@@ -1098,16 +1101,10 @@ if (!window.console) {
       var reqOptions = {
         method: 'DELETE',
         qs: 'query=' + _parseOperationQuery(this.query),
-        user: this.user
+        user: this.user,
+        endpoint: this.endpoint
       };
 
-      var colID = this.collection;
-
-      if (this.collection == undefined || this.collection == "") {
-        throw new Error("No collection was defined");
-      } else {
-        reqOptions.endpoint = "api/v/1/data/" + this.collection;
-      }
       if (typeof callback === 'function') {
         _request(reqOptions, callback);
       } else {
@@ -1123,21 +1120,20 @@ if (!window.console) {
    * @param {Object} data Object that contains necessary data for an item in a ClearBlade Collection
    * @param {String} collection Collection ID of the collection the item belongs to
    */
-  ClearBlade.prototype.Item = function (data, collection) {
+  ClearBlade.prototype.Item = function (data, options) {
     var item = {};
     if (!(data instanceof Object)) {
       throw new Error("data must be of type Object");
     }
-    if ((typeof collection !== 'string') || (collection == "")) {
-      throw new Error("You have to give a collection ID");
+    if (!(options instanceof Object)) {
+      throw new Error("Must supply a collection options object");
     }
-    item.collection = collection;
     item.data = data;
 
     item.save = function (callback) {
       //do a put or a post to the database to save the item in the db
       var self = this;
-      var query = ClearBlade.prototype.Query({collection: this.collection});
+      var query = ClearBlade.prototype.Query(options);
       query.equalTo('item_id', this.data.item_id);
       var callCallback = function (err, data) {
         if (err) {
@@ -1153,7 +1149,7 @@ if (!window.console) {
     item.refresh = function (callback) {
       //do a get to make the local item reflect the database
       var self = this;
-      var query = ClearBlade.prototype.Query({collection: this.collection});
+      var query = ClearBlade.prototype.Query(options);
       query.equalTo('item_id', this.data.item_id);
       var callCallback = function (err, data) {
         if (err) {
@@ -1169,16 +1165,14 @@ if (!window.console) {
     item.destroy = function (callback) {
       //deletes the relative record in the DB then deletes the item locally
       var self = this;
-      var query = ClearBlade.Query({collection: this.collection});
-      query.equalTo('itemId', this.data.itemId);
+      var query = ClearBlade.prototype.Query(options);
+      query.equalTo('item_id', this.data.item_id);
       var callCallback = function (err, data) {
         if (err) {
           callback(err, data);
         } else {
           self.data = null;
-          self.collection = null;
           delete self.data;
-          delete self.collection;
           callback(err, data);
         }
       };
