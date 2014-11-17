@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>JSDoc: Source: ClearBlade.js</title>
-    
+
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
@@ -16,16 +16,17 @@
 <body>
 
 <div id="main">
-    
+
     <h1 class="page-title">Source: ClearBlade.js</h1>
+
     
-    
+
 
 
     
     <section>
         <article>
-            <pre class="prettyprint source"><code>/*******************************************************************************
+            <pre class="prettyprint source linenums"><code>/*******************************************************************************
 * Copyright 2013 ClearBlade, Inc
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
@@ -48,87 +49,353 @@ if (!window.console) {
    * This is the base module for the ClearBlade Platform API
    * @namespace ClearBlade
    * @example &lt;caption>Initialize ClearBladeAPI&lt;/caption>
-   * initOptions = {appKey: 'asdfknafikjasd3853n34kj2vc', appSecret: 'SHHG245F6GH7SDFG823HGSDFG9'};
-   * ClearBlade.init(initOptions);
-   * 
+   * initOptions = {systemKey: 'asdfknafikjasd3853n34kj2vc', systemSecret: 'SHHG245F6GH7SDFG823HGSDFG9'};
+   * var cb = new ClearBlade();
+   * cb.init(initOptions);
+   *
    */
 
   if (typeof exports != 'undefined') {
     window = exports;
   } else {
-    ClearBlade = $cb = window.$cb = window.ClearBlade = window.ClearBlade || {};
-  }   
+    ClearBlade = $cb = window.$cb = window.ClearBlade = window.ClearBlade || function() { };
+  }
 
-  /**
-   * This method returns the current version of the API
-   * @method ClearBlade.getApiVersion
-   */
-  ClearBlade.getApiVersion = function () {
-    return '0.0.2';
-  };
-
+  ClearBlade.MESSAGING_QOS_AT_MOST_ONCE = 0;
+  ClearBlade.MESSAGING_QOS_AT_LEAST_ONCE = 1;
+  ClearBlade.MESSAGING_QOS_EXACTLY_ONCE = 2;
   /**
    * This method initializes the ClearBlade module with the values needed to connect to the platform
    * @method ClearBlade.init
-   * @param options {Object} the `options` Object
+   * @param {Object} options  This value contains the config object for initializing the ClearBlade module. A number of reasonable defaults are set for the option if none are set.
+   *&lt;p>
+   *The connect options and their defaults are:
+   * &lt;p>{String} [systemKey] This is the app key that will identify your app in order to connect to the Platform&lt;/p>
+   * &lt;p>{String} [systemSecret] This is the app secret that will be used in combination with the systemKey to authenticate your app&lt;/p>
+   * &lt;p>{String} [URI] This is the URI used to identify where the Platform is located. Default is https://platform.clearblade.com&lt;/p>
+   * &lt;p>{String} [messagingURI] This is the URI used to identify where the Messaging server is located. Default is platform.clearblade.com&lt;/p>
+   * &lt;p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904&lt;/p>
+   * &lt;p>{Boolean} [logging] This is the property that tells the API whether or not the API will log to the console. This should be left `false` in production. Default is false&lt;/p>
+   * &lt;p>{Number} [callTimeout] This is the amount of time that the API will use to determine a timeout. Default is 30 seconds&lt;/p>
+   *&lt;/p>
    */
-  ClearBlade.init = function (options) {
+  ClearBlade.prototype.init = function (options) {
+    var _this = this;
 
     //check for undefined/null then check if they are the correct types for required params
     if (!options || typeof options !== 'object')
       throw new Error('Options must be an object or it is undefined');
 
-    if (!options.appKey || typeof options.appKey !== 'string')
-      throw new Error('appKey must be defined/a string');
+    if (!options.systemKey || typeof options.systemKey !== 'string')
+      throw new Error('systemKey must be defined/a string');
 
-    if (!options.appSecret || typeof options.appSecret !== 'string') 
-      throw new Error('appSecret must be defined/a string');
+    if (!options.systemSecret || typeof options.systemSecret !== 'string')
+      throw new Error('systemSecret must be defined/a string');
 
     //check for optional params.
-    if (options.logging && typeof options.logging !== 'boolean')
-      throw new Error('logging must be a boolean');
+    if (options.logging &amp;&amp; typeof options.logging !== 'boolean')
+      throw new Error('logging must be a true boolean if present');
+
+    if (options.callback &amp;&amp; typeof options.callback !== 'function') {
+      throw new Error('callback must be a function');
+    }
+    if (options.email &amp;&amp; typeof options.email !== 'string') {
+      throw new Error('email must be a string');
+    }
+    if (options.password &amp;&amp; typeof options.password !== 'string') {
+      throw new Error('password must be a string');
+    }
+    if (options.registerUser &amp;&amp; typeof options.registerUser !== 'boolean') {
+      throw new Error('registerUser must be a true boolean if present');
+    }
+
+    if (options.useUser &amp;&amp; (!options.useUser.email || !options.useUser.authToken)) {
+      throw new Error('useUser must contain both an email and an authToken ' +
+        '{"email":email,"authToken":authToken}');
+    }
+
+    if (options.email &amp;&amp; !options.password) {
+      throw new Error('Must provide a password for email');
+    }
+
+    if (options.password &amp;&amp; !options.email) {
+      throw new Error('Must provide a email for password');
+    }
+
+    if (options.registerUser &amp;&amp; !options.email) {
+      throw new Error('Cannot register anonymous user. Must provide an email');
+    }
+
+    if (options.useUser &amp;&amp; (options.email || options.password || options.registerUser)) {
+      throw new Error('Cannot authenticate or register a new user when useUser is set');
+    }
+
 
     // store keys
     /**
      * This is the app key that will identify your app in order to connect to the Platform
-     * @property appKey
+     * @property systemKey
      * @type String
      */
-    ClearBlade.appKey = options.appKey;
+    this.systemKey = options.systemKey;
     /**
-     * This is the app secret that will be used in combination with the appKey to authenticate your app
-     * @property appSecret
+     * This is the app secret that will be used in combination with the systemKey to authenticate your app
+     * @property systemSecret
      * @type String
      */
-    ClearBlade.appSecret = options.appSecret;
+    this.systemSecret = options.systemSecret;
     /**
      * This is the master secret that is used during development to test many apps at a time
      * This is not currently not in use
      * @property masterSecret
      * @type String
      */
-    ClearBlade.masterSecret = options.masterSecret || null;
+    this.masterSecret = options.masterSecret || null;
     /**
      * This is the URI used to identify where the Platform is located
      * @property URI
      * @type String
      */
-    ClearBlade.URI = options.URI || "https://platform.clearblade.com";
+    this.URI = options.URI || "https://platform.clearblade.com";
+
+    /**
+     * This is the URI used to identify where the Messaging server is located
+     * @property messagingURI
+     * @type String
+     */
+    this.messagingURI = options.messagingURI || "platform.clearblade.com";
+
+    /**
+     * This is the default port used when connecting to the messaging server
+     * @prpopert messagingPort
+     * @type Number
+     */
+    this.messagingPort = options.messagingPort || 8904;
     /**
      * This is the property that tells the API whether or not the API will log to the console
      * This should be left `false` in production
      * @property logging
      * @type Boolean
      */
-    ClearBlade.logging = options.logging || false;
+    this.logging = options.logging || false;
+
+    this.defaultQoS = options.defaultQoS || 0;
     /**
      * This is the amount of time that the API will use to determine a timeout
      * @property _callTimeout=30000
      * @type Number
      * @private
      */
-    ClearBlade._callTimeout =  options.callTimeout || 30000; //default to 30 seconds
+    this._callTimeout =  options.callTimeout || 30000; //default to 30 seconds
 
+    this.user = null;
+
+    if (options.useUser) {
+      this.user = options.useUser;
+    } else if (options.registerUser) {
+      this.registerUser(options.email, options.password, function(err, response) {
+        if (err) {
+          execute(err, response, options.callback);
+        } else {
+          _this.loginUser(options.email, options.password, function(err, user) {
+            execute(err, user, options.callback);
+          });
+        }
+      });
+    } else if (options.email) {
+      this.loginUser(options.email, options.password, function(err, user) {
+        execute(err, user, options.callback);
+      });
+    } else {
+      this.loginAnon(function(err, user) {
+        execute(err, user, options.callback);
+      });
+    }
+  };
+
+  var _validateEmailPassword = function(email, password) {
+    if (email == null || email == undefined || typeof email != 'string') {
+      throw new Error("Email must be given and must be a string");
+    }
+    if (password == null || password == undefined || typeof password != 'string') {
+      throw new Error("Password must be given and must be a string");
+    }
+  };
+  /**
+  * Used when assuming the role of a user to make subsequent requests
+  * @method ClearBlade.setUser
+  * @param email {String} the email of the user
+  * @param authToken {String} the authToken for the user
+  */
+  ClearBlade.prototype.setUser = function(email, authToken) {
+    this.user = {
+      "email": email,
+      "authToken": authToken
+    };
+  };
+
+  /**
+  * Method to register a user with the ClearBlade Platform
+  * @method ClearBlade.registerUser
+  * @param email {String} the users email
+  * @param password {String} the password for the user
+  * @param callback {function} returns a Boolean error value and a response as parameters
+  * @example &lt;caption> Register User &lt;/caption>
+  * cb.registerUser("newUser@domain.com", "qwerty", function(err, body) {
+  *     if(err) {
+  *       //handle error
+  *     } else {
+  *       console.log(body);
+  *     }
+  *  });
+  */
+  ClearBlade.prototype.registerUser = function(email, password, callback) {
+    _validateEmailPassword(email, password);
+    ClearBlade.request({
+      method: 'POST',
+      endpoint: 'api/v/1/user/reg',
+      useUser: false,
+      body: { "email": email, "password": password },
+      systemKey: this.systemKey,
+      systemSecret: this.systemSecret,
+      timeout: this._callTimeout,
+      URI: this.URI
+    }, function (err, response) {
+      if (err) {
+        execute(true, response, callback);
+      } else {
+        execute(false, "User successfully registered", callback);
+      }
+    });
+  };
+  /**
+   * Method to check if the current user has an active server session
+   * @method  ClearBlade.isCurrentUserAuthenticated
+   * @param  {Function} callback
+   * @example
+   * cb.isCurrentUserAuthenticated(function(err, body) {
+   *    if(err) {
+   *      //handle error
+   *    } else {
+   *      //check authentication boolean
+   *    }
+   * })
+   */
+  ClearBlade.prototype.isCurrentUserAuthenticated = function(callback) {
+    ClearBlade.request({
+      method: 'POST',
+      endpoint: 'api/v/1/user/checkauth',
+      systemKey: this.systemKey,
+      systemSecret: this.systemSecret,
+      timeout: this._callTimeout,
+      user: this.user,
+      URI: this.URI
+    }, function (err, response) {
+      if (err) {
+        execute(true, response, callback);
+      } else {
+        execute(false, response.is_authenticated, callback);
+      }
+    });
+  };
+  /**
+   * Method to end the server session for the current user
+   * @method  ClearBlade.logoutUser
+   * @param  {Function} callback
+   * @example
+   * cb.logoutUser(function(err, body) {
+   *    if(err) {
+   *        //handle error
+   *    } else {
+   *        //do post logout stuff
+   *    }
+   * })
+   */
+  ClearBlade.prototype.logoutUser = function(callback) {
+    ClearBlade.request({
+      method: 'POST',
+      endpoint: 'api/v/1/user/logout',
+      systemKey: this.systemKey,
+      systemSecret: this.systemSecret,
+      timeout: this._callTimeout,
+      user: this.user,
+      URI: this.URI
+    }, function(err, response) {
+      if (err) {
+        execute(true, response, callback);
+      } else {
+        execute(false, "User Logged out", callback);
+      }
+    });
+  };
+
+  /**
+   * Method to create an anonymous session with the ClearBlade Platform
+   * @method  ClearBlade.loginAnon
+   * @param  {Function} callback
+   * @example
+   * cb.loginAnon(function(err, body) {
+   *    if(err) {
+   *        //handle error
+   *    } else {
+   *        //do post login stuff
+   *    }
+   * })
+   */
+  ClearBlade.prototype.loginAnon = function(callback) {
+    var _this = this;
+    ClearBlade.request({
+      method: 'POST',
+      useUser: false,
+      endpoint: 'api/v/1/user/anon',
+      systemKey: this.systemKey,
+      systemSecret: this.systemSecret,
+      timeout: this._callTimeout,
+      URI: this.URI
+    }, function(err, response) {
+      if (err) {
+        execute(true, response, callback);
+      } else {
+        _this.setUser(null, response.user_token);
+        execute(false, _this.user, callback);
+      }
+    });
+  };
+  /**
+   * Method to create an authenticated session with the ClearBlade Platform
+   * @method
+   * @param  {String}   email
+   * @param  {String}   password
+   * @param  {Function} callback
+   * @example
+   * cb.loginUser("existentUser@domain.com", "qwerty", function(err, body) {
+   *    if(err) {
+   *        //handle error
+   *    } else {
+   *        //do post login stuff
+   *    }
+   * })
+   */
+  ClearBlade.prototype.loginUser = function(email, password, callback) {
+    var _this = this;
+    _validateEmailPassword(email, password);
+    ClearBlade.request({
+      method: 'POST',
+      useUser: false,
+      endpoint: 'api/v/1/user/auth',
+      systemKey: this.systemKey,
+      systemSecret: this.systemSecret,
+      URI: this.URI,
+      timeout: this._callTimeout,
+      body: { "email": email, "password": password }
+    }, function (err, response) {
+      if (err) {
+        execute(true, response, callback);
+      } else {
+        _this.setUser(email, response.user_token);
+        execute(false, _this.user, callback);
+      }
+    });
   };
 
   /*
@@ -150,8 +417,7 @@ if (!window.console) {
     return;
   };
 
-
-  var isObjectEmpty = function (object) { 
+  var isObjectEmpty = function (object) {
     /*jshint forin:false */
     if (typeof object !== 'object') {
       return true;
@@ -161,44 +427,34 @@ if (!window.console) {
     }
     return true;
   };
-  var makeKVPair = function (key, value) {
-    var KVPair = {};
-    KVPair[key] = value;
-    return KVPair; 
-  };
-
-  var addToQuery = function (queryObj, condition, KVPair) {
-
-    if (typeof queryObj.query[condition] === 'undefined') {
-      queryObj.query[condition] = [];
-    }
-    queryObj.query[condition].push(KVPair);
-  };
 
   /*
    * request method
    *
-   * TODO: Go over with a fine toothed comb! Get all superfluous methods out!
-   *
    */
 
   var _request = function (options, callback) {
-    var self = ClearBlade;
     var method = options.method || 'GET';
     var endpoint = options.endpoint || '';
     var body = options.body || {};
     var qs = options.qs || '';
-    var url = options.URI || self.URI;
+    var url = options.URI || 'https://platform.clearblade.com';
+    var useUser = options.useUser || true;
+    var authToken = useUser &amp;&amp; options.authToken;
+    var callTimeout = options.timeout || 30000;
+    if (useUser &amp;&amp; !authToken &amp;&amp; options.user &amp;&amp; options.user.authToken) {
+      authToken = options.user.authToken;
+    }
     var params = qs;
-      if (endpoint) {
-        url +=  ('/' + endpoint);
-      }
+    if (endpoint) {
+      url +=  ('/' + endpoint);
+    }
 
     if (params) {
       url += "?" + params;
     }
 
-    //begin XMLHttpRequest 
+    //begin XMLHttpRequest
     var httpRequest;
 
     if (typeof window.XMLHttpRequest !== 'undefined') { // Mozilla, Safari, IE 10 ..
@@ -216,56 +472,47 @@ if (!window.console) {
     } else if (typeof window.XDomainRequest !== 'undefined') { // IE 8/9
       httpRequest = new XDomainRequest();
       httpRequest.open(method, url);
-    } else {   
+    } else {
       alert("Sorry it seems that CORS is not supported on your Browser. The RESTful api calls will not work!");
       httpRequest = null;
-      throw new Error("CORS is not supported!");   
+      throw new Error("CORS is not supported!");
     }
 
     // Set Credentials; Maybe some encryption later
-    httpRequest.setRequestHeader("CLEARBLADE-APPKEY", ClearBlade.appKey);
-    httpRequest.setRequestHeader("CLEARBLADE-APPSECRET", ClearBlade.appSecret);
+    if (authToken) {
+      httpRequest.setRequestHeader("CLEARBLADE-USERTOKEN", authToken);
+    } else {
+      httpRequest.setRequestHeader("ClearBlade-SystemKey", options.systemKey);
+      httpRequest.setRequestHeader("ClearBlade-SystemSecret", options.systemSecret);
+    }
 
     if (!isObjectEmpty(body) || params) {
 
-      if (method === "POST" || method === "PUT") { 
-        // Content-Type is expected for POST and PUT; bad things can happen if you don't specify this.  
+      if (method === "POST" || method === "PUT") {
+        // Content-Type is expected for POST and PUT; bad things can happen if you don't specify this.
         httpRequest.setRequestHeader("Content-Type", "application/json");
       }
 
       httpRequest.setRequestHeader("Accept", "application/json");
-      /* Authorization headers expected to change once app structure is set up */
-
-      //set Authorization header
-      if (typeof ClearBlade.masterSecret === 'String') {
-        // if masterSecret exists as a string use it for Authorization
-        httpRequest.setRequestHeader("Authorization", "Basic " + window.btoa(ClearBlade.appKey + ':' + ClearBlade.masterSecret));
-      } else if (currentUser && currentUser.getToken()) {
-        // if there is a current user then use the current Access token
-        httpRequest.setRequestHeader("Authorization", "Bearer " + self.getToken());
-      }
-
-      /* uncomment the following line once server is set to echo back origins or take custom headers */
-      //httpRequest.withCredentials = true;
     }
 
     httpRequest.onreadystatechange = function () {
       if (httpRequest.readyState === 4) {
         // Looks like we didn't time out!
-        clearTimeout(xhrTimeout); 
+        clearTimeout(xhrTimeout);
 
-        //define error for the entire scope of the if statement 
-        var error = false; 
-        if (httpRequest.status >= 200 &&  httpRequest.status &lt; 300) {
+        //define error for the entire scope of the if statement
+        var error = false;
+        if (httpRequest.status >= 200 &amp;&amp;  httpRequest.status &lt; 300) {
           var parsedResponse;
           var response;
-          var flag = false;
+          var flag = true;
           // try to parse response, it should be JSON
           if (httpRequest.responseText == '[{}]' || httpRequest.responseText == '[]') {
-            error = true;
-            execute(error, "query returned nothing", callback);
+            error = false;
+            execute(error, [], callback);
           } else {
-            try {  
+            try {
               response = JSON.parse(httpRequest.responseText);
               parsedResponse = [];
               for (var item in response) {
@@ -297,16 +544,16 @@ if (!window.console) {
               }
             } catch (e) {
               // the response probably was not JSON; Probably had html in it, just output it until all requirements of our backend are defined.
-              if (e instanceof SyntaxError) { 
+              if (e instanceof SyntaxError) {
                 response = httpRequest.responseText;
                 // some other error occured; log message , execute callback
-              } else { 
+              } else {
                 logger("Error during JSON response parsing: " + e);
                 error = true;
                 execute(error, e, callback);
               }
-            } // end of catch 
-            // execute callback with whatever was in the response 
+            } // end of catch
+            // execute callback with whatever was in the response
             if (flag) {
               execute(error, response, callback);
             } else {
@@ -314,9 +561,9 @@ if (!window.console) {
             }
           }
         } else {
-          var msg = "Request Failed: Status " + httpRequest.status + " " + (httpRequest.statusText); 
+          var msg = "Request Failed: Status " + httpRequest.status + " " + (httpRequest.statusText);
           /*jshint expr: true */
-          httpRequest.responseText && (msg += "\nmessage:" + httpRequest.responseText);
+          httpRequest.responseText &amp;&amp; (msg += "\nmessage:" + httpRequest.responseText);
           logger(msg);
           error = true;
           execute(error, msg, callback);
@@ -324,20 +571,19 @@ if (!window.console) {
       }
     };
 
-
     logger('calling: ' + method + ' ' + url);
 
     body = JSON.stringify(body);
 
     // set up our own TimeOut function, because XMLHttpRequest.onTimeOut is not implemented by all browsers yet.
-    function callAbort() { 
+    function callAbort() {
       httpRequest.abort();
       logger("It seems the request has timed Out, please try again.");
       execute(true, "API Request TimeOut", callback);
     }
 
     // set timeout and timeout function
-    var xhrTimeout = setTimeout(callAbort, ClearBlade._callTimeout);
+    var xhrTimeout = setTimeout(callAbort, callTimeout);
     httpRequest.send(body);
 
   };
@@ -350,6 +596,10 @@ if (!window.console) {
     _request(options, callback);
   };
 
+  var _parseOperationQuery = function(_query) {
+    return encodeURIComponent(JSON.stringify(_query.FILTERS));
+  };
+
   var _parseQuery = function(_query) {
     var parsed = encodeURIComponent(JSON.stringify(_query));
     return parsed;
@@ -360,610 +610,769 @@ if (!window.console) {
    * @class ClearBlade.Collection
    * @classdesc This class represents a server-side collection. It does not actully make a connection upon instantiation, but has all the methods necessary to do so. It also has all the methods necessary to do operations on the server-side collections.
    * @param {String} collectionID The string ID for the collection you want to represent.
+   * @example
+   * var col = cb.Collection("12asd3049qwe834qe23asdf1234");
    */
-  ClearBlade.Collection = function(collectionID) {
-    this.ID = collectionID;
-  };
-
-  /**
-   * Reqests an item or a set of items from the collection. 
-   * @method ClearBlade.Collection.prototype.fetch
-   * @param {Query} _query Used to request a specific item or subset of items from the collection on the server
-   * @param {function} callback Supplies processing for what to do with the data that is returned from the collection
-   * @example &lt;caption>The typical callback&lt;/caption>
-   * var callback = function (err, data) {
-   *     if (err) {
-   *         //error handling
-   *     } else {
-   *         console.log(data);
-   *     }
-   * };
-   *
-   * @example &lt;caption>Fetching data from a collection&lt;/caption>
-   * var returnedData = [];
-   * var callback = function (err, data) {
-   *     if (err) {
-   *         throw new Error (data);
-   *     } else {
-   *         returnedData = data;
-   *     }
-   * };
-   *
-   * col.fetch(query, callback);
-   * //this will give returnedData the value of what ever was returned from the server.
-   */
-  ClearBlade.Collection.prototype.fetch = function (_query, callback) {
-    var query;
-    var self = this;
-    /* 
-     * The following logic may look funny, but it is intentional. 
-     * I do this because it is typeical for the callback to be the last parameter.
-     * However, '_query' is an optional parameter, so I have to check if 'callback' is undefined
-     * in order to see weather or not _query is defined.
+  ClearBlade.prototype.Collection = function(collectionID) {
+    var collection = {};
+    collection.ID = collectionID;
+    collection.user = this.user;
+    collection.URI = this.URI;
+    collection.systemKey = this.systemKey;
+    collection.systemSecret = this.systemSecret;
+    /**
+     * Reqests an item or a set of items from the collection.
+     * @method ClearBlade.Collection.prototype.fetch
+     * @param {Query} _query Used to request a specific item or subset of items from the collection on the server. Optional.
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the collection
+     * @return {ClearBlade.Item} An array of ClearBlade Items
+     * @example &lt;caption>Fetching data from a collection&lt;/caption>
+     * var returnedData = [];
+     * var callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         returnedData = data;
+     *     }
+     * };
+     *
+     * col.fetch(query, callback);
+     * //this will give returnedData the value of what ever was returned from the server.
      */
-    if (callback == undefined) {
-      callback = _query;
-      query = {
-        OR: []
-      };
-      query = 'query='+ _parseQuery(query.OR);
-    } else {
-      query = 'query='+ _parseQuery(_query.OR);
-    }
-
-    var reqOptions = {
-      method: 'GET',
-      endpoint: 'api/' + this.ID,
-      qs: query
-    };
-    var colID = this.ID;
-    var callCallback = function (err, data) {
-      if (err) {
-        callback(err, data);
+    collection.fetch = function (_query, callback) {
+      var query;
+      /*
+       * The following logic may look funny, but it is intentional.
+       * I do this because it is typeical for the callback to be the last parameter.
+       * However, '_query' is an optional parameter, so I have to check if 'callback' is undefined
+       * in order to see weather or not _query is defined.
+       */
+      if (callback === undefined) {
+        callback = _query;
+        query = {
+          FILTERS: []
+        };
+        query = 'query='+ _parseQuery(query);
       } else {
-        var itemArray = [];
-        for (var i in data) {
-          var newItem = new ClearBlade.Item(data[i], colID);
-          itemArray.push(newItem);
-        }
-        callback(err, itemArray);
+        query = 'query='+ _parseQuery(_query.query);
+      }
+
+      var reqOptions = {
+        method: 'GET',
+        endpoint: 'api/v/1/data/' + this.ID,
+        qs: query,
+        user: this.user
+      };
+      var colID = this.ID;
+      var callCallback = function (err, data) {
+        callback(err, data);
+      };
+      if (typeof callback === 'function') {
+        _request(reqOptions, callCallback);
+      } else {
+        logger("No callback was defined!");
       }
     };
-    if (typeof callback === 'function') {
-      _request(reqOptions, callCallback);
-    } else {
-      logger("No callback was defined!");
-    }
+
+    /**
+     * Creates a new item in the collection and returns the created item to the callback
+     * @method ClearBlade.Collection.prototype.create
+     * @param {Object} newItem An object that represents an item that you want to add to the collection
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the collection
+     * @example &lt;caption>Creating a new item in the collection&lt;/caption>
+     * //This example assumes a collection of items that have the columns: name, height, and age.
+     * var newPerson = {
+     *     name: 'Jim',
+     *     height: 70,
+     *     age: 32
+     * };
+     * var callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         console.log(data);
+     *     }
+     * };
+     * col.create(newPerson, callback);
+     * //this inserts the the newPerson item into the collection that col represents
+     *
+     */
+    collection.create = function (newItem, callback) {
+      var reqOptions = {
+        method: 'POST',
+        endpoint: 'api/v/1/data/' + this.ID,
+        body: newItem,
+        user: this.user
+      };
+      if (typeof callback === 'function') {
+        _request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    /**
+     * Updates an existing item or set of items
+     * @method ClearBlade.Collection.prototype.update
+     * @param {Query} _query Query object to denote which items or set of Items will be changed
+     * @param {Object} changes Object representing the attributes that you want changed
+     * @param {function} callback Function that handles the response of the server
+     * @example &lt;caption>Updating a set of items&lt;/caption>
+     * //This example assumes a collection of items that have the columns name and age.
+     * var query = ClearBlade.Query();
+     * query.equalTo('name', 'John');
+     * var changes = {
+     *     age: 23
+     * };
+     * var callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         console.log(data);
+     *     }
+     * };
+     *
+     * col.update(query, changes, callback);
+     * //sets John's age to 23
+     */
+    collection.update = function (_query, changes, callback) {
+      var reqOptions = {
+        method: 'PUT',
+        endpoint: 'api/v/1/data/' + this.ID,
+        body: {query: _query.query.FILTERS, $set: changes},
+        user: this.user
+      };
+      if (typeof callback === 'function') {
+        _request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    /**
+     * Removes an item or set of items from the specified collection
+     * @method ClearBlade.Collection.prototype.remove
+     * @param {Query} _query Query object that used to define what item or set of items to remove
+     * @param {function} callback Function that handles the response from the server
+     * @example &lt;caption>Removing an item in a collection&lt;/caption>
+     * //This example assumes that you have a collection with the item whose 'name' attribute is 'John'
+     * var query = ClearBlade.Query();
+     * query.equalTo('name', 'John');
+     * var callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         console.log(data);
+     *     }
+     * };
+     *
+     * col.remove(query, callback);
+     * //removes every item whose 'name' attribute is equal to 'John'
+     */
+    collection.remove = function (_query, callback) {
+      var query;
+      if (_query === undefined) {
+        throw new Error("no query defined!");
+      } else {
+        query = 'query=' + _parseOperationQuery(_query.query);
+      }
+
+      var reqOptions = {
+        method: 'DELETE',
+        endpoint: 'api/v/1/data/' + this.ID,
+        qs: query,
+        user: this.user
+      };
+      if (typeof callback === 'function') {
+        _request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    return collection;
   };
 
-  /**
-   * Creates a new item in the collection and returns the created item to the callback
-   * @method ClearBlade.Collection.prototype.create
-   * @param {Object} newItem An object that represents an item that you want to add to the collection
-   * @param {function} callback Supplies processing for what to do with the data that is returned from the collection
-   * @example &lt;caption>Creating a new item in the collection&lt;/caption>
-   * //This example assumes a collection of items that have the columns: name, height, and age.
-   * var newPerson = {
-   *     name: 'Jim',
-   *     height: 70,
-   *     age: 32
-   * };
-   * var callback = function (err, data) {
-   *     if (err) {
-   *         throw new Error (data);
-   *     } else {
-   *         console.log(data);
-   *     }
-   * };
-   * col.create(newPerson, callback);
-   * //this inserts the the newPerson item into the collection that col represents
-   *
-   */
-  ClearBlade.Collection.prototype.create = function (newItem, callback) {
-    var reqOptions = {
-      method: 'POST',
-      endpoint: 'api/' + this.ID,
-      body: newItem
-    };
-    if (typeof callback === 'function') {
-      _request(reqOptions, callback);
-    } else {
-      logger("No callback was defined!");
-    }
-  };
-
-  /**
-   * Updates an existing item or set of items 
-   * @method ClearBlade.Collection.prototype.update
-   * @param {Query} _query Query object to denote which items or set of Items will be changed
-   * @param {Object} changes Object representing the attributes that you want changed
-   * @param {function} callback Function that handles the response of the server
-   * @example &lt;caption>Updating a set of items&lt;/caption>
-   * //This example assumes a collection of items that have the columns name and age.
-   * var query = new ClearBlade.Query();
-   * query.equalTo('name', 'John');
-   * var changes = {
-   *     age: 23
-   * };
-   * var callback = function (err, data) {
-   *     if (err) {
-   *         throw new Error (data);
-   *     } else {
-   *         console.log(data);
-   *     }
-   * };
-   *
-   * col.update(query, changes, callback);
-   * //sets John's age to 23
-   */
-  ClearBlade.Collection.prototype.update = function (_query, changes, callback) {
-    var reqOptions = {
-      method: 'PUT',
-      endpoint: 'api/' + this.ID,
-      body: {query: _query.OR, $set: changes}
-    };
-    if (typeof callback === 'function') {
-      _request(reqOptions, callback);
-    } else {
-      logger("No callback was defined!");
-    }
-  };
-
-  /**
-   * Removes an item or set of items from the specified collection
-   * @method ClearBlade.Collection.prototype.remove
-   * @param {Query} _query Query object that used to define what item or set of items to remove
-   * @param {function} callback Function that handles the response from the server
-   * @example &lt;caption>Removing an item in a collection&lt;/caption>
-   * //This example assumes that you have a collection with the item whose 'name' attribute is 'John'
-   * var query = new ClearBlade.Query();
-   * query.equalTo('name', 'John');
-   * var callback = function (err, data) {
-   *     if (err) {
-   *         throw new Error (data);
-   *     } else {
-   *         console.log(data);
-   *     }
-   * };
-   *
-   * col.remove(query, callback);
-   * //removes every item whose 'name' attribute is equal to 'John'
-   */
-  ClearBlade.Collection.prototype.remove = function (_query, callback) {
-    var query;
-    if (_query == undefined) {
-      throw new Error("no query defined!");
-    } else {
-      query = 'query=' + _parseQuery(_query.OR);
-    }
-
-    var reqOptions = {
-      method: 'DELETE',
-      endpoint: 'api/' + this.ID,
-      qs: query
-    };
-    if (typeof callback === 'function') {
-      _request(reqOptions, callback);
-    } else {
-      logger("No callback was defined!");
-    }
-  }; 
 
 
   /**
-   * creates a Query object that can be used in Collection methods or on its own to operate on items on the server
+   * creates and returns a Query object that can be used in Collection methods or on its own to operate on items on the server
    * @class ClearBlade.Query
    * @param {Object} options Object that has configuration values used when instantiating a Query object
+   * @returns {Object} Clearblade.Query the created query
    */
-  ClearBlade.Query = function (options) {
-    /*  if (!collection || typeof collection !== 'string') {
-      throw new Error("options.type must be defined and of type 'String'");
-      } */
+  ClearBlade.prototype.Query = function (options) {
+    var _this = this;
+    var query = {};
     if (!options) {
-      options = {}; 
+      options = {};
     }
     if (options.collection !== undefined || options.collection !== "") {
-      this.collection = options.collection;
+      query.collection = options.collection;
     }
-    this.query = {};
-    this.OR = [];
-    this.OR.push([this.query]);
-    //this.collection = collection;
-    this.offset = options.offset || 0;
-    this.limit = options.limit || 10; 
-  };
+    query.user = this.user;
+    query.URI = this.URI;
+    query.systemKey = this.systemKey;
+    query.systemSecret = this.systemSecret;
 
-  ClearBlade.Query.prototype.ascending = function (field) {
-    addToQuery(this, "SORT", makeKVPair("ASC", field));
-    return this;
-  };
+    query.query = {};
+    query.OR = [];
+    query.OR.push([query.query]);
+    query.offset = options.offset || 0;
+    query.limit = options.limit || 10;
 
-  ClearBlade.Query.prototype.descending = function (field) {
-    addToQuery(this, "SORT", makeKVPair("DESC", field));
-    return this;
-  };
-
-  /**
-   * Creates an equality clause in the query object
-   * @method ClearBlade.Query.prototype.equalTo
-   * @param {String} field String defining what attribute to compare
-   * @param {String} value String or Number that is used to compare against
-   * @example &lt;caption>Adding an equality clause to a query&lt;/caption>
-   * var query = new ClearBlade.Query();
-   * query.equalTo('name', 'John');
-   * //will only match if an item has an attribute 'name' that is equal to 'John'
-   */
-  ClearBlade.Query.prototype.equalTo = function (field, value) {
-    addToQuery(this, "EQ", makeKVPair(field, value));
-    return this;
-  };
-
-  /**
-   * Creates a greater than clause in the query object
-   * @method ClearBlade.Query.prototype.greaterThan
-   * @param {String} field String defining what attribute to compare
-   * @param {String} value String or Number that is used to compare against
-   * @example &lt;caption>Adding a greater than clause to a query&lt;/caption>
-   * var query = new ClearBlade.Query();
-   * query.greaterThan('age', 21);
-   * //will only match if an item has an attribute 'age' that is greater than 21
-   */
-  ClearBlade.Query.prototype.greaterThan = function (field, value) {
-    addToQuery(this, "GT",  makeKVPair(field, value));
-    return this;
-  };
-
-  /**
-   * Creates a greater than or equality clause in the query object
-   * @method ClearBlade.Query.prototype.greaterThanEqualTo
-   * @param {String} field String defining what attribute to compare
-   * @param {String} value String or Number that is used to compare against 
-   * @example &lt;caption>Adding a greater than or equality clause to a query&lt;/caption>
-   * var query = new ClearBlade.Query();
-   * query.greaterThanEqualTo('age', 21);
-   * //will only match if an item has an attribute 'age' that is greater than or equal to 21
-   */
-  ClearBlade.Query.prototype.greaterThanEqualTo = function (field, value) {
-    addToQuery(this, "GTE",  makeKVPair(field, value));
-    return this;
-  };
-
-  /**
-   * Creates a less than clause in the query object
-   * @method ClearBlade.Query.prototype.lessThan
-   * @param {String} field String defining what attribute to compare
-   * @param {String} value String or Number that is used to compare against 
-   * @example &lt;caption>Adding a less than clause to a query&lt;/caption>
-   * var query = new ClearBlade.Query();
-   * query.lessThan('age', 50);
-   * //will only match if an item has an attribute 'age' that is less than 50
-   */
-  ClearBlade.Query.prototype.lessThan = function (field, value) {
-    addToQuery(this, "LT",  makeKVPair(field, value));
-    return this;
-  };
-
-  /**
-   * Creates a less than or equality clause in the query object
-   * @method ClearBlade.Query.prototype.lessThanEqualTo
-   * @param {String} field String defining what attribute to compare
-   * @param {String} value String or Number that is used to compare against 
-   * @example &lt;caption>Adding a less than or equality clause to a query&lt;/caption>
-   * var query = new ClearBlade.Query();
-   * query.lessThanEqualTo('age', 50);
-   * //will only match if an item has an attribute 'age' that is less than or equal to 50
-   */
-  ClearBlade.Query.prototype.lessThanEqualTo = function (field, value) {
-
-    addToQuery(this, "LTE",  makeKVPair(field, value));
-    return this;
-  };
-
-  /**
-   * Creates a not equal clause in the query object
-   * @method ClearBlade.Query.prototype.notEqualTo
-   * @param {String} field String defining what attribute to compare
-   * @param {String} value String or Number that is used to compare against 
-   * @example &lt;caption>Adding a not equal clause to a query&lt;/caption>
-   * var query = new ClearBlade.Query();
-   * query.notEqualTo('name', 'Jim');
-   * //will only match if an item has an attribute 'name' that is not equal to 'Jim' 
-   */
-  ClearBlade.Query.prototype.notEqualTo = function (field, value) {
-
-    addToQuery(this, "NEQ",  makeKVPair(field, value));
-    return this;
-  };
-
-  /**
-   * chains an existing query object to the Query object in an or
-   * @method ClearBlade.Query.prototype.or
-   * @param {Query} that Query object that will be added in disjunction to this query object
-   * @example &lt;caption>Chaining two queries together in an or&lt;/caption>
-   * var query1 = new ClearBlade.Query();
-   * var query2 = new ClearBlade.Query();
-   * query1.equalTo('name', 'John');
-   * query2.equalTo('name', 'Jim');
-   * query1.or(query2);
-   * //will match if an item has an attribute 'name' that is equal to 'John' or 'Jim'
-   */
-  ClearBlade.Query.prototype.or = function (that) {
-    this.OR.push([that.query]);
-    return this;
-  };
-
-  ClearBlade.Query.prototype.setLimit = function (limit) {
-    this.limit = limit;
-    return this;
-  };
-
-  ClearBlade.Query.prototype.setOffset = function (offset) {
-    this.offset = offset;
-    return this;
-  };
-
-  ClearBlade.Query.prototype.execute = function (method, callback) {
-    var reqOptions = {
-      method: method
-    };
-    console.log(this);
-    switch(method) {
-      case "GET": 
-        reqOptions.qs = 'query=' + _parseQuery(this.OR);
-        break;
-      case "PUT":
-        reqOptions.body = this.OR;
-        break;
-      case "DELETE":
-        reqOptions.qs = 'query=' + _parseQuery(this.OR);
-        break;
-      default:
-        throw new Error("The method " + method + " does not exist");
-        break;
-    }
-    if (this.collection == undefined || this.collection == "") {
-      throw new Error("No collection was defined");
-    } else {
-      reqOptions.endpoint = "api/" + this.collection;
-    }
-    if (typeof callback === 'function') {
-      _request(reqOptions, callback);
-    } else {
-      logger("No callback was defined!");
-    }
-  };
-
-  /**
-   * Reqests an item or a set of items from the query. Requires that
-   * the Query object was initialized with a collection.
-   * @method ClearBlade.Query.prototype.fetch
-   * @param {function} callback Supplies processing for what to do with the data that is returned from the collection
-   * @example &lt;caption>The typical callback&lt;/caption>
-   * var callback = function (err, data) {
-   *     if (err) {
-   *         //error handling
-   *     } else {
-   *         console.log(data);
-   *     }
-   * };
-   *
-   * @example &lt;caption>Fetching data from a collection&lt;/caption>
-   * var returnedData = [];
-   * var callback = function (err, data) {
-   *     if (err) {
-   *         throw new Error (data);
-   *     } else {
-   *         returnedData = data;
-   *     }
-   * };
-   *
-   * query.fetch(callback);
-   * //this will give returnedData the value of what ever was returned from the server.
-   */
-  ClearBlade.Query.prototype.fetch = function (callback) {
-    var reqOptions = {
-      method: 'GET',
-      qs: 'query=' + _parseQuery(this.OR)
+    query.addSortToQuery = function(queryObj, direction, column) {
+      if (typeof queryObj.query.SORT === 'undefined') {
+        queryObj.query.SORT = [];
+      }
+      var newSort = {}
+      newSort[direction] = column;
+      queryObj.query.SORT.push(newSort);
     };
 
-    if (this.collection == undefined || this.collection == "") {
-      throw new Error("No collection was defined");
-    } else {
-      reqOptions.endpoint = "api/" + this.collection;
-    }
-    var colID = this.collection;
-    var callCallback = function (err, data) {
-      if (err) {
-        callback(err, data);
+    query.addFilterToQuery = function (queryObj, condition, key, value) {
+      var newObj = {};
+      newObj[key] = value;
+      var newFilter = {};
+      newFilter[condition] = [newObj];
+      if (typeof queryObj.query.FILTERS === 'undefined') {
+        queryObj.query.FILTERS = [];
+        queryObj.query.FILTERS.push([newFilter]);
+        return;
       } else {
-        var itemArray = [];
-        for (var i in data) {
-          var newItem = new ClearBlade.Item(data[i], colID);
-          itemArray.push(newItem);
+        for (var i = 0; i &lt; queryObj.query.FILTERS[0].length; i++) {
+          for (var k in queryObj.query.FILTERS[0][i]) {
+            if (queryObj.query.FILTERS[0][i].hasOwnProperty(k)) {
+              if (k === condition) {
+                queryObj.query.FILTERS[0][i][k].push(newObj);
+                return;
+              }
+            }
+          }
         }
-        callback(err, itemArray);
+        queryObj.query.FILTERS[0].push(newFilter);
       }
     };
 
-    if (typeof callback === 'function') {
-      _request(reqOptions, callCallback);
-    } else {
-      logger("No callback was defined!");
-    }
-  };
-
-  /**
-   * Updates an existing item or set of items. Requires that a collection was 
-   * set when the Query was initialized.
-   * @method ClearBlade.Query.prototype.update
-   * @param {Object} changes Object representing the attributes that you want changed
-   * @param {function} callback Function that handles the response of the server
-   * @example &lt;caption>Updating a set of items&lt;/caption>
-   * //This example assumes a collection of items that have the columns name and age.
-   * var query = new ClearBlade.Query({'collection': 'COLLECTIONID'});
-   * query.equalTo('name', 'John');
-   * var changes = {
-   *     age: 23
-   * };
-   * var callback = function (err, data) {
-   *     if (err) {
-   *         throw new Error (data);
-   *     } else {
-   *         console.log(data);
-   *     }
-   * };
-   *
-   * query.update(changes, callback);
-   * //sets John's age to 23
-   */
-  ClearBlade.Query.prototype.update = function (changes, callback) {
-    var reqOptions = {
-      method: 'PUT',
-      body: {query: this.OR, $set: changes}
+    query.ascending = function (field) {
+      this.addSortToQuery(this, "ASC", field);
+      return this;
     };
 
-    var colID = this.collection;
-    var callCallback = function (err, data) {
-      if (err) {
-        callback(err, data);
-      } else {
-        var itemArray = [];
-        for (var i in data) {
-          var newItem = new ClearBlade.Item(data[i], colID);
-          itemArray.push(newItem);
+    query.descending = function (field) {
+      this.addSortToQuery(this, "DESC", field);
+      return this;
+    };
+
+    /**
+     * Creates an equality clause in the query object
+     * @method ClearBlade.Query.prototype.equalTo
+     * @param {String} field String defining what attribute to compare
+     * @param {String} value String or Number that is used to compare against
+     * @example &lt;caption>Adding an equality clause to a query&lt;/caption>
+     * var query = ClearBlade.Query();
+     * query.equalTo('name', 'John');
+     * //will only match if an item has an attribute 'name' that is equal to 'John'
+     */
+    query.equalTo = function (field, value) {
+      this.addFilterToQuery(this, "EQ", field, value);
+      return this;
+    };
+
+    /**
+     * Creates a greater than clause in the query object
+     * @method ClearBlade.Query.prototype.greaterThan
+     * @param {String} field String defining what attribute to compare
+     * @param {String} value String or Number that is used to compare against
+     * @example &lt;caption>Adding a greater than clause to a query&lt;/caption>
+     * var query = ClearBlade.Query();
+     * query.greaterThan('age', 21);
+     * //will only match if an item has an attribute 'age' that is greater than 21
+     */
+    query.greaterThan = function (field, value) {
+      addFilterToQuery(this, "GT", field, value);
+      return this;
+    };
+
+    /**
+     * Creates a greater than or equality clause in the query object
+     * @method ClearBlade.Query.prototype.greaterThanEqualTo
+     * @param {String} field String defining what attribute to compare
+     * @param {String} value String or Number that is used to compare against
+     * @example &lt;caption>Adding a greater than or equality clause to a query&lt;/caption>
+     * var query = ClearBlade.Query();
+     * query.greaterThanEqualTo('age', 21);
+     * //will only match if an item has an attribute 'age' that is greater than or equal to 21
+     */
+    query.greaterThanEqualTo = function (field, value) {
+      addFilterToQuery(this, "GTE", field, value);
+      return this;
+    };
+
+    /**
+     * Creates a less than clause in the query object
+     * @method ClearBlade.Query.prototype.lessThan
+     * @param {String} field String defining what attribute to compare
+     * @param {String} value String or Number that is used to compare against
+     * @example &lt;caption>Adding a less than clause to a query&lt;/caption>
+     * var query = ClearBlade.Query();
+     * query.lessThan('age', 50);
+     * //will only match if an item has an attribute 'age' that is less than 50
+     */
+    query.lessThan = function (field, value) {
+      addFilterToQuery(this, "LT", field, value);
+      return this;
+    };
+
+    /**
+     * Creates a less than or equality clause in the query object
+     * @method ClearBlade.Query.prototype.lessThanEqualTo
+     * @param {String} field String defining what attribute to compare
+     * @param {String} value String or Number that is used to compare against
+     * @example &lt;caption>Adding a less than or equality clause to a query&lt;/caption>
+     * var query = ClearBlade.Query();
+     * query.lessThanEqualTo('age', 50);
+     * //will only match if an item has an attribute 'age' that is less than or equal to 50
+     */
+    query.lessThanEqualTo = function (field, value) {
+      addFilterToQuery(this, "LTE", field, value);
+      return this;
+    };
+
+    /**
+     * Creates a not equal clause in the query object
+     * @method ClearBlade.Query.prototype.notEqualTo
+     * @param {String} field String defining what attribute to compare
+     * @param {String} value String or Number that is used to compare against
+     * @example &lt;caption>Adding a not equal clause to a query&lt;/caption>
+     * var query = ClearBlade.Query();
+     * query.notEqualTo('name', 'Jim');
+     * //will only match if an item has an attribute 'name' that is not equal to 'Jim'
+     */
+    query.notEqualTo = function (field, value) {
+      addFilterToQuery(this, "NEQ", field, value);
+      return this;
+    };
+
+    /**
+     * chains an existing query object to the Query object in an or
+     * @method ClearBlade.Query.prototype.or
+     * @param {Query} that Query object that will be added in disjunction to this query object
+     * @example &lt;caption>Chaining two queries together in an or&lt;/caption>
+     * var query1 = ClearBlade.Query();
+     * var query2 = ClearBlade.Query();
+     * query1.equalTo('name', 'John');
+     * query2.equalTo('name', 'Jim');
+     * query1.or(query2);
+     * //will match if an item has an attribute 'name' that is equal to 'John' or 'Jim'
+     */
+    query.or = function (that) {
+      if (this.query.hasOwnProperty('FILTERS') &amp;&amp; that.query.hasOwnProperty('FILTERS')) {
+        for (var i = 0; i &lt; that.query.FILTERS.length; i++) {
+          this.query.FILTERS.push(that.query.FILTERS[i]);
         }
-        callback(err, itemArray);
+        return this;
+      } else if (!this.query.hasOwnProperty('FILTERS') &amp;&amp; that.query.hasOwnProperty('FILTERS')) {
+        for (var j = 0; j &lt; that.query.FILTERS.length; j++) {
+          this.query.FILTERS = [];
+          this.query.FILTERS.push(that.query.FILTERS[j]);
+        }
+        return this;
       }
     };
 
-    console.log(this.collection);
-
-    if (this.collection == undefined || this.collection == "") {
-      throw new Error("No collection was defined");
-    } else {
-      reqOptions.endpoint = "api/" + this.collection;
-    }
-    if (typeof callback === 'function') {
-      _request(reqOptions, callCallback);
-    } else {
-      logger("No callback was defined!");
-    }
-  };
-
-  /**
-   * Removes an item or set of items from the Query
-   * @method ClearBlade.Query.prototype.remove
-   * @param {function} callback Function that handles the response from the server
-   * @example &lt;caption>Removing an item in a collection&lt;/caption>
-   * //This example assumes that you have a collection with the item whose 'name' attribute is 'John'
-   * var query = new ClearBlade.Query({'collection': 'COLLECTIONID'});
-   * query.equalTo('name', 'John');
-   * var callback = function (err, data) {
-   *     if (err) {
-   *         throw new Error (data);
-   *     } else {
-   *         console.log(data);
-   *     }
-   * };
-   *
-   * query.remove(callback);
-   * //removes every item whose 'name' attribute is equal to 'John'
-   */
-  ClearBlade.Query.prototype.remove = function (callback) {
-    var reqOptions = {
-      method: 'DELETE',
-      qs: 'query=' + _parseQuery(this.OR)
+    /**
+     * Set the pagination options for a Query.
+     * @method ClearBlade.Query.prototype.setPage
+     * @param {int} pageSize Number of items per response page. The default is
+     * 100.
+     * @param {int} pageNum  Page number, taking into account the page size. The
+     * default is 1.
+     */
+    query.setPage = function (pageSize, pageNum) {
+      this.query.PAGESIZE = pageSize;
+      this.query.PAGENUM = pageNum;
+      return this;
     };
 
-    var colID = this.collection;
-    var callCallback = function (err, data) {
-      if (err) {
-        callback(err, data);
+    /**
+     * Reqests an item or a set of items from the query. Requires that
+     * the Query object was initialized with a collection.
+     * @method ClearBlade.Query.prototype.fetch
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the collection
+     * @return {ClearBlade.Item} An array of ClearBlade Items
+     * @example &lt;caption>The typical callback&lt;/caption>
+     * var query = ClearBlade.Query({'collection': 'COLLECTIONID'});
+     * var callback = function (err, data) {
+     *     if (err) {
+     *         //error handling
+     *     } else {
+     *         console.log(data);
+     *     }
+     * };
+     * query.fetch(callback);
+     */
+    query.fetch = function (callback) {
+      var reqOptions = {
+        method: 'GET',
+        qs: 'query=' + _parseQuery(this.query),
+        user: this.user
+      };
+
+      if (this.collection === undefined || this.collection === "") {
+        throw new Error("No collection was defined");
       } else {
-        var itemArray = [];
-        for (var i in data) {
-          var newItem = new cb.Item(data[i], colID);
-          itemArray.push(newItem);
-        }
-        callback(err, itemArray);
+        reqOptions.endpoint = "api/v/1/data/" + this.collection;
+      }
+      var colID = this.collection;
+      var callCallback = function (err, data) {
+        callback(err, data);
+      };
+
+      if (typeof callback === 'function') {
+        _request(reqOptions, callCallback);
+      } else {
+        logger("No callback was defined!");
       }
     };
 
-    if (this.collection == undefined || this.collection == "") {
-      throw new Error("No collection was defined");
-    } else {
-      reqOptions.endpoint = "api/" + this.collection;
-    }
-    if (typeof callback === 'function') {
-      _request(reqOptions, callCallback);
-    } else {
-      logger("No callback was defined!");
-    }
+    /**
+     * Updates an existing item or set of items. Requires that a collection was
+     * set when the Query was initialized.
+     * @method ClearBlade.Query.prototype.update
+     * @param {Object} changes Object representing the attributes that you want changed
+     * @param {function} callback Function that handles the response of the server
+     * @example &lt;caption>Updating a set of items&lt;/caption>
+     * //This example assumes a collection of items that have the columns name and age.
+     * var query = ClearBlade.Query({'collection': 'COLLECTIONID'});
+     * query.equalTo('name', 'John');
+     * var changes = {
+     *     age: 23
+     * };
+     * var callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         console.log(data);
+     *     }
+     * };
+     *
+     * query.update(changes, callback);
+     * //sets John's age to 23
+     */
+    query.update = function (changes, callback) {
+      var reqOptions = {
+        method: 'PUT',
+        body: {query: this.query.FILTERS, $set: changes},
+        user: this.user
+      };
 
+      var colID = this.collection;
+      var callCallback = function (err, data) {
+        if (err) {
+          callback(err, data);
+        } else {
+          var itemArray = [];
+          for (var i = 0; i &lt; data.length; i++) {
+            var newItem = _this.Item(data[i], colID);
+            itemArray.push(newItem);
+          }
+          callback(err, itemArray);
+        }
+      };
+
+      if (this.collection === undefined || this.collection === "") {
+        throw new Error("No collection was defined");
+      } else {
+        reqOptions.endpoint = "api/v/1/data/" + this.collection;
+      }
+      if (typeof callback === 'function') {
+        _request(reqOptions, callCallback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    /**
+     * Removes an item or set of items from the Query
+     * @method ClearBlade.Query.prototype.remove
+     * @param {function} callback Function that handles the response from the server
+     * @example &lt;caption>Removing an item in a collection&lt;/caption>
+     * //This example assumes that you have a collection with the item whose 'name' attribute is 'John'
+     * var query = ClearBlade.Query({'collection': 'COLLECTIONID'});
+     * query.equalTo('name', 'John');
+     * var callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         console.log(data);
+     *     }
+     * };
+     *
+     * query.remove(callback);
+     * //removes every item whose 'name' attribute is equal to 'John'
+     */
+    query.remove = function (callback) {
+      var reqOptions = {
+        method: 'DELETE',
+        qs: 'query=' + _parseOperationQuery(this.query),
+        user: this.user
+      };
+
+      var colID = this.collection;
+      var callCallback = function (err, data) {
+        if (err) {
+          callback(err, data);
+        } else {
+          var itemArray = [];
+          for (var i in data) {
+            var newItem = _this.Item(data[i], colID);
+            itemArray.push(newItem);
+          }
+          callback(err, itemArray);
+        }
+      };
+
+      if (this.collection == undefined || this.collection == "") {
+        throw new Error("No collection was defined");
+      } else {
+        reqOptions.endpoint = "api/v/1/data/" + this.collection;
+      }
+      if (typeof callback === 'function') {
+        _request(reqOptions, callCallback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    return query;
   };
-
-  ClearBlade.Item = function (data, collection) {
+  /**
+   * @class ClearBlade.Item
+   * @param {Object} data Object that contains necessary data for an item in a ClearBlade Collection
+   * @param {String} collection Collection ID of the collection the item belongs to
+   */
+  ClearBlade.prototype.Item = function (data, collection) {
+    var item = {};
     if (!(data instanceof Object)) {
       throw new Error("data must be of type Object");
     }
     if ((typeof collection !== 'string') || (collection == "")) {
       throw new Error("You have to give a collection ID");
     }
-    this.collection = collection;
-    this.data = data;
-  };
+    item.collection = collection;
+    item.data = data;
 
-  ClearBlade.Item.prototype.save = function () {
-    //do a put or a post to the database to save the item in the db
-    var self = this;  
-    var query = new ClearBlade.Query({collection: this.collection});
-    query.equalTo('itemId', this.data.itemId);
-    var callback = function (err, data) {
-      if (err) {
-        throw new Error (data);
-      } else {
-        console.log(data);
-        self.data = data[0].data;
-      }
+    item.save = function () {
+      //do a put or a post to the database to save the item in the db
+      var self = this;
+      var query = ClearBlade.Query({collection: this.collection});
+      query.equalTo('itemId', this.data.itemId);
+      var callback = function (err, data) {
+        if (err) {
+          throw new Error (data);
+        } else {
+          self.data = data[0].data;
+        }
+      };
+      query.update(this.data, callback);
     };
-    query.update(this.data, callback);
-  };
 
-  ClearBlade.Item.prototype.refresh = function () {
-    //do a get to make the local item reflect the database
-    var self = this;
-    var query = new ClearBlade.Query({collection: this.collection});
-    query.equalTo('itemId', this.data.itemId);
-    var callback = function (err, data) {
-      if (err) {
-        throw new Error (data);
+    item.refresh = function () {
+      //do a get to make the local item reflect the database
+      var self = this;
+      var query = ClearBlade.Query({collection: this.collection});
+      query.equalTo('itemId', this.data.itemId);
+      var callback = function (err, data) {
+        if (err) {
+          throw new Error (data);
+        } else {
+          self.data = data[0].data;
+        }
+      };
+      query.fetch(callback);
+    };
+
+    item.destroy = function () {
+      //deletes the relative record in the DB then deletes the item locally
+      var self = this;
+      var query = ClearBlade.Query({collection: this.collection});
+      query.equalTo('itemId', this.data.itemId);
+      var callback = function (err, data) {
+        if (err) {
+          throw new Error (data);
+        } else {
+          self.data = null;
+          self.collection = null;
+          delete self.data;
+          delete self.collection;
+        }
+      };
+      query.remove(callback);
+      delete this;
+    };
+
+    return item;
+  };
+  /**
+   * creates and returns a Code object that can be used to execute ClearBlade Code Services
+   * @class  ClearBlade.Code
+   * @returns {Object} ClearBlade.Code
+   */
+  ClearBlade.prototype.Code = function(){
+    var code = {};
+    code.user = this.user;
+    code.URI = this.URI;
+    code.systemKey = this.systemKey;
+    code.systemSecret = this.systemSecret;
+    code.callTimeout = this._callTimeout;
+    /**
+     * Executes a ClearBlade Code Service
+     * @method  ClearBlade.Code.prototype.execute
+     * @param  {String}   name name of the ClearBlade service
+     * @param  {Object}   params object containing parameters to be used in service
+     * @param  {Function} callback
+     * @example
+     * cb.Code().execute("ServiceName", {stringParam: "stringVal", numParam: 1, objParam: {"key": "val"}, arrayParam: ["ClearBlade", "is", "awesome"]}, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
+    code.execute = function(name, params, callback){
+      var reqOptions = {
+        method: 'POST',
+        endpoint: 'api/v/1/code/' + this.systemKey + '/' + name,
+        body: params,
+        user: this.user
+      };
+      if (typeof callback === 'function') {
+        _request(reqOptions, callback);
       } else {
-        console.log(data);
-        self.data = data[0].data;
+        logger("No callback was defined!");
       }
     };
-    query.fetch(callback);
+
+    return code;
   };
-    
-  ClearBlade.Item.prototype.destroy = function () {
-    //deletes the relative record in the DB then deletes the item locally
-    var self = this;
-    var query = new ClearBlade.Query({collection: this.collection});
-    query.equalTo('itemId', this.data.itemId);
-    var callback = function (err, data) {
-      if (err) {
-        throw new Error (data);
+  /**
+   * @class ClearBlade.User
+   * @returns {Object} ClearBlade.User the created User object
+   */
+  ClearBlade.prototype.User = function(){
+    var user = {};
+    user.user = this.user;
+    user.URI = this.URI;
+    user.systemKey = this.systemKey;
+    user.systemSecret = this.systemSecret;
+    user.callTimeout = this._callTimeout;
+
+    /**
+     * Retrieves info on the current user
+     * @method ClearBlade.User.prototype.getUser
+     * @param  {Function} callback
+     * @example
+     * var user = cb.User();
+     * user.getUser(function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        //do stuff with user info
+     *    }
+     * });
+     */
+    user.getUser = function(callback){
+      var reqOptions = {
+        method: 'GET',
+        endpoint: 'api/v/1/user/info',
+        user: this.user
+      };
+      if (typeof callback === 'function') {
+        _request(reqOptions, callback);
       } else {
-        self.data = null;
-        self.collection = null;
-        delete self.data;
-        delete self.collection;
+        logger("No callback was defined!");
       }
     };
-    query.remove(callback);
-    delete this;
+    /**
+     * Performs a put on the current users row
+     * @method ClearBlade.User.prototype.setUser
+     * @param {Object}   data Object containing the data to update
+     * @param {Function} callback
+     * @example
+     * var newUserInfo = {
+     *    "name": "newName",
+     *    "age": 76
+     * }
+     * var user = cb.User();
+     * user.setUser(newUserInfo, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * });
+     */
+    user.setUser = function(data, callback){
+      var reqOptions = {
+        method: 'PUT',
+        endpoint: 'api/v/1/user/info',
+        body: data,
+        user: this.user
+      };
+      if (typeof callback === 'function') {
+        _request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+    /**
+     * Method to retrieve all the users in a system
+     * @method ClearBlade.User.prototype.allUsers
+     * @param  {ClearBlade.Query}   _query ClearBlade query used to filter users
+     * @param  {Function} callback
+     * @example
+     * var user = cb.User();
+     * var query = cb.Query();
+     * query.equalTo("name", "John");
+     * query.setPage(0,0);
+     * user.allUsers(query, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * });
+     * //returns all the users with a name property equal to "John"
+     */
+    user.allUsers = function(_query, callback) {
+      var query;
+      if (callback === undefined) {
+        callback = _query;
+        query = '';
+      } else {
+        query = 'query=' + _parseQuery(_query.query);
+      }
+
+      var reqOptions = {
+        method: 'GET',
+        endpoint: 'api/v/1/user',
+        qs: query,
+        user: this.user
+      };
+      var callCallback = function(err, data) {
+        callback(err, data);
+      };
+      if (typeof callback === 'function') {
+        _request(reqOptions, callCallback);
+      } else {
+        logger('No callback was defined!');
+      }
+    };
+
+    return user;
   };
-    
 
   /**
    * Initializes the ClearBlade messaging object and connects to a server.
@@ -979,7 +1388,7 @@ if (!window.console) {
    * &lt;p>{object} [invocationContext] An object to wrap all the important variables needed for the onFalure and onSuccess functions. The default is empty.&lt;/p>
    * &lt;p>{function} [onSuccess] A callback to operate on the result of a sucessful connect. In beta the default is just the invoking of the `callback` parameter with the data from the connection.&lt;/p>
    * &lt;p>{function} [onFailure] A callback to operate on the result of an unsuccessful connect. In beta the default is just the invoking of the `callback` parameter with the data from the connection.&lt;/p>
-   * &lt;p>{Object} [hosts] An array of hosts to attempt to connect too. Sticks to the first one that works. The default is ["platform.clearblade.com"].&lt;/p>
+   * &lt;p>{Object} [hosts] An array of hosts to attempt to connect too. Sticks to the first one that works. The default is [ClearBlade.messagingURI].&lt;/p>
    * &lt;p>{Object} [ports] An array of ports to try, it also sticks to thef first one that works. The default is [1337].&lt;/p>
    *&lt;/p>
    * @param {function} callback Callback to be run upon either succeessful or
@@ -989,154 +1398,190 @@ if (!window.console) {
    *   console.log(data);
    * };
    * //A connect with a nonstandard timeout
-   * var cb = new ClearBlade.Messaging({"timeout":15}, callback);
+   * var cb = ClearBlade.Messaging({"timeout":15}, callback);
    */
-  ClearBlade.Messaging = function(options, callback){
-    var that = this;
+  ClearBlade.prototype.Messaging = function(options, callback){
+    var _this = this;
+    var messaging = {};
+
+    messaging.user = this.user;
+    messaging.URI = this.URI;
+    messaging.systemKey = this.systemKey;
+    messaging.systemSecret = this.systemSecret;
+    messaging.callTimeout = this._callTimeout;
+
     //roll through the config
     var conf = {};
-    conf.userName = ClearBlade.appKey;
-    conf.password = ClearBlade.appSecret;
+    conf.userName = this.user.authToken;
+    conf.password = this.systemKey;
     conf.cleanSession = options.cleanSession || true;
     conf.useSSL = options.useSSL || false; //up for debate. ole' perf vs sec argument
-    conf.hosts = options.hosts || ["platform.clearblade.com"];
-    conf.ports = options.ports || [1337];
-    
-    var onConnectionLost = function(){
-      console.log("ClearBlade Messaging connection lost- attempting to reestablish");
-      that.client.connect(conf);
-    };
-
-    var onMessageArrived = function(message){
-      // messageCallback from Subscribe()
-      that.messageCallback(message.payloadString);
-    };
+    conf.hosts = options.hosts || [this.messagingURI];
+    conf.ports = options.ports || [this.messagingPort];
+    if (options.qos !== undefined &amp;&amp; options.qos !== null) {
+      messaging._qos = options.qos;
+    } else {
+      messaging._qos = this.defaultQoS;
+    }
 
     var clientID = Math.floor(Math.random() * 10e12).toString();
-    this.client = new Messaging.Client(conf.hosts[0],conf.ports[0],clientID);
-    this.client.onConnectionLost = onConnectionLost;
-    this.client.onMessageArrived = onMessageArrived; 
+    messaging.client = new Messaging.Client(conf.hosts[0],conf.ports[0],clientID);
+
+    messaging.client.onConnectionLost = function(response){
+      console.log("ClearBlade Messaging connection lost- attempting to reestablish");
+      messaging.client.connect(conf);
+    };
+
+    messaging.client.onMessageArrived = function(message){
+      // messageCallback from Subscribe()
+      messaging.messageCallback(message.payloadString);
+    };;
     // the mqtt websocket library uses "onConnect," but our terminology uses
     // "onSuccess" and "onFailure"
     var onSuccess = function(data) {
       callback(data);
     };
 
-    this.client.onConnect = onSuccess;
+    messaging.client.onConnect = onSuccess;
     var onFailure = function(err) {
       console.log("ClearBlade Messaging failed to connect");
       callback(err);
     };
-  
+
     conf.onSuccess = options.onSuccess || onSuccess;
     conf.onFailure = options.onFailure || onFailure;
 
-    this.client.connect(conf);
-  };
+    messaging.client.connect(conf);
 
+    /**
+     * Gets the message history from a ClearBlade Messaging topic.
+     * @method ClearBlade.Messaging.getMessageHistory
+     * @param {string} topic The topic from which to retrieve history
+     * @param {number} startTime The time from which the history retrieval begins
+     * @param {number} count The number of messages to retrieve
+     * @param {funtion} callback The function to be called upon execution of query -- called with a boolean error and the response
+     */
+    messaging.getMessageHistory = function(topic, startTime, count, callback) {
+      var reqOptions = {
+        method: 'GET',
+        endpoint: 'api/v/1/message/' + this.systemKey,
+        qs: 'topic=' + topic + '&amp;count=' + count + '&amp;last=' + startTime,
+        authToken: this.user.authToken,
+        timeout: this.callTimeout,
+      };
+      ClearBlade.request(reqOptions, function(err, response) {
+        if (err) {
+          execute(true, response, callback);
+        } else {
+          execute(false, response, callback);
+        }
+      });
+    };
 
-  /**
-   * Publishes to a topic.
-   * @method ClearBlade.Messaging.prototype.Publish
-   * @param {string} topic Is the topic path of the message to be published. This will be sent to all listeners on the topic. No default.
-   * @param {string | ArrayBuffer} payload The payload to be sent. Also no default.
-   * @example &lt;caption> How to publish &lt;/caption>
-   * var callback = function (data) {
-   *   console.log(data);
-   * };
-   * var cb = ClearBlade.Messaging({}, callback);
-   * cb.Publish("ClearBlade/is awesome!","Totally rules");
-   * //Topics can include spaces and punctuation  except "/" 
-   */
+    /**
+     * Publishes to a topic.
+     * @method ClearBlade.Messaging.prototype.Publish
+     * @param {string} topic Is the topic path of the message to be published. This will be sent to all listeners on the topic. No default.
+     * @param {string | ArrayBuffer} payload The payload to be sent. Also no default.
+     * @example &lt;caption> How to publish &lt;/caption>
+     * var callback = function (data) {
+     *   console.log(data);
+     * };
+     * var cb = ClearBlade.Messaging({}, callback);
+     * cb.Publish("ClearBlade/is awesome!","Totally rules");
+     * //Topics can include spaces and punctuation  except "/"
+     */
 
-  ClearBlade.Messaging.prototype.Publish = function(topic, payload){
-    var msg = new Messaging.Message(payload);
-    msg.destinationName = topic;
-    this.client.send(msg);
-  };
+    messaging.Publish = function(topic, payload){
+      var msg = new Messaging.Message(payload);
+      msg.destinationName = topic;
+      msg.qos = this._qos;
+      messaging.client.send(msg);
+    };
 
-  /**
-   * Subscribes to a topic
-   * @method ClearBlade.Messaging.prototype.Subscribe
-   * @param {string} topic The topic to subscribe to. No default.
-   * @param {Object} [options] The configuration object. Options:
+    /**
+     * Subscribes to a topic
+     * @method ClearBlade.Messaging.prototype.Subscribe
+     * @param {string} topic The topic to subscribe to. No default.
+     * @param {Object} [options] The configuration object. Options:
      &lt;p>{Number} [qos] The quality of service specified within MQTT. The default is 0, or fire and forget.&lt;/p>
      &lt;p>{Object}  [invocationContext] An object that contains variables and other data for the onSuccess and failure callbacks. The default is blank.&lt;/p>
      &lt;p>{function} [onSuccess] The callback invoked on a successful subscription. The default is nothing.&lt;/p>
      &lt;p>{function} [onFailure] The callback invoked on a failed subsciption. The default is nothing.&lt;/p>
      &lt;p>{Number} [timeout] The time to wait for a response from the server acknowleging the subscription.&lt;/p>
-   * @param {function} messageCallback Callback to invoke upon message arrival
-   * @example &lt;caption> How to publish &lt;/caption>
-   * var callback = function (data) {
-   *   console.log(data);
-   * };
-   * var cb = ClearBlade.Messaging({}, callback);
-   * cb.Subscribe("ClearBlade/is awesome!",{});
-   */
-  ClearBlade.Messaging.prototype.Subscribe = function (topic,options,messageCallback){
+     * @param {function} messageCallback Callback to invoke upon message arrival
+     * @example &lt;caption> How to publish &lt;/caption>
+     * var callback = function (data) {
+     *   console.log(data);
+     * };
+     * var cb = ClearBlade.Messaging({}, callback);
+     * cb.Subscribe("ClearBlade/is awesome!",{});
+     */
+    messaging.Subscribe = function (topic,options,messageCallback){
+      var _this = this;
 
-    var onSuccess = function() {
+      var onSuccess = function() {
+        var conf = {};
+        conf["qos"] = this._qos || 0;
+        conf["invocationContext"] = options["invocationContext"] ||  {};
+        conf["onSuccess"] = options["onSuccess"] || null;
+        conf["onFailure"] = options["onFailure"] || null;
+        conf["timeout"] = options["timeout"] || 60;
+        _this.client.subscribe(topic,conf);
+      };
+
+      var onFailure = function() {
+        alert("failed to connect");
+      };
+
+      this.client.subscribe(topic);
+
+      this.messageCallback = messageCallback;
+    };
+
+    /**
+     * Unsubscribes from a topic
+     * @method ClearBlade.Messaging.prototype.Unsubscribe
+     * @param {string} topic The topic to subscribe to. No default.
+     * @param {Object} [options] The configuration object
+     &lt;p>
+     @options {Object}  [invocationContext] An object that contains variables and other data for the onSuccess and failure callbacks. The default is blank.
+     @options {function} [onSuccess] The callback invoked on a successful unsubscription. The default is nothing.
+     @options {function} [onFailure] The callback invoked on a failed unsubcription. The default is nothing.
+     @options {Number} [timeout] The time to wait for a response from the server acknowleging the subscription.
+     &lt;/p>
+     * @example &lt;caption> How to publish &lt;/caption>
+     * var callback = function (data) {
+     *   console.log(data);
+     * };
+     * var cb = ClearBlade.Messaging({}, callback);
+     * cb.Unsubscribe("ClearBlade/is awesome!",{"onSuccess":function(){console.log("we unsubscribe");});
+     */
+    messaging.Unsubscribe = function(topic,options){
       var conf = {};
-      conf["qos"] = 0; //options["qos"] || 0;
       conf["invocationContext"] = options["invocationContext"] ||  {};
-      conf["onSuccess"] = options["onSuccess"] || null;
-      conf["onFailure"] = options["onFailure"] || null;
+      conf["onSuccess"] = options["onSuccess"] || function(){};//null;
+      conf["onFailure"] = options["onFailure"] || function(){};//null;
       conf["timeout"] = options["timeout"] || 60;
-      this.client.subscribe(topic,conf);
+      this.client.unsubscribe(topic,conf);
     };
 
-    var onFailure = function() {
-      alert("failed to connect");
+    /**
+     * Disconnects from the server.
+     * @method ClearBlade.Messaging.prototype.Disconnect
+     * @example &lt;caption> How to publish &lt;/caption>
+     * var callback = function (data) {
+     *   console.log(data);
+     * };
+     * var cb = ClearBlade.Messaging({}, callback);
+     * cb.Disconnect()//why leave so soon :(
+     */
+    messaging.Disconnect = function(){
+      this.client.disconnect()
     };
 
-    this.client.subscribe(topic);  
-
-    this.messageCallback = messageCallback;
+    return messaging;
   };
-
-  /**
-  * Unsubscribes from a topic
-  * @method ClearBlade.Messaging.prototype.Unsubscribe
-  * @param {string} topic The topic to subscribe to. No default.
-  * @param {Object} [options] The configuration object
-    &lt;p>
-    @options {Object}  [invocationContext] An object that contains variables and other data for the onSuccess and failure callbacks. The default is blank.
-    @options {function} [onSuccess] The callback invoked on a successful unsubscription. The default is nothing.
-    @options {function} [onFailure] The callback invoked on a failed unsubcription. The default is nothing.
-    @options {Number} [timeout] The time to wait for a response from the server acknowleging the subscription.
-    &lt;/p>
-  * @example &lt;caption> How to publish &lt;/caption>
-  * var callback = function (data) {
-  *   console.log(data);
-  * };
-  * var cb = ClearBlade.Messaging({}, callback);
-  * cb.Unsubscribe("ClearBlade/is awesome!",{"onSuccess":function(){console.log("we unsubscribe");});
-  */
-  ClearBlade.Messaging.prototype.Unsubscribe = function(topic,options){
-    var conf = {};
-    conf["invocationContext"] = options["invocationContext"] ||  {};
-    conf["onSuccess"] = options["onSuccess"] || function(){};//null;
-    conf["onFailure"] = options["onFailure"] || function(){};//null;
-    conf["timeout"] = options["timeout"] || 60;
-    this.client.unsubscribe(topic,conf);
-    console.log("we unsubscribed")
-  };
-
-  /**
-   * Disconnects from the server.
-   * @method ClearBlade.Messaging.prototype.Disconnect
-   * @example &lt;caption> How to publish &lt;/caption>
-   * var callback = function (data) {
-   *   console.log(data);
-   * };
-   * var cb = ClearBlade.Messaging({}, callback);
-   * cb.Disconnect()//why leave so soon :(
-  */
-  ClearBlade.Messaging.prototype.Disconnect = function(){
-    this.client.disconnect()
-  };
-
-
 })(window);
 </code></pre>
         </article>
@@ -1148,13 +1593,13 @@ if (!window.console) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.Query.html">Query</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha1</a> on Thu Dec 12 2013 16:50:53 GMT-0600 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Fri Nov 14 2014 16:13:28 GMT-0600 (CST)
 </footer>
 
 <script> prettyPrint(); </script>
