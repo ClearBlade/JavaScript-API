@@ -609,7 +609,10 @@ if (!window.console) {
    */
   ClearBlade.prototype.Collection = function(options) {
     var collection = {};
-    if (options.collectionName && options.collectionName !== "") {
+    if(typeof options === "string") {
+      collection.endpoint = "api/v/1/data/" + options;
+      options = {collectionID: options};
+    } else if (options.collectionName && options.collectionName !== "") {
       collection.endpoint = "api/v/1/collection/" + this.systemKey + "/" + options.collectionName;
     } else if(options.collectionID && options.collectionID !== "") {
       collection.endpoint = "api/v/1/data/" + options.collectionID;
@@ -807,7 +810,10 @@ if (!window.console) {
     if (!options) {
       options = {};
     }
-    if (options.collectionName && options.collectionName !== "") {
+    if(typeof options === "string") {
+      query.endpoint = "api/v/1/data/" + options;
+      options = {collectionID: options};
+    } else if (options.collectionName && options.collectionName !== "") {
       query.endpoint = "api/v/1/collection/" + this.systemKey + "/" + options.collectionName;
     } else if(options.collectionID && options.collectionID !== "") {
       query.endpoint = "api/v/1/data/" + options.collectionID;
