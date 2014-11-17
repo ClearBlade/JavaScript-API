@@ -1118,6 +1118,7 @@ if (!window.console) {
     return query;
   };
   /**
+   * Note: This class cannot be used with connections
    * @class ClearBlade.Item
    * @param {Object} data Object that contains necessary data for an item in a ClearBlade Collection
    * @param {String} collection Collection ID of the collection the item belongs to
