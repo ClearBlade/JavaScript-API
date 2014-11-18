@@ -963,6 +963,21 @@ if (!window.console) {
     };
 
     /**
+     * Creates an regular expression matching clause in the query object
+     * @method ClearBlade.Query.prototype.matches
+     * @param {String} field String defining what attribute to compare
+     * @param {String} pattern String or Number that is used to compare against
+     * @example <caption>Adding an regex matching clause to a query</caption>
+     * var query = ClearBlade.Query();
+     * query.matches('name', 'Smith$');
+     * //will only match if an item has an attribute 'name' that That ends in 'Smith'
+     */
+    query.matches = function (field, pattern) {
+      this.addFilterToQuery(this, "RE", field, pattern);
+      return this;
+    };
+
+    /**
      * chains an existing query object to the Query object in an or
      * @method ClearBlade.Query.prototype.or
      * @param {Query} that Query object that will be added in disjunction to this query object
