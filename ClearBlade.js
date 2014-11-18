@@ -1125,8 +1125,11 @@ if (!window.console) {
     if (!(data instanceof Object)) {
       throw new Error("data must be of type Object");
     }
-    if (!(options instanceof Object)) {
-      throw new Error("Must supply a collection options object");
+    if(options === undefined || options === null || options === "") {
+      throw new Error("Must supply an options parameter");
+    }
+    if(typeof options === "string") {
+      options = {collectionID: options};
     }
     item.data = data;
 
