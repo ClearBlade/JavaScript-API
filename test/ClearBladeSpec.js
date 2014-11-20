@@ -1,64 +1,6 @@
 /**
  * This is the Jasmine testing file for the ClearBlade javascript API
- *
- * The credentials to log into the platform and change the collections that this test suite uses:
- *
- * username: test@fake.com
- * password: testPass
  */
-
-var TEST_TIMEOUT = 30000;
-var RTP_INFO = {
-  serverAddress: "https://rtp.clearblade.com:4433",
-  messagingURI: "rtp.clearblade.com",
-  messagingPort: 8904,
-  systemKey: 'f2f5f8aa0aba8bc7e4bdcd8ef142',
-  systemSecret: 'F2F5F8AA0AB4F2C4A4E1C387F3F801',
-  noAuthsystemKey: "b48abbb10af2f9bfffd9f793dc9a01",
-  noAuthsystemSecret: "B48ABBB10AE8EB9AD7D1B3B7FC62",
-  safariCollection: "82f7f8aa0ab8929ab1c3cad7e534",
-  chromeCollection:"84f6f8aa0abcf9fbb6ae97a6c9da01",
-  firefoxCollection:"d8f6f8aa0ababdbbc5b8fdf49356",
-  generalCollection:'90f6f8aa0a86969ced80c0a8b03e',
-  firefoxNoAuthCollection: "f28fbbb10a8ca5a5f2f5acd297cc01",
-  safariNoAuthCollection: "a690bbb10abadbb387efdcc0b09e01",
-  generalNoAuthCollection: "ba90bbb10aba93f7bde8cbd2cfe201",
-  chromeNoAuthCollection: "e08fbbb10ae0efadd4e2f68cf39701"
-};
-var STAGING_INFO = {
-  serverAddress: "https://staging.clearblade.com",
-  messagingURI: "staging.clearblade.com",
-  messagingPort: 8904,
-  noAuthsystemKey: "e6a1c1ba0a8690f7a6aaacde9fff01",
-  noAuthsystemSecret: "E6A1C1BA0A98E3D384D7D8F6C6F901",
-  safariNoAuthCollection: "bea3c1ba0ae8cc97f2d0e897e6cb01",
-  chromeNoAuthCollection: "aea2c1ba0a8495d2bdb7d0e3bca701",
-  generalNoAuthCollection: "90a3c1ba0ab2e3dcfccab5d8bbb101",
-  firefoxNoAuthCollection: "dca2c1ba0aa0ecd89bbe80ba8b8501",
-  systemKey: "8c9ac1ba0adeb7f68fced7fb9049",
-  systemSecret: "8C9AC1BA0AE2D697A0DCA78DC179",
-  safariCollection: "d49dc1ba0a8ae8dfb5b5f6a996c301",
-  firefoxCollection: "fe9bc1ba0af08893def9f9fceeef01",
-  generalCollection: "b49cc1ba0adac69fc9f4d8a0fe52",
-  chromeCollection: "d69ac1ba0a9293bbc9fdb486e38d01"
-};
-var PLATFORM_INFO = {
-  serverAddress: "https://platform.clearblade.com",
-  messagingURI: "platform.clearblade.com",
-  systemKey: 'a29a80c40a9680da8ddccef0ee4a',
-  systemSecret: 'A29A80C40AE8A6F59286F19380DE01',
-  noAuthsystemKey: "b48abbb10af2f9bfffd9f793dc9a01",
-  noAuthsystemSecret: "B48ABBB10AE8EB9AD7D1B3B7FC62",
-  safariCollection: "84bb80c40ab6f395f2eac0a08260",
-  chromeCollection:"b2a080c40ad8d0e08681dbe8edcd01",
-  firefoxCollection:"eca080c40aaaabdfcaeeeaf29cc201",
-  generalCollection:'88af80c40a8aa4e4a08c929ff248',
-  firefoxNoAuthCollection: "f28fbbb10a8ca5a5f2f5acd297cc01",
-  safariNoAuthCollection: "a690bbb10abadbb387efdcc0b09e01",
-  generalNoAuthCollection: "ba90bbb10aba93f7bde8cbd2cfe201",
-  chromeNoAuthCollection: "e08fbbb10ae0efadd4e2f68cf39701"
-};
-var TargetPlatform = PLATFORM_INFO;
 
 describe("ClearBlade initialization should", function () {
   var cbObj;
