@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "karma": "~0.12",
+    "jasmine": "~2.0",
     "karma-cli" : "~0.0.4"
    },
   "devDependencies": {},
