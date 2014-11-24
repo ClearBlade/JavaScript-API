@@ -2,3 +2,6 @@
 *.DS_Store
 node_modules/
 .#*
+/test/CodeSpec.js~
+/test/CollectionSpec.js~
+/test/UserSpec.js~
