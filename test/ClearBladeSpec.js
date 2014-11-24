@@ -1,395 +1,156 @@
 /**
  * This is the Jasmine testing file for the ClearBlade javascript API
  */
+var cb;
+beforeEach(function() {
+  spyOn(ClearBlade, 'request').and.callFake(function (options, callback) {
+    callback(null, {fake: "data", DATA: []});
+  });
+  cb = new ClearBlade();
+});
+
+function TestRequest(requester, expectedRequest) {
+  
+}
 
 describe("ClearBlade initialization should", function () {
-  var cbObj;
   beforeEach(function () {
-    cbObj = new ClearBlade();
-    var isClearBladeInit = false;
     var initOptions = {
       systemKey: 'fakeSystemKey',
-      systemSecret: 'fakeSystemSecret',
-      callback: function(err, user) {
-        expect(err).toEqual(false);
-        isClearBladeInit = true;
-      }
+      systemSecret: 'fakeSystemSecret'
     };
-    cbObj.init(initOptions);
-    waitsFor(function() {
-      return isClearBladeInit;
-    }, "ClearBlade should be initialized", TEST_TIMEOUT);
+    cb.init(initOptions);
+
   });
 
   it("have the systemKey stored", function () {
-    expect(cbObj.systemKey).toEqual('fakeSystemKey');
+    expect(cb.systemKey).toEqual('fakeSystemKey');
   });
 
   it("have the systemSecret stored", function () {
-    expect(cbObj.systemSecret).toEqual('fakeSystemSecret');
+    expect(cb.systemSecret).toEqual('fakeSystemSecret');
   });
 
   it("have defaulted the URI to the Platform", function () {
-    expect(ClearBlade.URI).toEqual('https://platform.clearblade.com');
+    expect(cb.URI).toEqual('https://platform.clearblade.com');
   });
 
   it("have defaulted the logging to false", function () {
-    expect(cbObj.logging).toEqual(false);
+    expect(cb.logging).toEqual(false);
   });
 
   it("have defaulted the callTimeout to 30000", function () {
-    expect(cbObj._callTimeout).toEqual(30000);
+    expect(cb._callTimeout).toEqual(30000);
   });
 });
 
-// describe("ClearBlade users should", function () {
-//   var initOptions, cbObj;
-//   beforeEach(function () {
-//     cbObj = new ClearBlade();
-//     initOptions = {
-//       systemKey: TargetPlatform.systemKey,
-//       systemSecret: TargetPlatform.systemSecret,
-//       URI: TargetPlatform.serverAddress,
-//       messagingURI: TargetPlatform.messagingURI,
-//     };
-//   });
+describe("ClearBlade user setup", function () {
+  beforeEach(function () {
+    var initOptions = {
+      systemKey: 'fakeSystemKey',
+      systemSecret: 'fakeSystemSecret'
+    };
+    cb.init(initOptions);
+  });
 
-//   it("register new user and be authenticated with email and password", function () {
-//     var authenticated = false;
-//     initOptions.email = "test_" + Math.floor(Math.random() * 10000) + "@test.com";
-//     initOptions.password = "password";
-//     initOptions.registerUser = true;
-//     initOptions.callback = function(err, response) {
-//       expect(cbObj.user).toBeDefined();
-//       expect(cbObj.user.email).toEqual(initOptions.email);
-//       expect(cbObj.user.authToken).toBeDefined();
-//       cbObj.isCurrentUserAuthenticated(function(err, isAuthenticated) {
-//         expect(err).toEqual(false);
-//         expect(isAuthenticated).toEqual(true);
-//         cbObj.logoutUser(function(err, response) {
-//           expect(err).toEqual(false);
-//           cbObj.isCurrentUserAuthenticated(function(err, isAuthenticated) {
-//             expect(err).toEqual(false);
-//             expect(isAuthenticated).toEqual(false);
-//             authenticated = true;
-//           });
-//         });
-//       });
-//     };
-//     cbObj.init(initOptions);
-//     waitsFor(function() {
-//       return authenticated;
-//     }, "user should be defined", TEST_TIMEOUT);
-//   });
-// });
+  it('should register a new user correctly', function () {
+    var callNum = ClearBlade.request.calls.count(); // we get the call count so we can grab the right call later
+    cb.registerUser('test@fake.com', 'testPass', function (err, data) {});
+    var expectedData = {
+      method: 'POST',
+      endpoint: 'api/v/1/user/reg',
+      useUser: false,
+      systemKey: 'fakeSystemKey',
+      systemSecret: 'fakeSystemSecret',
+      timeout: 30000,
+      URI: 'https://platform.clearblade.com',
+      body: {
+	email: 'test@fake.com',
+	password: 'testPass'
+      }
+    };
+    expect(ClearBlade.request.calls.argsFor(callNum)[0]).toEqual(expectedData);
+  });
 
-// describe("ClearBlade anonymous users", function () {
-//   var initOptions, cbObj;
-//   beforeEach(function () {
-//     cbObj = new ClearBlade();
-//     initOptions = {
-//       systemKey: TargetPlatform.noAuthsystemKey,
-//       systemSecret: TargetPlatform.noAuthsystemSecret,
-//       URI: TargetPlatform.serverAddress,
-//       messagingURI: TargetPlatform.messagingURI,
-//     };
-//   });
+  it('should login as anon', function () {
+    var callNum = ClearBlade.request.calls.count(); // we get the call count so we can grab the right call later
+    cb.loginAnon(function (err, data) {});
+    var expectedData = {
+      method: 'POST',
+      endpoint: 'api/v/1/user/anon',
+      useUser: false,
+      systemKey: 'fakeSystemKey',
+      systemSecret: 'fakeSystemSecret',
+      timeout: 30000,
+      URI: 'https://platform.clearblade.com'
+    };
+    expect(ClearBlade.request.calls.argsFor(callNum)[0]).toEqual(expectedData);
+  });
 
-//   it("should have anonymous user authenticated when no options given", function () {
-//     var authenticated = false;
-//     initOptions.callback = function() {
-//       authenticated = true;
-//       expect(cbObj.user).toBeDefined();
-//     };
-//     cbObj.init(initOptions);
-//     waitsFor(function() {
-//       return authenticated;
-//     }, "user should be defined", TEST_TIMEOUT);
-//   });
-// });
+  it('should login as user', function () {
+    var callNum = ClearBlade.request.calls.count(); // we get the call count so we can grab the right call later
+    var initOptions = {
+      systemKey: 'fakeSystemKey',
+      systemSecret: 'fakeSystemSecret',
+      email: 'test@fake.com',
+      password: 'testPass'
+    };
+    cb.init(initOptions);
+    var expectedData = {
+      method: 'POST',
+      endpoint: 'api/v/1/user/auth',
+      useUser: false,
+      systemKey: 'fakeSystemKey',
+      systemSecret: 'fakeSystemSecret',
+      timeout: 30000,
+      URI: 'https://platform.clearblade.com',
+      body: {
+	email: 'test@fake.com',
+	password: 'testPass'
+      }
+    };
+    expect(ClearBlade.request.calls.argsFor(callNum)[0]).toEqual(expectedData);
+  });
 
-// describe("ClearBlade collection fetching with users", function () {
-//   var cbObj = new ClearBlade();
-//   it("should be able to fetch data as an authenticated user", function () {
-//     var flag, returnedData, isAaronCreated;
-//     var isClearBladeInit = false;
-//     var initOptions = {
-//       systemKey: TargetPlatform.systemKey,
-//       systemSecret: TargetPlatform.systemSecret,
-//       URI: TargetPlatform.serverAddress,
-//       messagingURI: TargetPlatform.messagingURI,
-//       email: "test_" + Math.floor(Math.random() * 10000) + "@test.com",
-//       password: "password",
-//       registerUser: true,
-//       callback: function(err, user) {
-//         expect(err).toEqual(false);
-//         isClearBladeInit = true;
-//         col = cbObj.Collection(TargetPlatform.generalCollection);
-//       }
-//     };
-//     cbObj.init(initOptions);
-//     waitsFor(function() {
-//       return isClearBladeInit;
-//     }, "ClearBlade should be initialized", TEST_TIMEOUT);
+  it('should check to see if the user is authed', function () {
+    cb.setUser('test@fake.com', 'testUserToken');
+    var callNum = ClearBlade.request.calls.count(); // we get the call count so we can grab the right call later
+    cb.isCurrentUserAuthenticated(function (err, data) {});
+    var expectedData = {
+      method: 'POST',
+      endpoint: 'api/v/1/user/checkauth',
+      systemKey: 'fakeSystemKey',
+      systemSecret: 'fakeSystemSecret',
+      timeout: 30000,
+      URI: 'https://platform.clearblade.com',
+      user: {
+	email: 'test@fake.com',
+	authToken: 'testUserToken'
+      }
+    };
+    expect(ClearBlade.request.calls.argsFor(callNum)[0]).toEqual(expectedData);
+  });
 
-//     runs(function () {
-//       var query = cbObj.Query();
-//       query.equalTo('name', 'aaron');
-//       col.remove(query,function() {
-//         col.create({
-//           name: "aaron"
-//         }, function(err, response) {
-//           expect(err).toEqual(false);
-//           isAaronCreated = true;
-//         });
-//       });
-//     });
-
-//     waitsFor(function () {
-//       return isAaronCreated;
-//     }, "aaron should be created", TEST_TIMEOUT);
-
-//     runs(function () {
-//       flag = false;
-//       var callback = function (err, data) {
-//         flag = true;
-//         if (err) {
-//         } else {
-//           returnedData = data;
-//         }
-//       };
-//       col.fetch(callback);
-//     });
-
-//     waitsFor(function () {
-//       return flag;
-//     }, "returnedData should not be undefined", TEST_TIMEOUT);
-
-//     runs(function () {
-//       expect(returnedData[0].data.name).toEqual('aaron');
-//     });
-//   });
-// });
-
-// describe("ClearBlade Query usage with anonymous user", function() {
-//   var col, cbObj;
-//   beforeEach(function () {
-//     cbObj = new ClearBlade();
-//     var isClearBladeInit = false;
-//     var initOptions = {
-//       systemKey: TargetPlatform.noAuthsystemKey,
-//       systemSecret: TargetPlatform.noAuthsystemSecret,
-//       URI: TargetPlatform.serverAddress,
-//       messagingURI: TargetPlatform.messagingURI,
-//       callback: function(err, user) {
-//         expect(err).toEqual(false);
-//         isClearBladeInit = true;
-//         col = cbObj.Collection(TargetPlatform.generalNoAuthCollection);
-//       }
-//     };
-//     cbObj.init(initOptions);
-//     waitsFor(function() {
-//       return isClearBladeInit;
-//     }, "ClearBlade should be initialized", TEST_TIMEOUT);
-//   });
-
-//   // Make sure it exists by creating it.
-//   it("should return existing data", function() {
-//     var returnedData, isAaronCreated;
-//     runs(function () {
-//       var query = cbObj.Query();
-//       query.equalTo('name', 'aaron');
-//       col.remove(query,function() {
-//         col.create({
-//           name: "aaron"
-//         }, function(err, response) {
-//           expect(err).toEqual(false);
-//           isAaronCreated = true;
-//         });
-//       });
-//     });
-
-//     waitsFor(function() {
-//       return isAaronCreated;
-//     }, "aaron should be created", TEST_TIMEOUT);
-
-//     var queryDone;
-//     runs(function() {
-//       var query = cbObj.Query();
-//       query.equalTo('name', 'aaron');
-//       query.collection = col.ID;
-//       query.fetch(function(error, data) {
-//         expect(error).toBeFalsy();
-//         queryDone = true;
-//         returnedData = data;
-//       });
-//     });
-
-//     waitsFor(function() {
-//       return queryDone;
-//     }, "Query should be finished", TEST_TIMEOUT);
-
-//     runs(function() {
-//       expect(returnedData[0].data.name).toEqual('aaron');
-//     });
-//   });
-
-//   it("should allow multiple query parts", function() {
-//     var flag, returnedData, isAaronCreated;
-//     runs(function () {
-//       var query = cbObj.Query();
-//       query.equalTo('name', 'aaron');
-//       col.remove(query,function() {
-//         col.create({
-//           name: "aaron",
-//           age: 25
-//         }, function(err, response) {
-//           expect(err).toEqual(false);
-//           isAaronCreated = true;
-//         });
-//       });
-//     });
-
-//     waitsFor(function() {
-//       return isAaronCreated;
-//     }, "aaron should be created", TEST_TIMEOUT);
-
-//     var queryDone, queryDone2;
-//     // Negative case -- should return nothing
-//     runs(function() {
-//       var query = cbObj.Query();
-//       query.equalTo('name', 'aaron').equalTo('age', 30);
-//       query.collection = col.ID;
-//       query.fetch(function(error, data) {
-//         expect(error).toBeFalsy();
-//         queryDone = true;
-//         returnedData = data;
-//       });
-//     });
-
-//     waitsFor(function() {
-//       return queryDone;
-//     }, "Query should be finished", TEST_TIMEOUT);
-
-//     runs(function() {
-//       expect(returnedData).toEqual([]);
-//     });
-
-//     // Positive case -- should return an item
-//     runs(function() {
-//       var query = cbObj.Query();
-//       query.equalTo('name', 'aaron').equalTo('age', 25);
-//       query.collection = col.ID;
-//       query.fetch(function(error, data) {
-//         expect(error).toBeFalsy();
-//         queryDone2 = true;
-//         returnedData = data;
-//       });
-//     });
-
-//     waitsFor(function() {
-//       return queryDone2;
-//     }, "Query should be finished", TEST_TIMEOUT);
-
-//     runs(function() {
-//       expect(returnedData[0].data.name).toEqual('aaron');
-//     });
-//   });
-
-//   it("should allow or-based queries", function() {
-//     var flag, returnedData, isAaronCreated, isCharlieCreated;
-//     runs(function () {
-//       var query = cbObj.Query();
-//       query.equalTo('name', 'aaron');
-//       col.remove(query,function() {
-//         col.create({
-//           name: "aaron"
-//         }, function(err, response) {
-//           expect(err).toEqual(false);
-//           isAaronCreated = true;
-//         });
-//       });
-//       var query2 = cbObj.Query();
-//       query2.equalTo('name', 'charlie');
-//       col.remove(query2, function() {
-//         col.create({
-//           name: "charlie"
-//         }, function(err, response) {
-//           expect(err).toEqual(false);
-//           isCharlieCreated = true;
-//         });
-//       });
-//     });
-
-//     waitsFor(function() {
-//       return isAaronCreated;
-//     }, "aaron should be created", TEST_TIMEOUT);
-
-//     waitsFor(function() {
-//       return isCharlieCreated;
-//     }, "charlie should be created", TEST_TIMEOUT);
-
-//     var queryDone;
-//     runs(function() {
-//       var query = cbObj.Query();
-//       query.equalTo('name', 'aaron');
-//       var orQuery = cbObj.Query();
-//       orQuery.equalTo('name', 'charlie');
-//       query.or(orQuery);
-//       query.collection = col.ID;
-//       query.fetch(function(error, data) {
-//         expect(error).toBeFalsy();
-//         queryDone = true;
-//         returnedData = data;
-//       });
-//     });
-
-//     waitsFor(function() {
-//       return queryDone;
-//     }, "Query should be finished", TEST_TIMEOUT);
-
-//     var isCharlieDeleted;
-//     runs(function() {
-//       expect(returnedData.length).toEqual(2);
-//       // Cleanup
-//       var query2 = cbObj.Query();
-//       query2.equalTo('name', 'charlie');
-//       col.remove(query2, function() {
-//         isCharlieDeleted = true;
-//       });
-//     });
-
-//     waitsFor(function() {
-//       return isCharlieDeleted;
-//     }, "charlie should be deleted", TEST_TIMEOUT);
-//   });
-
-//   it("should allow pagination options", function() {
-//     runs(function() {
-//       var query = cbObj.Query();
-//       query.equalTo('name', 'aaron');
-//       query.setPage(10, 1);
-//       expect(query.query.PAGESIZE).toEqual(10);
-//       expect(query.query.PAGENUM).toEqual(1);
-//     });
-//   });
-
-//   it("should allow sorting options", function() {
-//     runs(function() {
-//       var query = cbObj.Query();
-//       query.equalTo('name', 'aaron');
-//       query.collection = col.ID;
-//       query.ascending('name');
-//       expect(query.query.SORT).toEqual([{"ASC": "name"}]);
-//     });
-//     runs(function() {
-//       var query = cbObj.Query();
-//       query.equalTo('name', 'aaron');
-//       query.descending('name');
-//       expect(query.query.SORT).toEqual([{"DESC": "name"}]);
-//     });
-//   });
-// });
+  it('should log out user', function () {
+    cb.setUser('test@fake.com', 'testUserToken');
+    var callNum = ClearBlade.request.calls.count(); // we get the call count so we can grab the right call later
+    cb.logoutUser(function (err, data) {});
+    var expectedData = {
+      method: 'POST',
+      endpoint: 'api/v/1/user/logout',
+      systemKey: 'fakeSystemKey',
+      systemSecret: 'fakeSystemSecret',
+      timeout: 30000,
+      URI: 'https://platform.clearblade.com',
+      user: {
+	email: 'test@fake.com',
+	authToken: 'testUserToken'
+      }
+    };
+    expect(ClearBlade.request.calls.argsFor(callNum)[0]).toEqual(expectedData);
+  });
+  
+});
 
 // describe("ClearBlade collections fetching", function () {
 //   var col, cbObj;
