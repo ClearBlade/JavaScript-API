@@ -74,7 +74,7 @@ if (!window.console) {
    * &lt;p>{String} [systemSecret] This is the app secret that will be used in combination with the systemKey to authenticate your app&lt;/p>
    * &lt;p>{String} [URI] This is the URI used to identify where the Platform is located. Default is https://platform.clearblade.com&lt;/p>
    * &lt;p>{String} [messagingURI] This is the URI used to identify where the Messaging server is located. Default is platform.clearblade.com&lt;/p>
-   * &lt;p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904&lt;/p>
+n   * &lt;p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904&lt;/p>
    * &lt;p>{Boolean} [logging] This is the property that tells the API whether or not the API will log to the console. This should be left `false` in production. Default is false&lt;/p>
    * &lt;p>{Number} [callTimeout] This is the amount of time that the API will use to determine a timeout. Default is 30 seconds&lt;/p>
    *&lt;/p>
@@ -453,7 +453,7 @@ if (!window.console) {
       }
       callback(err, itemArray);
     }
-   }
+   };
 
   var _request = function (options, callback) {
     var method = options.method || 'GET';
@@ -699,7 +699,7 @@ if (!window.console) {
         _createItemList(err, data.DATA, options, callback);
       };
       if (typeof callback === 'function') {
-        _request(reqOptions, callCallback);
+        ClearBlade.request(reqOptions, callCallback);
       } else {
         logger("No callback was defined!");
       }
@@ -736,7 +736,7 @@ if (!window.console) {
         user: this.user
       };
       if (typeof callback === 'function') {
-        _request(reqOptions, callback);
+        ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -774,7 +774,7 @@ if (!window.console) {
         user: this.user
       };
       if (typeof callback === 'function') {
-        _request(reqOptions, callback);
+        ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -815,7 +815,7 @@ if (!window.console) {
         user: this.user
       };
       if (typeof callback === 'function') {
-        _request(reqOptions, callback);
+        ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -926,7 +926,7 @@ if (!window.console) {
      * //will only match if an item has an attribute 'age' that is greater than 21
      */
     query.greaterThan = function (field, value) {
-      addFilterToQuery(this, "GT", field, value);
+      this.addFilterToQuery(this, "GT", field, value);
       return this;
     };
 
@@ -941,7 +941,7 @@ if (!window.console) {
      * //will only match if an item has an attribute 'age' that is greater than or equal to 21
      */
     query.greaterThanEqualTo = function (field, value) {
-      addFilterToQuery(this, "GTE", field, value);
+      this.addFilterToQuery(this, "GTE", field, value);
       return this;
     };
 
@@ -956,7 +956,7 @@ if (!window.console) {
      * //will only match if an item has an attribute 'age' that is less than 50
      */
     query.lessThan = function (field, value) {
-      addFilterToQuery(this, "LT", field, value);
+      this.addFilterToQuery(this, "LT", field, value);
       return this;
     };
 
@@ -971,7 +971,7 @@ if (!window.console) {
      * //will only match if an item has an attribute 'age' that is less than or equal to 50
      */
     query.lessThanEqualTo = function (field, value) {
-      addFilterToQuery(this, "LTE", field, value);
+      this.addFilterToQuery(this, "LTE", field, value);
       return this;
     };
 
@@ -986,7 +986,7 @@ if (!window.console) {
      * //will only match if an item has an attribute 'name' that is not equal to 'Jim'
      */
     query.notEqualTo = function (field, value) {
-      addFilterToQuery(this, "NEQ", field, value);
+      this.addFilterToQuery(this, "NEQ", field, value);
       return this;
     };
 
@@ -1070,13 +1070,12 @@ if (!window.console) {
         user: this.user,
         endpoint: this.endpoint
       };
-
       var callCallback = function (err, data) {
         _createItemList(err, data.DATA, options, callback);
       };
 
       if (typeof callback === 'function') {
-        _request(reqOptions, callCallback);
+        ClearBlade.request(reqOptions, callCallback);
       } else {
         logger("No callback was defined!");
       }
@@ -1115,7 +1114,7 @@ if (!window.console) {
       };
 
       if (typeof callback === 'function') {
-        _request(reqOptions, callback);
+        ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -1143,13 +1142,13 @@ if (!window.console) {
     query.remove = function (callback) {
       var reqOptions = {
         method: 'DELETE',
-        qs: 'query=' + _parseOperationQuery(this.query),
+        qs: 'query=' + _parseQuery(this.query),
         user: this.user,
         endpoint: this.endpoint
       };
 
       if (typeof callback === 'function') {
-        _request(reqOptions, callback);
+        ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -1168,8 +1167,11 @@ if (!window.console) {
     if (!(data instanceof Object)) {
       throw new Error("data must be of type Object");
     }
-    if (!(options instanceof Object)) {
-      throw new Error("Must supply a collection options object");
+    if(options === undefined || options === null || options === "") {
+      throw new Error("Must supply an options parameter");
+    }
+    if(typeof options === "string") {
+      options = {collectionID: options};
     }
     item.data = data;
 
@@ -1260,7 +1262,7 @@ if (!window.console) {
         user: this.user
       };
       if (typeof callback === 'function') {
-        _request(reqOptions, callback);
+        ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -1301,7 +1303,7 @@ if (!window.console) {
         user: this.user
       };
       if (typeof callback === 'function') {
-        _request(reqOptions, callback);
+        ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -1333,7 +1335,7 @@ if (!window.console) {
         user: this.user
       };
       if (typeof callback === 'function') {
-        _request(reqOptions, callback);
+        ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -1376,7 +1378,7 @@ if (!window.console) {
         callback(err, data);
       };
       if (typeof callback === 'function') {
-        _request(reqOptions, callCallback);
+        ClearBlade.request(reqOptions, callCallback);
       } else {
         logger('No callback was defined!');
       }
@@ -1590,9 +1592,48 @@ if (!window.console) {
     messaging.Disconnect = function(){
       this.client.disconnect()
     };
-
+    
     return messaging;
   };
+
+  /**
+   * Sends a push notification
+   * @method ClearBlade.sendPush
+   * @param {Array} users The list of users to which the message will be sent
+   * @param {Object} payload An object with the keys 'alert', 'badge', 'sound'
+   * @param {string} appId A string with appId that identifies the app to send to
+   * @param {function} callback A function like `function (err, data) {}` to handle the response
+   */
+  
+  ClearBlade.prototype.sendPush = function (users, payload, appId, callback) {
+    if (!callback || typeof callback !== 'function') {
+      throw new Error('Callback must be a function');
+    }
+    var formattedObject = {};
+    Object.getOwnPropertyNames(payload).forEach(function(key, element) {
+      if (key === "alert" || key === "badge" || key === "sound") {
+	if (!formattedObject.hasOwnProperty('aps')) {
+	  formattedObject.aps = {};
+	}
+        formattedObject.aps[key] = payload[key];
+      } else {
+        formattedObject[key] = payload[key];
+      }
+    });
+    var body = {
+      cbids: users,
+      "apple-message": formattedObject,
+      appid: appId
+    };
+    var reqOptions = {
+      method: 'POST',
+      endpoint: 'api/v/1/push/' + this.systemKey,
+      body: body,
+      user: this.user
+    };
+    ClearBlade.request(reqOptions, callback);
+  };  
+  
 })(window);
 </code></pre>
         </article>
@@ -1610,7 +1651,7 @@ if (!window.console) {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Tue Nov 18 2014 10:27:15 GMT-0600 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Tue Nov 25 2014 15:18:58 GMT-0600 (CST)
 </footer>
 
 <script> prettyPrint(); </script>
