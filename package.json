@@ -10,7 +10,7 @@
     "karma": "~0.12",
     "jasmine": "~2.0",
     "karma-jasmine": "~0.3",
-    "phantomjs": "~1.9.12",
+    "phantomjs": "~1.9",
     "karma-phantomjs-launcher": "~0.1",
     "karma-cli" : "~0.0.4"
    },
