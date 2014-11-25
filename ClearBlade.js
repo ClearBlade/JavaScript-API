@@ -1581,6 +1581,9 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     if (!callback || typeof callback !== 'function') {
       throw new Error('Callback must be a function');
     }
+    if (!Array.isArray(users)) {
+      throw new Error('User list must be an array of user IDs');
+    }
     var formattedObject = {};
     Object.getOwnPropertyNames(payload).forEach(function(key, element) {
       if (key === "alert" || key === "badge" || key === "sound") {
