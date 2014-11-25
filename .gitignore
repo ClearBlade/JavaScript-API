@@ -5,3 +5,4 @@ node_modules/
 /test/CodeSpec.js~
 /test/CollectionSpec.js~
 /test/UserSpec.js~
+/test/PushSpec.js~

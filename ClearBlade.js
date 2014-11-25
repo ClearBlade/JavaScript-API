@@ -1564,7 +1564,47 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     messaging.Disconnect = function(){
       this.client.disconnect()
     };
-
+    
     return messaging;
   };
+
+  /**
+   * Sends a push notification
+   * @method ClearBlade.sendPush
+   * @param {Array} users The list of users to which the message will be sent
+   * @param {Object} payload An object with the keys 'alert', 'badge', 'sound'
+   * @param {string} appId A string with appId that identifies the app to send to
+   * @param {function} callback A function like `function (err, data) {}` to handle the response
+   */
+  
+  ClearBlade.prototype.sendPush = function (users, payload, appId, callback) {
+    if (!callback || typeof callback !== 'function') {
+      throw new Error('Callback must be a function');
+    }
+    if (!Array.isArray(users)) {
+      throw new Error('User list must be an array of user IDs');
+    }
+    var formattedObject = {};
+    Object.getOwnPropertyNames(payload).forEach(function(key, element) {
+      if (key === "alert" || key === "badge" || key === "sound") {
+	if (!formattedObject.hasOwnProperty('aps')) {
+	  formattedObject.aps = {};
+	}
+        formattedObject.aps[key] = payload[key];
+      }
+    });
+    var body = {
+      cbids: users,
+      "apple-message": formattedObject,
+      appid: appId
+    };
+    var reqOptions = {
+      method: 'POST',
+      endpoint: 'api/v/1/push/' + this.systemKey,
+      body: body,
+      user: this.user
+    };
+    ClearBlade.request(reqOptions, callback);
+  };  
+  
 })(window);
