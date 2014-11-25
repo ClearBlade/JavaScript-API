@@ -46,7 +46,7 @@ if (!window.console) {
    * <p>{String} [systemSecret] This is the app secret that will be used in combination with the systemKey to authenticate your app</p>
    * <p>{String} [URI] This is the URI used to identify where the Platform is located. Default is https://platform.clearblade.com</p>
    * <p>{String} [messagingURI] This is the URI used to identify where the Messaging server is located. Default is platform.clearblade.com</p>
-   * <p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904</p>
+n   * <p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904</p>
    * <p>{Boolean} [logging] This is the property that tells the API whether or not the API will log to the console. This should be left `false` in production. Default is false</p>
    * <p>{Number} [callTimeout] This is the amount of time that the API will use to determine a timeout. Default is 30 seconds</p>
    *</p>
@@ -425,7 +425,7 @@ if (!window.console) {
       }
       callback(err, itemArray);
     }
-   }
+   };
 
   var _request = function (options, callback) {
     var method = options.method || 'GET';
@@ -671,7 +671,7 @@ if (!window.console) {
         _createItemList(err, data.DATA, options, callback);
       };
       if (typeof callback === 'function') {
-        _request(reqOptions, callCallback);
+        ClearBlade.request(reqOptions, callCallback);
       } else {
         logger("No callback was defined!");
       }
@@ -708,7 +708,7 @@ if (!window.console) {
         user: this.user
       };
       if (typeof callback === 'function') {
-        _request(reqOptions, callback);
+        ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -746,7 +746,7 @@ if (!window.console) {
         user: this.user
       };
       if (typeof callback === 'function') {
-        _request(reqOptions, callback);
+        ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -787,7 +787,7 @@ if (!window.console) {
         user: this.user
       };
       if (typeof callback === 'function') {
-        _request(reqOptions, callback);
+        ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -898,7 +898,7 @@ if (!window.console) {
      * //will only match if an item has an attribute 'age' that is greater than 21
      */
     query.greaterThan = function (field, value) {
-      addFilterToQuery(this, "GT", field, value);
+      this.addFilterToQuery(this, "GT", field, value);
       return this;
     };
 
@@ -913,7 +913,7 @@ if (!window.console) {
      * //will only match if an item has an attribute 'age' that is greater than or equal to 21
      */
     query.greaterThanEqualTo = function (field, value) {
-      addFilterToQuery(this, "GTE", field, value);
+      this.addFilterToQuery(this, "GTE", field, value);
       return this;
     };
 
@@ -928,7 +928,7 @@ if (!window.console) {
      * //will only match if an item has an attribute 'age' that is less than 50
      */
     query.lessThan = function (field, value) {
-      addFilterToQuery(this, "LT", field, value);
+      this.addFilterToQuery(this, "LT", field, value);
       return this;
     };
 
@@ -943,7 +943,7 @@ if (!window.console) {
      * //will only match if an item has an attribute 'age' that is less than or equal to 50
      */
     query.lessThanEqualTo = function (field, value) {
-      addFilterToQuery(this, "LTE", field, value);
+      this.addFilterToQuery(this, "LTE", field, value);
       return this;
     };
 
@@ -958,7 +958,7 @@ if (!window.console) {
      * //will only match if an item has an attribute 'name' that is not equal to 'Jim'
      */
     query.notEqualTo = function (field, value) {
-      addFilterToQuery(this, "NEQ", field, value);
+      this.addFilterToQuery(this, "NEQ", field, value);
       return this;
     };
 
@@ -1042,13 +1042,12 @@ if (!window.console) {
         user: this.user,
         endpoint: this.endpoint
       };
-
       var callCallback = function (err, data) {
         _createItemList(err, data.DATA, options, callback);
       };
 
       if (typeof callback === 'function') {
-        _request(reqOptions, callCallback);
+        ClearBlade.request(reqOptions, callCallback);
       } else {
         logger("No callback was defined!");
       }
@@ -1087,7 +1086,7 @@ if (!window.console) {
       };
 
       if (typeof callback === 'function') {
-        _request(reqOptions, callback);
+        ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -1115,13 +1114,13 @@ if (!window.console) {
     query.remove = function (callback) {
       var reqOptions = {
         method: 'DELETE',
-        qs: 'query=' + _parseOperationQuery(this.query),
+        qs: 'query=' + _parseQuery(this.query),
         user: this.user,
         endpoint: this.endpoint
       };
 
       if (typeof callback === 'function') {
-        _request(reqOptions, callback);
+        ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -1235,7 +1234,7 @@ if (!window.console) {
         user: this.user
       };
       if (typeof callback === 'function') {
-        _request(reqOptions, callback);
+        ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -1276,7 +1275,7 @@ if (!window.console) {
         user: this.user
       };
       if (typeof callback === 'function') {
-        _request(reqOptions, callback);
+        ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -1308,7 +1307,7 @@ if (!window.console) {
         user: this.user
       };
       if (typeof callback === 'function') {
-        _request(reqOptions, callback);
+        ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -1351,7 +1350,7 @@ if (!window.console) {
         callback(err, data);
       };
       if (typeof callback === 'function') {
-        _request(reqOptions, callCallback);
+        ClearBlade.request(reqOptions, callCallback);
       } else {
         logger('No callback was defined!');
       }
