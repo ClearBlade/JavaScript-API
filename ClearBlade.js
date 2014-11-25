@@ -1588,8 +1588,6 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
 	  formattedObject.aps = {};
 	}
         formattedObject.aps[key] = payload[key];
-      } else {
-        formattedObject[key] = payload[key];
       }
     });
     var body = {
