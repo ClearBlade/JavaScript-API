@@ -140,7 +140,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      * @type String
      */
     ClearBlade.prototype.messagingURI = options.messagingURI;
-    this.messagingURI = options.messagingURI || "platform.clearblade.com";
+    this.messagingURI = options.messagingURI || "messaging.clearblade.com";
 
     /**
      * This is the default port used when connecting to the messaging server
@@ -1564,7 +1564,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     messaging.Disconnect = function(){
       this.client.disconnect()
     };
-    
+
     return messaging;
   };
 
@@ -1576,7 +1576,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
    * @param {string} appId A string with appId that identifies the app to send to
    * @param {function} callback A function like `function (err, data) {}` to handle the response
    */
-  
+
   ClearBlade.prototype.sendPush = function (users, payload, appId, callback) {
     if (!callback || typeof callback !== 'function') {
       throw new Error('Callback must be a function');
@@ -1605,6 +1605,6 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       user: this.user
     };
     ClearBlade.request(reqOptions, callback);
-  };  
-  
+  };
+
 })(window);
