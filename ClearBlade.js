@@ -140,7 +140,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      * @type String
      */
     ClearBlade.prototype.messagingURI = options.messagingURI;
-    this.messagingURI = options.messagingURI || "messaging.clearblade.com";
+    this.messagingURI = options.messagingURI || "platform.clearblade.com";
 
     /**
      * This is the default port used when connecting to the messaging server
