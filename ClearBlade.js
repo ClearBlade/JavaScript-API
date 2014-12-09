@@ -664,7 +664,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         method: 'GET',
         endpoint: this.endpoint,
         qs: query,
-        user: this.user
+        user: this.user,
+        URI: this.URI
       };
 
       var callCallback = function (err, data) {
@@ -705,7 +706,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         method: 'POST',
         endpoint: this.endpoint,
         body: newItem,
-        user: this.user
+        user: this.user,
+        URI: this.URI
       };
       if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
@@ -743,7 +745,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         method: 'PUT',
         endpoint: this.endpoint,
         body: {query: _query.query.FILTERS, $set: changes},
-        user: this.user
+        user: this.user,
+        URI: this.URI
       };
       if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
@@ -784,7 +787,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         method: 'DELETE',
         endpoint: this.endpoint,
         qs: query,
-        user: this.user
+        user: this.user,
+        URI: this.URI
       };
       if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
@@ -1040,7 +1044,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         method: 'GET',
         qs: 'query=' + _parseQuery(this.query),
         user: this.user,
-        endpoint: this.endpoint
+        endpoint: this.endpoint,
+        URI: this.URI
       };
       var callCallback = function (err, data) {
         _createItemList(err, data.DATA, options, callback);
@@ -1082,7 +1087,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         method: 'PUT',
         body: {query: this.query.FILTERS, $set: changes},
         user: this.user,
-        endpoint: this.endpoint
+        endpoint: this.endpoint,
+        URI: this.URI
       };
 
       if (typeof callback === 'function') {
@@ -1116,7 +1122,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         method: 'DELETE',
         qs: 'query=' + _parseQuery(this.query),
         user: this.user,
-        endpoint: this.endpoint
+        endpoint: this.endpoint,
+        URI: this.URI
       };
 
       if (typeof callback === 'function') {
@@ -1231,7 +1238,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         method: 'POST',
         endpoint: 'api/v/1/code/' + this.systemKey + '/' + name,
         body: params,
-        user: this.user
+        user: this.user,
+        URI: this.URI
       };
       if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
@@ -1272,7 +1280,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       var reqOptions = {
         method: 'GET',
         endpoint: 'api/v/1/user/info',
-        user: this.user
+        user: this.user,
+        URI: this.URI
       };
       if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
@@ -1304,7 +1313,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         method: 'PUT',
         endpoint: 'api/v/1/user/info',
         body: data,
-        user: this.user
+        user: this.user,
+        URI: this.URI
       };
       if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
@@ -1344,7 +1354,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         method: 'GET',
         endpoint: 'api/v/1/user',
         qs: query,
-        user: this.user
+        user: this.user,
+        URI: this.URI
       };
       var callCallback = function(err, data) {
         callback(err, data);
@@ -1453,6 +1464,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         qs: 'topic=' + topic + '&count=' + count + '&last=' + startTime,
         authToken: this.user.authToken,
         timeout: this.callTimeout,
+        URI: this.URI
       };
       ClearBlade.request(reqOptions, function(err, response) {
         if (err) {
@@ -1602,7 +1614,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       method: 'POST',
       endpoint: 'api/v/1/push/' + this.systemKey,
       body: body,
-      user: this.user
+      user: this.user,
+      URI: this.URI
     };
     ClearBlade.request(reqOptions, callback);
   };
