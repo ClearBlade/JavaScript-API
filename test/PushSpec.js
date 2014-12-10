@@ -13,6 +13,7 @@ describe("ClearBlade Push messaging", function () {
 	expectedData = {
 	  method: 'POST',
 	  endpoint: 'api/v/1/push/fakeSystemKey',
+    URI: undefined,
 	  body: {
 	    cbids: ['user1', 'user2', 'user3'],
 	    "apple-message": {

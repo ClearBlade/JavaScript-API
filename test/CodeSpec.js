@@ -13,6 +13,7 @@ describe("ClearBlade code", function() {
     var expectedData = {
       method: 'POST',
       endpoint: 'api/v/1/code/fakeSystemKey/fakeCodeService',
+      URI: undefined,
       body: {
 	name: 'charlie',
 	age: 23

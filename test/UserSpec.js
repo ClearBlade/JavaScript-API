@@ -8,6 +8,7 @@ describe("ClearBlade Users", function () {
     var expectedData = {
       method: 'GET',
       endpoint: 'api/v/1/user/info',
+      URI: undefined,
       user: {
 	email: 'test@fake.com',
 	authToken: 'testUserToken'
@@ -19,12 +20,13 @@ describe("ClearBlade Users", function () {
       expect(ClearBlade.request.calls.argsFor(callNum)[0]).toEqual(expectedData);
     });
   });
-  
+
   it("Updates a users information", function () {
     var user = cb.User();
     var expectedData = {
       method: 'PUT',
       endpoint: 'api/v/1/user/info',
+      URI: undefined,
       body: {
 	height: 70
       },
@@ -39,12 +41,13 @@ describe("ClearBlade Users", function () {
       expect(ClearBlade.request.calls.argsFor(callNum)[0]).toEqual(expectedData);
     });
   });
-  
+
   it("Gets all the users", function () {
     var user = cb.User();
     var expectedData = {
       method: 'GET',
       endpoint: 'api/v/1/user',
+      URI: undefined,
       qs: '',
       user: {
 	email: 'test@fake.com',
