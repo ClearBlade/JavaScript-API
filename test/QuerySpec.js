@@ -94,6 +94,7 @@ describe('query calls', function () {
     var expectedData = {
       method: 'GET',
       endpoint: 'api/v/1/data/fakeCollectionID',
+      URI: undefined,
       qs:'query=%7B%22FILTERS%22%3A%5B%5B%7B%22EQ%22%3A%5B%7B%22name%22%3A%22john%22%7D%5D%7D%5D%5D%7D',
       user: {
 	email: 'test@fake.com',
@@ -113,6 +114,7 @@ describe('query calls', function () {
     var expectedData = {
       method: 'PUT',
       endpoint: 'api/v/1/data/fakeCollectionID',
+      URI: undefined,
       body: {
 	query: [[{EQ:[{name: 'john'}]}]],
 	$set: {name: 'Bill'}
@@ -124,7 +126,7 @@ describe('query calls', function () {
     };
     query.update({name: 'Bill'}, function (err, data) {
       expect(err).toBeNull();
-      expect(ClearBlade.request.calls.argsFor(callNum)[0]).toEqual(expectedData);      
+      expect(ClearBlade.request.calls.argsFor(callNum)[0]).toEqual(expectedData);
     });
   });
 
@@ -135,6 +137,7 @@ describe('query calls', function () {
     var expectedData = {
       method: 'DELETE',
       endpoint: 'api/v/1/data/fakeCollectionID',
+      URI: undefined,
       qs:'query=%7B%22FILTERS%22%3A%5B%5B%7B%22EQ%22%3A%5B%7B%22name%22%3A%22john%22%7D%5D%7D%5D%5D%7D',
       user: {
 	email: 'test@fake.com',
