@@ -1607,7 +1607,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     });
     var body = {
       cbids: users,
-      "apple-message": formattedObject,
+      "apple-message": JSON.stringify(formattedObject),
       appid: appId
     };
     var reqOptions = {

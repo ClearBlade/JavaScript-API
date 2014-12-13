@@ -16,11 +16,11 @@ describe("ClearBlade Push messaging", function () {
     URI: undefined,
 	  body: {
 	    cbids: ['user1', 'user2', 'user3'],
-	    "apple-message": {
+	    "apple-message": JSON.stringify({
 	      aps: {
 		alert: 'hello'
 	      }
-	    },
+	    }),
 	    appid: 'someIDSuppliedByApple'
 	  },
 	  user: {
