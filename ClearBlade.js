@@ -475,6 +475,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     // Set Credentials; Maybe some encryption later
     if (authToken) {
       httpRequest.setRequestHeader("CLEARBLADE-USERTOKEN", authToken);
+      httpRequest.setRequestHeader("ClearBlade-SystemKey", options.systemKey);
+      httpRequest.setRequestHeader("ClearBlade-SystemSecret", options.systemSecret);
     } else {
       httpRequest.setRequestHeader("ClearBlade-SystemKey", options.systemKey);
       httpRequest.setRequestHeader("ClearBlade-SystemSecret", options.systemSecret);
