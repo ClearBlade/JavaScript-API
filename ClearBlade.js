@@ -1475,7 +1475,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
    * var cb = ClearBlade.Messaging({"timeout":15}, callback);
    */
   ClearBlade.prototype.Messaging = function(options, callback){
-    if (!window.Messaging) {
+    if (!window.Paho) {
       throw new Error('Please include the mqttws31.js script on the page');
     }
     var _this = this;
@@ -1503,10 +1503,12 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     }
 
     var clientID = Math.floor(Math.random() * 10e12).toString();
-    messaging.client = new Messaging.Client(conf.hosts[0],conf.ports[0],clientID);
+    messaging.client = new Paho.MQTT.Client(conf.hosts[0],conf.ports[0],clientID);//new Messaging.Client(conf.hosts[0],conf.ports[0],clientID);
 
     messaging.client.onConnectionLost = function(response){
       console.log("ClearBlade Messaging connection lost- attempting to reestablish");
+      delete conf.mqttVersionExplicit;
+      delete conf.uris;
       messaging.client.connect(conf);
     };
 
@@ -1584,7 +1586,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      * //Topics can include spaces and punctuation  except "/"
      */
     messaging.publish = function(topic, payload){
-      var msg = new Messaging.Message(payload);
+      var msg = new Paho.MQTT.Message(payload);
       msg.destinationName = topic;
       msg.qos = this._qos;
       messaging.client.send(msg);
