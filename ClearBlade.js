@@ -49,6 +49,8 @@ if (!window.console) {
 n   * <p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904</p>
    * <p>{Boolean} [logging] This is the property that tells the API whether or not the API will log to the console. This should be left `false` in production. Default is false</p>
    * <p>{Number} [callTimeout] This is the amount of time that the API will use to determine a timeout. Default is 30 seconds</p>
+	 * <p>{Boolean} [mqttAuth] Setting this to true and providing an email and password will use mqtt websockets to authenticate, rather than http.
+	 * <p>{String} [messagingAuthPort] is the port that the messaging auth websocket server is listening on.
    *</p>
    */
   ClearBlade.prototype.init = function (options) {
@@ -102,7 +104,6 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       throw new Error('Cannot authenticate or register a new user when useUser is set');
     }
 
-
     // store keys
     /**
      * This is the app key that will identify your app in order to connect to the Platform
@@ -140,8 +141,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      * @type String
      */
     ClearBlade.prototype.messagingURI = options.messagingURI;
-    this.messagingURI = options.messagingURI || "platform.clearblade.com";
-
+    this.messagingURI = options.messagingURI || "platform.clearblade.com";		
     /**
      * This is the default port used when connecting to the messaging server
      * @prpopert messagingPort
@@ -168,7 +168,14 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      */
     ClearBlade.prototype._callTimeout = options.callTimeout;
     this._callTimeout =  options.callTimeout || 30000; //default to 30 seconds
-
+		
+		/**
+		 * This property tells us which port to use for websocket mqtt auth.
+		 * @property messagingAuthPort
+		 * @type Number
+		 */
+		this.messagingAuthPort = options.messagingAuthPort || 8907;
+		
     this.user = null;
 
     if (options.useUser) {
@@ -184,9 +191,15 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         }
       });
     } else if (options.email) {
-      this.loginUser(options.email, options.password, function(err, user) {
-        execute(err, user, options.callback);
-      });
+			if (options.mqttAuth){
+				this.loginUserMqtt(options.email,options.password,function (err,user){
+					execute(err,user,options.callback);
+				});
+			} else {
+				this.loginUser(options.email, options.password, function(err, user) {
+					execute(err, user, options.callback);
+				});
+			}
     } else {
       this.loginAnon(function(err, user) {
         execute(err, user, options.callback);
@@ -380,6 +393,81 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     });
   };
 
+	
+	ClearBlade.prototype.loginUserMqtt = function(email, password,callback) {
+		var _this = this;
+		_validateEmailPassword(email,password);
+		var clientid = email+":"+password;
+		var client = new Paho.MQTT.Client(_this.messagingURI,
+																			_this.messagingAuthPort,
+																			"/mqtt_auth",
+																			clientid);
+		var ourTopic = _this.systemKey+"/"+email;
+		//helper
+		var getString = function(msg){
+			//take two bytes
+			if (msg.length < 2){
+				var err = new Error("Bad Return Value from mqtt auth: bad length");
+				callback(err,null);
+			}
+			var b1 = msg[0];
+			var b2 = msg[1];
+			//get the string length
+			var len = b1.charCodeAt(0) + b2.charCodeAt(0);
+			if (msg.length  < len+2){
+				var err = new Error("Bad return value from mqtt auth: length longer than substring")
+				callback(err,null);
+			}
+			return msg.substring(0,len)
+		};
+		
+		var onConnect = function(){
+			//subscribe to our topic
+			client.subscribe(ourTopic,{qos:0});
+		};
+
+		var success = false;
+		var msgArrived = function(msg){
+			//we only anticipate receiving one message
+			if (msg.destinationName != ourTopic){return;}
+			var body = msg.payloadString;
+			var tok = getString(body);
+			body = body.substring(tok.length+2);
+			//usrid is unused by the sdk at the momment
+			var usrid = getString(body);
+			body = body.substring(usrid.length+2);
+			var msgingHost = getString(body);
+			_this.setUser(email,tok);
+			_this.messagingURI = msgingHost;
+			success = true;
+			client.disconnect();
+			callback(false,_this.user);
+		}
+
+		var mqtt_options = {
+			useSSL: false,
+			cleanSession: true,
+			userName: _this.systemKey,
+			password: _this.systemSecret,
+			onSuccess: onConnect,
+			onFailure: function(msg){
+				if (!success){
+					var err = new Error("failed to authenticate: "+ JSON.stringify(msg));
+					callback(err,null);
+				}
+			}
+		};
+		
+		client.onConnectionLost = function(msg){
+			if (!success){
+				var err = new Error("connection lost " + JSON.stringify(msg));
+				callback(err,null);
+			}
+		};
+		client.onMessageArrived = msgArrived;
+		client.connect(mqtt_options);
+	}
+  
   /*
    * Helper functions
    */
