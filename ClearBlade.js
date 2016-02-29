@@ -445,7 +445,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
 		}
 
 		var mqtt_options = {
-			useSSL: false,
+			useSSL: true,
 			cleanSession: true,
 			userName: _this.systemKey,
 			password: _this.systemSecret,
