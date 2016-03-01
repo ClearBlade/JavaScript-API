@@ -46,7 +46,7 @@ if (!window.console) {
    * <p>{String} [systemSecret] This is the app secret that will be used in combination with the systemKey to authenticate your app</p>
    * <p>{String} [URI] This is the URI used to identify where the Platform is located. Default is https://platform.clearblade.com</p>
    * <p>{String} [messagingURI] This is the URI used to identify where the Messaging server is located. Default is platform.clearblade.com</p>
-n   * <p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904</p>
+   * <p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904</p>
    * <p>{Boolean} [logging] This is the property that tells the API whether or not the API will log to the console. This should be left `false` in production. Default is false</p>
    * <p>{Number} [callTimeout] This is the amount of time that the API will use to determine a timeout. Default is 30 seconds</p>
 	 * <p>{Boolean} [mqttAuth] Setting this to true and providing an email and password will use mqtt websockets to authenticate, rather than http.
@@ -393,21 +393,21 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     });
   };
 
-  /**
-   * Method to log user in via MQTT over websockets
+	/**
+   * Method to log user or developer in via MQTT over websockets
    * @method  ClearBlade.loginUserMqtt
 	 * @param  {String} email
 	 * @param  {String} password
-   * @param  {Function} callback
-   * @example
-   * cb.loginUserMqtt("foo@bar.baz","secret_password", function(err, body) {
-   *    if(err) {
-   *        //handle error
-   *    } else {
-   *        //do post login stuff
-   *    }
-   * })
-   */
+	 * @param  {Function} callback
+	 * @example
+	 * cb.loginUserMqtt("foo@bar.baz","secret_password", function(err, body) {
+	 *    if(err) {
+	 *        //handle error
+	 *    } else {
+	 *        //do post login stuff
+	 *    }
+	 * })
+	 */
 	ClearBlade.prototype.loginUserMqtt = function(email, password,callback) {
 		var _this = this;
 		_validateEmailPassword(email,password);
