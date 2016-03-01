@@ -393,7 +393,21 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     });
   };
 
-	
+  /**
+   * Method to log user in via MQTT over websockets
+   * @method  ClearBlade.loginUserMqtt
+	 * @param  {String} email
+	 * @param  {String} password
+   * @param  {Function} callback
+   * @example
+   * cb.loginUserMqtt("foo@bar.baz","secret_password", function(err, body) {
+   *    if(err) {
+   *        //handle error
+   *    } else {
+   *        //do post login stuff
+   *    }
+   * })
+   */
 	ClearBlade.prototype.loginUserMqtt = function(email, password,callback) {
 		var _this = this;
 		_validateEmailPassword(email,password);
@@ -450,9 +464,10 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
 			userName: _this.systemKey,
 			password: _this.systemSecret,
 			onSuccess: onConnect,
-			onFailure: function(msg){
+				onFailure: function(msg){
 				if (!success){
-					var err = new Error("failed to authenticate: "+ JSON.stringify(msg));
+						var err = new Error("failed to authenticate: "+ JSON.stringify(msg));
+						console.log(err)
 					callback(err,null);
 				}
 			}
