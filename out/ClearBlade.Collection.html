@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>JSDoc: Class: Collection</title>
-    
+
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
@@ -16,78 +16,81 @@
 <body>
 
 <div id="main">
-    
+
     <h1 class="page-title">Class: Collection</h1>
+
     
-    
+
 
 
 
 <section>
-    
+
 <header>
-    <h2>
-        <span class="ancestors"><a href="ClearBlade.html">ClearBlade</a>.</span>
     
-    Collection
-    </h2>
+        <h2>
+            <span class="ancestors"><a href="ClearBlade.html">ClearBlade</a>.</span>Collection</h2>
+        
+            <div class="class-description">This class represents a server-side collection. It does not actully make a connection upon instantiation, but has all the methods necessary to do so. It also has all the methods necessary to do operations on the server-side collections.</div>
+        
     
-        <div class="class-description">This class represents a server-side collection. It does not actully make a connection upon instantiation, but has all the methods necessary to do so. It also has all the methods necessary to do operations on the server-side collections.</div>
-    
-</header>  
+</header>
 
 <article>
     <div class="container-overview">
     
-    
-    
         
-<dt>
-    <h4 class="name" id="Collection"><span class="type-signature"></span>new Collection<span class="signature">(collectionID)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Creates a new Collection that represents the server-side collection with the specified collection ID
-    </div>
-    
 
     
+    <h2>Constructor</h2>
     
+
+    <h4 class="name" id="Collection"><span class="type-signature"></span>new Collection<span class="signature">(collectionID)</span><span class="type-signature"></span></h4>
+
     
+
+
+
+<div class="description">
+    Creates a new Collection that represents the server-side collection with the specified collection ID
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>collectionID</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -96,133 +99,152 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">The string ID for the collection you want to represent.</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line331">line 331</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line707">line 707</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
-    
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-    
-    
-    
-    
-    
-    
-</dd>
+    <pre class="prettyprint"><code>var col = cb.Collection("12asd3049qwe834qe23asdf1234");</code></pre>
+
+
 
     
     </div>
+
     
+
     
+
     
+
+     
+
     
+
     
-    
-    
-    
-    
-    
-    
-    
-    
+
     
         <h3 class="subsection-title">Methods</h3>
+
         
-        <dl>
             
-<dt>
-    <h4 class="name" id="create"><span class="type-signature"></span>create<span class="signature">(newItem, callback)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Creates a new item in the collection and returns the created item to the callback
-    </div>
-    
 
     
+
+    <h4 class="name" id="create"><span class="type-signature"></span>create<span class="signature">(newItem, callback)</span><span class="type-signature"></span></h4>
+
     
+
+
+
+<div class="description">
+    Creates a new item in the collection and returns the created item to the callback
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-    
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>newItem</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -231,21 +253,21 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">An object that represents an item that you want to add to the collection</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>callback</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -254,67 +276,79 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">Supplies processing for what to do with the data that is returned from the collection</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line412">line 412</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line790">line 790</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
-    
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
         <p class="code-caption">Creating a new item in the collection</p>
     
     <pre class="prettyprint"><code>//This example assumes a collection of items that have the columns: name, height, and age.
@@ -333,57 +367,59 @@ var callback = function (err, data) {
 col.create(newPerson, callback);
 //this inserts the the newPerson item into the collection that col represents</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    <h4 class="name" id="fetch"><span class="type-signature"></span>fetch<span class="signature">(_query, callback)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Reqests an item or a set of items from the collection.
-    </div>
-    
 
     
+
+    <h4 class="name" id="fetch"><span class="type-signature"></span>fetch<span class="signature">(_query, callback)</span><span class="type-signature"> &rarr; {<a href="ClearBlade.Item.html">ClearBlade.Item</a>}</span></h4>
+
     
+
+
+
+<div class="description">
+    Reqests an item or a set of items from the collection.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-    
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>_query</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -392,21 +428,21 @@ col.create(newPerson, callback);
 
             
             </td>
+
             
+
             
-            
-            
-            
-            <td class="description last">Used to request a specific item or subset of items from the collection on the server</td>
+
+            <td class="description last">Used to request a specific item or subset of items from the collection on the server. Optional.</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>callback</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -415,77 +451,101 @@ col.create(newPerson, callback);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">Supplies processing for what to do with the data that is returned from the collection</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line341">line 341</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line731">line 731</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
-    
-    
 
-    
 
-    
-    
-    
-    
-    
-    
-    
-        <h5>Examples</h5>
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
         
-        <p class="code-caption">The typical callback</p>
-    
-    <pre class="prettyprint"><code>var callback = function (err, data) {
-    if (err) {
-        //error handling
-    } else {
-        console.log(data);
-    }
-};</code></pre>
+<div class="param-desc">
+    An array of ClearBlade Items
+</div>
 
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="ClearBlade.Item.html">ClearBlade.Item</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+    <h5>Example</h5>
+    
         <p class="code-caption">Fetching data from a collection</p>
     
     <pre class="prettyprint"><code>var returnedData = [];
@@ -500,57 +560,59 @@ var callback = function (err, data) {
 col.fetch(query, callback);
 //this will give returnedData the value of what ever was returned from the server.</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    <h4 class="name" id="remove"><span class="type-signature"></span>remove<span class="signature">(_query, callback)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Removes an item or set of items from the specified collection
-    </div>
-    
 
     
+
+    <h4 class="name" id="remove"><span class="type-signature"></span>remove<span class="signature">(_query, callback)</span><span class="type-signature"></span></h4>
+
     
+
+
+
+<div class="description">
+    Removes an item or set of items from the specified collection
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-    
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>_query</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -559,21 +621,21 @@ col.fetch(query, callback);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">Query object that used to define what item or set of items to remove</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>callback</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -582,71 +644,83 @@ col.fetch(query, callback);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">Function that handles the response from the server</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line485">line 485</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line867">line 867</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
-    
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
         <p class="code-caption">Removing an item in a collection</p>
     
     <pre class="prettyprint"><code>//This example assumes that you have a collection with the item whose 'name' attribute is 'John'
-var query = new ClearBlade.Query();
+var query = ClearBlade.Query();
 query.equalTo('name', 'John');
 var callback = function (err, data) {
     if (err) {
@@ -659,57 +733,59 @@ var callback = function (err, data) {
 col.remove(query, callback);
 //removes every item whose 'name' attribute is equal to 'John'</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    <h4 class="name" id="update"><span class="type-signature"></span>update<span class="signature">(_query, changes, callback)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Updates an existing item or set of items
-    </div>
-    
 
     
+
+    <h4 class="name" id="update"><span class="type-signature"></span>update<span class="signature">(_query, changes, callback)</span><span class="type-signature"></span></h4>
+
     
+
+
+
+<div class="description">
+    Updates an existing item or set of items
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-    
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>_query</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -718,21 +794,21 @@ col.remove(query, callback);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">Query object to denote which items or set of Items will be changed</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>changes</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -741,21 +817,21 @@ col.remove(query, callback);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">Object representing the attributes that you want changed</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>callback</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -764,71 +840,83 @@ col.remove(query, callback);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">Function that handles the response of the server</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line448">line 448</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line828">line 828</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
-    
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
         <p class="code-caption">Updating a set of items</p>
     
     <pre class="prettyprint"><code>//This example assumes a collection of items that have the columns name and age.
-var query = new ClearBlade.Query();
+var query = ClearBlade.Query();
 query.equalTo('name', 'John');
 var changes = {
     age: 23
@@ -844,18 +932,17 @@ var callback = function (err, data) {
 col.update(query, changes, callback);
 //sets John's age to 23</code></pre>
 
-    
-</dd>
 
-        </dl>
+
+        
     
+
     
-    
-    
+
     
 </article>
 
-</section>  
+</section>
 
 
 
@@ -863,13 +950,13 @@ col.update(query, changes, callback);
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.Query.html">Query</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
 </nav>
 
-<br clear="both">
+<br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha1</a> on Thu Dec 12 2013 16:50:53 GMT-0600 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Mar 01 2016 10:30:05 GMT-0600 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

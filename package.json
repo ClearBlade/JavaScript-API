@@ -7,27 +7,25 @@
     "test": "test"
   },
   "dependencies": {
-    "karma": "~0.10.8",
-    "karma-chrome-launcher": "~0.1.2",
-    "karma-coffee-preprocessor": "~0.1.1",
-    "karma-firefox-launcher": "~0.1.2",
-    "karma-html2js-preprocessor": "~0.1.0",
-    "karma-jasmine": "~0.1.5",
-    "karma-requirejs": "~0.2.1",
-    "karma-phantomjs-launcher": "~0.1.1",
-    "karma-script-launcher": "~0.1.0",
-    "requirejs": "~2.1.9",
-    "phantomjs": "~1.9.2-6"
-  },
+    "karma": "~0.12",
+    "jasmine": "~2.0",
+    "karma-jasmine": "~0.3",
+    "phantomjs": "~1.9",
+    "karma-phantomjs-launcher": "~0.1",
+    "karma-firefox-launcher": "~0.1",
+    "karma-safari-launcher": "~0.1",
+    "karma-chrome-launcher": "~0.1",
+    "karma-cli" : "~0.0.4"
+   },
   "devDependencies": {},
   "scripts": {
-    "test": "karma start --browsers Firefox --single-run"
+    "test": "./node_modules/.bin/karma start --single-run --browsers PhantomJS"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/ClearBlade/JavaScript-API.git"
   },
-  "author": "",
+  "author": "ClearBlade Inc.",
   "license": "Apache License",
   "bugs": {
     "url": "https://github.com/ClearBlade/JavaScript-API/issues"

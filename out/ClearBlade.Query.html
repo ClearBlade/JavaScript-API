@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>JSDoc: Class: Query</title>
-    
+
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
@@ -16,76 +16,77 @@
 <body>
 
 <div id="main">
-    
+
     <h1 class="page-title">Class: Query</h1>
+
     
-    
+
 
 
 
 <section>
-    
+
 <header>
-    <h2>
-        <span class="ancestors"><a href="ClearBlade.html">ClearBlade</a>.</span>
     
-    Query
-    </h2>
+        <h2>
+            <span class="ancestors"><a href="ClearBlade.html">ClearBlade</a>.</span>Query</h2>
+        
     
-</header>  
+</header>
 
 <article>
     <div class="container-overview">
     
-    
-    
         
-<dt>
-    <h4 class="name" id="Query"><span class="type-signature"></span>new Query<span class="signature">(options)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        creates a Query object that can be used in Collection methods or on its own to operate on items on the server
-    </div>
-    
 
     
+
+    <h4 class="name" id="Query"><span class="type-signature"></span>new Query<span class="signature">(options)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
     
+
+
+
+<div class="description">
+    creates and returns a Query object that can be used in Collection methods or on its own to operate on items on the server
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-    
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>options</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -94,133 +95,169 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">Object that has configuration values used when instantiating a Query object</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line526">line 526</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line951">line 951</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Clearblade.Query the created query
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
 
     
 
-    
-    
-    
-    
-    
-    
-    
-</dd>
+
 
     
     </div>
+
     
+
     
+
     
+
+     
+
     
+
     
-    
-    
-    
-    
-    
-    
-    
-    
+
     
         <h3 class="subsection-title">Methods</h3>
+
         
-        <dl>
             
-<dt>
-    <h4 class="name" id="equalTo"><span class="type-signature"></span>equalTo<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Creates an equality clause in the query object
-    </div>
-    
 
     
+
+    <h4 class="name" id="equalTo"><span class="type-signature"></span>equalTo<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
+
     
+
+
+
+<div class="description">
+    Creates an equality clause in the query object
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-    
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>field</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -229,21 +266,21 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">String defining what attribute to compare</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>value</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -252,125 +289,139 @@
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">String or Number that is used to compare against</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line559">line 559</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1025">line 1025</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
-    
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
         <p class="code-caption">Adding an equality clause to a query</p>
     
-    <pre class="prettyprint"><code>var query = new ClearBlade.Query();
+    <pre class="prettyprint"><code>var query = ClearBlade.Query();
 query.equalTo('name', 'John');
 //will only match if an item has an attribute 'name' that is equal to 'John'</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    <h4 class="name" id="fetch"><span class="type-signature"></span>fetch<span class="signature">(callback)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Reqests an item or a set of items from the query. Requires that
-the Query object was initialized with a collection.
-    </div>
-    
 
     
+
+    <h4 class="name" id="fetch"><span class="type-signature"></span>fetch<span class="signature">(callback)</span><span class="type-signature"> &rarr; {<a href="ClearBlade.Item.html">ClearBlade.Item</a>}</span></h4>
+
     
+
+
+
+<div class="description">
+    Reqests an item or a set of items from the query. Requires that
+the Query object was initialized with a collection.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-    
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>callback</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -379,142 +430,166 @@ the Query object was initialized with a collection.
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">Supplies processing for what to do with the data that is returned from the collection</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line709">line 709</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1171">line 1171</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
-    
-    
 
-    
 
-    
-    
-    
-    
-    
-    
-    
-        <h5>Examples</h5>
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
         
+<div class="param-desc">
+    An array of ClearBlade Items
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="ClearBlade.Item.html">ClearBlade.Item</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+    <h5>Example</h5>
+    
         <p class="code-caption">The typical callback</p>
     
-    <pre class="prettyprint"><code>var callback = function (err, data) {
+    <pre class="prettyprint"><code>var query = ClearBlade.Query({'collection': 'COLLECTIONID'});
+var callback = function (err, data) {
     if (err) {
         //error handling
     } else {
         console.log(data);
     }
-};</code></pre>
-
-        <p class="code-caption">Fetching data from a collection</p>
-    
-    <pre class="prettyprint"><code>var returnedData = [];
-var callback = function (err, data) {
-    if (err) {
-        throw new Error (data);
-    } else {
-        returnedData = data;
-    }
 };
+query.fetch(callback);</code></pre>
 
-query.fetch(callback);
-//this will give returnedData the value of what ever was returned from the server.</code></pre>
 
-    
-</dd>
 
         
             
-<dt>
-    <h4 class="name" id="greaterThan"><span class="type-signature"></span>greaterThan<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Creates a greater than clause in the query object
-    </div>
-    
 
     
+
+    <h4 class="name" id="greaterThan"><span class="type-signature"></span>greaterThan<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
+
     
+
+
+
+<div class="description">
+    Creates a greater than clause in the query object
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-    
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>field</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -523,21 +598,21 @@ query.fetch(callback);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">String defining what attribute to compare</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>value</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -546,124 +621,138 @@ query.fetch(callback);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">String or Number that is used to compare against</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line574">line 574</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1040">line 1040</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
-    
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
         <p class="code-caption">Adding a greater than clause to a query</p>
     
-    <pre class="prettyprint"><code>var query = new ClearBlade.Query();
+    <pre class="prettyprint"><code>var query = ClearBlade.Query();
 query.greaterThan('age', 21);
 //will only match if an item has an attribute 'age' that is greater than 21</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    <h4 class="name" id="greaterThanEqualTo"><span class="type-signature"></span>greaterThanEqualTo<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Creates a greater than or equality clause in the query object
-    </div>
-    
 
     
+
+    <h4 class="name" id="greaterThanEqualTo"><span class="type-signature"></span>greaterThanEqualTo<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
+
     
+
+
+
+<div class="description">
+    Creates a greater than or equality clause in the query object
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-    
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>field</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -672,21 +761,21 @@ query.greaterThan('age', 21);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">String defining what attribute to compare</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>value</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -695,124 +784,138 @@ query.greaterThan('age', 21);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">String or Number that is used to compare against</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line589">line 589</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1055">line 1055</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
-    
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
         <p class="code-caption">Adding a greater than or equality clause to a query</p>
     
-    <pre class="prettyprint"><code>var query = new ClearBlade.Query();
+    <pre class="prettyprint"><code>var query = ClearBlade.Query();
 query.greaterThanEqualTo('age', 21);
 //will only match if an item has an attribute 'age' that is greater than or equal to 21</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    <h4 class="name" id="lessThan"><span class="type-signature"></span>lessThan<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Creates a less than clause in the query object
-    </div>
-    
 
     
+
+    <h4 class="name" id="lessThan"><span class="type-signature"></span>lessThan<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
+
     
+
+
+
+<div class="description">
+    Creates a less than clause in the query object
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-    
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>field</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -821,21 +924,21 @@ query.greaterThanEqualTo('age', 21);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">String defining what attribute to compare</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>value</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -844,124 +947,138 @@ query.greaterThanEqualTo('age', 21);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">String or Number that is used to compare against</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line604">line 604</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1070">line 1070</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
-    
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
         <p class="code-caption">Adding a less than clause to a query</p>
     
-    <pre class="prettyprint"><code>var query = new ClearBlade.Query();
+    <pre class="prettyprint"><code>var query = ClearBlade.Query();
 query.lessThan('age', 50);
 //will only match if an item has an attribute 'age' that is less than 50</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    <h4 class="name" id="lessThanEqualTo"><span class="type-signature"></span>lessThanEqualTo<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Creates a less than or equality clause in the query object
-    </div>
-    
 
     
+
+    <h4 class="name" id="lessThanEqualTo"><span class="type-signature"></span>lessThanEqualTo<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
+
     
+
+
+
+<div class="description">
+    Creates a less than or equality clause in the query object
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-    
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>field</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -970,21 +1087,21 @@ query.lessThan('age', 50);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">String defining what attribute to compare</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>value</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -993,124 +1110,138 @@ query.lessThan('age', 50);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">String or Number that is used to compare against</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line619">line 619</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1085">line 1085</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
-    
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
         <p class="code-caption">Adding a less than or equality clause to a query</p>
     
-    <pre class="prettyprint"><code>var query = new ClearBlade.Query();
+    <pre class="prettyprint"><code>var query = ClearBlade.Query();
 query.lessThanEqualTo('age', 50);
 //will only match if an item has an attribute 'age' that is less than or equal to 50</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    <h4 class="name" id="notEqualTo"><span class="type-signature"></span>notEqualTo<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Creates a not equal clause in the query object
-    </div>
-    
 
     
+
+    <h4 class="name" id="matches"><span class="type-signature"></span>matches<span class="signature">(field, pattern)</span><span class="type-signature"></span></h4>
+
     
+
+
+
+<div class="description">
+    Creates an regular expression matching clause in the query object
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-    
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>field</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1119,21 +1250,184 @@ query.lessThanEqualTo('age', 50);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">String defining what attribute to compare</td>
         </tr>
-	
-	
-	
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pattern</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">String or Number that is used to compare against</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1115">line 1115</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+        <p class="code-caption">Adding an regex matching clause to a query</p>
+    
+    <pre class="prettyprint"><code>var query = ClearBlade.Query();
+query.matches('name', 'Smith$');
+//will only match if an item has an attribute 'name' that That ends in 'Smith'</code></pre>
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="notEqualTo"><span class="type-signature"></span>notEqualTo<span class="signature">(field, value)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Creates a not equal clause in the query object
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>field</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">String defining what attribute to compare</td>
+        </tr>
+
+    
+
         <tr>
             
                 <td class="name"><code>value</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1142,124 +1436,138 @@ query.lessThanEqualTo('age', 50);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">String or Number that is used to compare against</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line635">line 635</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1100">line 1100</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
-    
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
         <p class="code-caption">Adding a not equal clause to a query</p>
     
-    <pre class="prettyprint"><code>var query = new ClearBlade.Query();
+    <pre class="prettyprint"><code>var query = ClearBlade.Query();
 query.notEqualTo('name', 'Jim');
-//will only match if an item has an attribute 'name' that is not equal to 'Jim' </code></pre>
+//will only match if an item has an attribute 'name' that is not equal to 'Jim'</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    <h4 class="name" id="or"><span class="type-signature"></span>or<span class="signature">(that)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        chains an existing query object to the Query object in an or
-    </div>
-    
 
     
+
+    <h4 class="name" id="or"><span class="type-signature"></span>or<span class="signature">(that)</span><span class="type-signature"></span></h4>
+
     
+
+
+
+<div class="description">
+    chains an existing query object to the Query object in an or
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-    
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>that</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1268,127 +1576,141 @@ query.notEqualTo('name', 'Jim');
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">Query object that will be added in disjunction to this query object</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line651">line 651</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1130">line 1130</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
-    
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
         <p class="code-caption">Chaining two queries together in an or</p>
     
-    <pre class="prettyprint"><code>var query1 = new ClearBlade.Query();
-var query2 = new ClearBlade.Query();
+    <pre class="prettyprint"><code>var query1 = ClearBlade.Query();
+var query2 = ClearBlade.Query();
 query1.equalTo('name', 'John');
 query2.equalTo('name', 'Jim');
 query1.or(query2);
 //will match if an item has an attribute 'name' that is equal to 'John' or 'Jim'</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    <h4 class="name" id="remove"><span class="type-signature"></span>remove<span class="signature">(callback)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Removes an item or set of items from the Query
-    </div>
-    
 
     
+
+    <h4 class="name" id="remove"><span class="type-signature"></span>remove<span class="signature">(callback)</span><span class="type-signature"></span></h4>
+
     
+
+
+
+<div class="description">
+    Removes an item or set of items from the Query
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-    
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>callback</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1397,71 +1719,83 @@ query1.or(query2);
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">Function that handles the response from the server</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line826">line 826</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1247">line 1247</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
-    
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
         <p class="code-caption">Removing an item in a collection</p>
     
     <pre class="prettyprint"><code>//This example assumes that you have a collection with the item whose 'name' attribute is 'John'
-var query = new ClearBlade.Query({'collection': 'COLLECTIONID'});
+var query = ClearBlade.Query({'collection': 'COLLECTIONID'});
 query.equalTo('name', 'John');
 var callback = function (err, data) {
     if (err) {
@@ -1474,58 +1808,216 @@ var callback = function (err, data) {
 query.remove(callback);
 //removes every item whose 'name' attribute is equal to 'John'</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    <h4 class="name" id="update"><span class="type-signature"></span>update<span class="signature">(changes, callback)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Updates an existing item or set of items. Requires that a collection was 
-set when the Query was initialized.
-    </div>
-    
 
     
+
+    <h4 class="name" id="setPage"><span class="type-signature"></span>setPage<span class="signature">(pageSize, pageNum)</span><span class="type-signature"></span></h4>
+
     
+
+
+
+<div class="description">
+    Set the pagination options for a Query.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-    
-    
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pageSize</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Number of items per response page. The default is
+100.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pageNum</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Page number, taking into account the page size. The
+default is 1.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1157">line 1157</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="update"><span class="type-signature"></span>update<span class="signature">(changes, callback)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Updates an existing item or set of items. Requires that a collection was
+set when the Query was initialized.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
         <tr>
             
                 <td class="name"><code>changes</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1534,21 +2026,21 @@ set when the Query was initialized.
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">Object representing the attributes that you want changed</td>
         </tr>
-	
-	
-	
+
+    
+
         <tr>
             
                 <td class="name"><code>callback</code></td>
             
-            
+
             <td class="type">
             
                 
@@ -1557,71 +2049,83 @@ set when the Query was initialized.
 
             
             </td>
+
             
+
             
-            
-            
-            
+
             <td class="description last">Function that handles the response of the server</td>
         </tr>
-	
-	
-	</tbody>
+
+    
+    </tbody>
 </table>
-    
-    
-    
+
+
+
+
+
+
 <dl class="details">
-    
-        
-    
-    
+
     
 
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
+
     
-    
+
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line768">line 768</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1207">line 1207</a>
     </li></ul></dd>
     
+
     
+
     
-    
-    
-    
+
     
 </dl>
 
-    
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-    
-    
-    
-    
-    
-    
-        <h5>Example</h5>
-        
         <p class="code-caption">Updating a set of items</p>
     
     <pre class="prettyprint"><code>//This example assumes a collection of items that have the columns name and age.
-var query = new ClearBlade.Query({'collection': 'COLLECTIONID'});
+var query = ClearBlade.Query({'collection': 'COLLECTIONID'});
 query.equalTo('name', 'John');
 var changes = {
     age: 23
@@ -1637,18 +2141,17 @@ var callback = function (err, data) {
 query.update(changes, callback);
 //sets John's age to 23</code></pre>
 
-    
-</dd>
 
-        </dl>
+
+        
     
+
     
-    
-    
+
     
 </article>
 
-</section>  
+</section>
 
 
 
@@ -1656,13 +2159,13 @@ query.update(changes, callback);
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.Query.html">Query</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
 </nav>
 
-<br clear="both">
+<br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha1</a> on Thu Dec 12 2013 16:50:53 GMT-0600 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Mar 01 2016 10:30:05 GMT-0600 (CST)
 </footer>
 
 <script> prettyPrint(); </script>
