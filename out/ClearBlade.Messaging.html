@@ -29,10 +29,7 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="ClearBlade.html">ClearBlade</a>.</span>
-        
-        Messaging
-        </h2>
+            <span class="ancestors"><a href="ClearBlade.html">ClearBlade</a>.</span>Messaging</h2>
         
     
 </header>
@@ -41,30 +38,29 @@
     <div class="container-overview">
     
         
-<dt>
-    
-        <h4 class="name" id="Messaging"><span class="type-signature"></span>new Messaging<span class="signature">(options, callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Initializes the ClearBlade messaging object and connects to a server.
-    </div>
-    
 
     
 
-    
+    <h4 class="name" id="Messaging"><span class="type-signature"></span>new Messaging<span class="signature">(options, callback)</span><span class="type-signature"></span></h4>
 
     
 
+
+
+<div class="description">
+    Initializes the ClearBlade messaging object and connects to a server.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
@@ -147,9 +143,10 @@ failed connection</td>
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
@@ -177,9 +174,11 @@ failed connection</td>
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1362">line 1362</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1554">line 1554</a>
     </li></ul></dd>
     
 
@@ -191,31 +190,30 @@ failed connection</td>
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
         <p class="code-caption"> A standard connect</p>
     
     <pre class="prettyprint"><code>var callback = function (data) {
- console.log(data);
+  console.log(data);
 };
 //A connect with a nonstandard timeout
 var cb = ClearBlade.Messaging({"timeout":15}, callback);</code></pre>
 
-    
-</dd>
+
 
     
     </div>
@@ -235,32 +233,31 @@ var cb = ClearBlade.Messaging({"timeout":15}, callback);</code></pre>
     
         <h3 class="subsection-title">Methods</h3>
 
-        <dl>
+        
             
-<dt>
-    
-        <h4 class="name" id="getMessageHistory"><span class="type-signature">(static) </span>getMessageHistory<span class="signature">(topic, startTime, count, callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Gets the message history from a ClearBlade Messaging topic.
-    </div>
-    
 
     
 
-    
+    <h4 class="name" id=".getMessageHistory"><span class="type-signature">(static) </span>getMessageHistory<span class="signature">(topic, startTime, count, callback)</span><span class="type-signature"></span></h4>
 
     
 
+
+
+<div class="description">
+    Gets the message history from a ClearBlade Messaging topic.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
@@ -375,9 +372,10 @@ var cb = ClearBlade.Messaging({"timeout":15}, callback);</code></pre>
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
@@ -405,9 +403,11 @@ var cb = ClearBlade.Messaging({"timeout":15}, callback);</code></pre>
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1441">line 1441</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1639">line 1639</a>
     </li></ul></dd>
     
 
@@ -419,47 +419,45 @@ var cb = ClearBlade.Messaging({"timeout":15}, callback);</code></pre>
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
-</dd>
+
+
+
+
+
+
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="Disconnect"><span class="type-signature"></span>Disconnect<span class="signature">()</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Disconnects from the server.
-    </div>
-    
 
     
 
-    
+    <h4 class="name" id="disconnect"><span class="type-signature"></span>disconnect<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
 
-    
 
-    
+
+<div class="description">
+    Disconnects from the server.
+</div>
+
+
+
+
+
+
+
+
+
+
+
 
 
 <dl class="details">
@@ -487,9 +485,11 @@ var cb = ClearBlade.Messaging({"timeout":15}, callback);</code></pre>
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1554">line 1554</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1777">line 1777</a>
     </li></ul></dd>
     
 
@@ -501,58 +501,56 @@ var cb = ClearBlade.Messaging({"timeout":15}, callback);</code></pre>
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
         <p class="code-caption"> How to publish </p>
     
     <pre class="prettyprint"><code>var callback = function (data) {
- console.log(data);
+  console.log(data);
 };
 var cb = ClearBlade.Messaging({}, callback);
-cb.Disconnect()//why leave so soon :(</code></pre>
+cb.disconnect()//why leave so soon :(</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="Publish"><span class="type-signature"></span>Publish<span class="signature">(topic, payload)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Publishes to a topic.
-    </div>
-    
 
     
 
-    
+    <h4 class="name" id="publish"><span class="type-signature"></span>publish<span class="signature">(topic, payload)</span><span class="type-signature"></span></h4>
 
     
 
+
+
+<div class="description">
+    Publishes to a topic.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
@@ -624,9 +622,10 @@ cb.Disconnect()//why leave so soon :(</code></pre>
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
@@ -654,9 +653,11 @@ cb.Disconnect()//why leave so soon :(</code></pre>
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1466">line 1466</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1678">line 1678</a>
     </li></ul></dd>
     
 
@@ -668,59 +669,57 @@ cb.Disconnect()//why leave so soon :(</code></pre>
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
         <p class="code-caption"> How to publish </p>
     
     <pre class="prettyprint"><code>var callback = function (data) {
- console.log(data);
+  console.log(data);
 };
 var cb = ClearBlade.Messaging({}, callback);
-cb.Publish("ClearBlade/is awesome!","Totally rules");
+cb.publish("ClearBlade/is awesome!","Totally rules");
 //Topics can include spaces and punctuation  except "/"</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="Subscribe"><span class="type-signature"></span>Subscribe<span class="signature">(topic, options<span class="signature-attributes">opt</span>, messageCallback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Subscribes to a topic
-    </div>
-    
 
     
 
-    
+    <h4 class="name" id="subscribe"><span class="type-signature"></span>subscribe<span class="signature">(topic, options<span class="signature-attributes">opt</span>, messageCallback)</span><span class="type-signature"></span></h4>
 
     
 
+
+
+<div class="description">
+    Subscribes to a topic
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
@@ -845,9 +844,10 @@ cb.Publish("ClearBlade/is awesome!","Totally rules");
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
@@ -875,9 +875,11 @@ cb.Publish("ClearBlade/is awesome!","Totally rules");
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1487">line 1487</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1710">line 1710</a>
     </li></ul></dd>
     
 
@@ -889,58 +891,56 @@ cb.Publish("ClearBlade/is awesome!","Totally rules");
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
         <p class="code-caption"> How to publish </p>
     
     <pre class="prettyprint"><code>var callback = function (data) {
- console.log(data);
+  console.log(data);
 };
 var cb = ClearBlade.Messaging({}, callback);
-cb.Subscribe("ClearBlade/is awesome!",{});</code></pre>
+cb.subscribe("ClearBlade/is awesome!",{});</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="Unsubscribe"><span class="type-signature"></span>Unsubscribe<span class="signature">(topic, options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Unsubscribes from a topic
-    </div>
-    
 
     
 
-    
+    <h4 class="name" id="unsubscribe"><span class="type-signature"></span>unsubscribe<span class="signature">(topic, options<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
+
+
+<div class="description">
+    Unsubscribes from a topic
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
@@ -1030,9 +1030,10 @@ cb.Subscribe("ClearBlade/is awesome!",{});</code></pre>
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
@@ -1060,9 +1061,11 @@ cb.Subscribe("ClearBlade/is awesome!",{});</code></pre>
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1527">line 1527</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1750">line 1750</a>
     </li></ul></dd>
     
 
@@ -1074,33 +1077,32 @@ cb.Subscribe("ClearBlade/is awesome!",{});</code></pre>
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
         <p class="code-caption"> How to publish </p>
     
     <pre class="prettyprint"><code>var callback = function (data) {
- console.log(data);
+  console.log(data);
 };
 var cb = ClearBlade.Messaging({}, callback);
-cb.Unsubscribe("ClearBlade/is awesome!",{"onSuccess":function(){console.log("we unsubscribe");});</code></pre>
+cb.unsubscribe("ClearBlade/is awesome!",{"onSuccess":function(){console.log("we unsubscribe");});</code></pre>
 
-    
-</dd>
 
-        </dl>
+
+        
     
 
     
@@ -1116,13 +1118,13 @@ cb.Unsubscribe("ClearBlade/is awesome!",{"onSuccess":function(){console.log("we 
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
 </nav>
 
-<br clear="both">
+<br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Tue Nov 25 2014 15:18:59 GMT-0600 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Mar 01 2016 10:30:05 GMT-0600 (CST)
 </footer>
 
 <script> prettyPrint(); </script>

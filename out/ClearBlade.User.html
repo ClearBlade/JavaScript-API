@@ -29,10 +29,7 @@
 <header>
     
         <h2>
-            <span class="ancestors"><a href="ClearBlade.html">ClearBlade</a>.</span>
-        
-        User
-        </h2>
+            <span class="ancestors"><a href="ClearBlade.html">ClearBlade</a>.</span>User</h2>
         
     
 </header>
@@ -41,26 +38,25 @@
     <div class="container-overview">
     
         
-<dt>
-    
-        <h4 class="name" id="User"><span class="type-signature"></span>new User<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
-
-        
-    
-</dt>
-<dd>
 
     
 
-    
+    <h4 class="name" id="User"><span class="type-signature"></span>new User<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
     
 
-    
 
-    
 
-    
+
+
+
+
+
+
+
+
+
+
 
 
 <dl class="details">
@@ -88,9 +84,11 @@
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1245">line 1245</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1399">line 1399</a>
     </li></ul></dd>
     
 
@@ -102,20 +100,20 @@
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
-    <h5>Returns:</h5>
-    
-            
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
 <div class="param-desc">
     ClearBlade.User the created User object
 </div>
@@ -134,10 +132,9 @@
     </dd>
 </dl>
 
-        
-
     
-</dd>
+
+
 
     
     </div>
@@ -157,32 +154,31 @@
     
         <h3 class="subsection-title">Methods</h3>
 
-        <dl>
+        
             
-<dt>
-    
-        <h4 class="name" id="allUsers"><span class="type-signature"></span>allUsers<span class="signature">(_query, callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Method to retrieve all the users in a system
-    </div>
-    
 
     
 
-    
+    <h4 class="name" id="allUsers"><span class="type-signature"></span>allUsers<span class="signature">(_query, callback)</span><span class="type-signature"></span></h4>
 
     
 
+
+
+<div class="description">
+    Method to retrieve all the users in a system
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
@@ -251,9 +247,10 @@
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
@@ -281,9 +278,11 @@
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1315">line 1315</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1473">line 1473</a>
     </li></ul></dd>
     
 
@@ -295,21 +294,21 @@
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
     <pre class="prettyprint"><code>var user = cb.User();
 var query = cb.Query();
 query.equalTo("name", "John");
@@ -323,35 +322,33 @@ user.allUsers(query, function(err, body) {
 });
 //returns all the users with a name property equal to "John"</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="getUser"><span class="type-signature"></span>getUser<span class="signature">(callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Retrieves info on the current user
-    </div>
-    
 
     
 
-    
+    <h4 class="name" id="getUser"><span class="type-signature"></span>getUser<span class="signature">(callback)</span><span class="type-signature"></span></h4>
 
     
 
+
+
+<div class="description">
+    Retrieves info on the current user
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
@@ -397,9 +394,10 @@ user.allUsers(query, function(err, body) {
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
@@ -427,9 +425,11 @@ user.allUsers(query, function(err, body) {
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1257">line 1257</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1412">line 1412</a>
     </li></ul></dd>
     
 
@@ -441,21 +441,21 @@ user.allUsers(query, function(err, body) {
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
     <pre class="prettyprint"><code>var user = cb.User();
 user.getUser(function(err, body) {
    if(err) {
@@ -465,35 +465,33 @@ user.getUser(function(err, body) {
    }
 });</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="setUser"><span class="type-signature"></span>setUser<span class="signature">(data, callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Performs a put on the current users row
-    </div>
-    
 
     
 
-    
+    <h4 class="name" id="setUser"><span class="type-signature"></span>setUser<span class="signature">(data, callback)</span><span class="type-signature"></span></h4>
 
     
 
+
+
+<div class="description">
+    Performs a put on the current users row
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
@@ -562,9 +560,10 @@ user.getUser(function(err, body) {
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
@@ -592,9 +591,11 @@ user.getUser(function(err, body) {
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1283">line 1283</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1439">line 1439</a>
     </li></ul></dd>
     
 
@@ -606,21 +607,21 @@ user.getUser(function(err, body) {
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
     <pre class="prettyprint"><code>var newUserInfo = {
    "name": "newName",
    "age": 76
@@ -634,10 +635,9 @@ user.setUser(newUserInfo, function(err, body) {
    }
 });</code></pre>
 
-    
-</dd>
 
-        </dl>
+
+        
     
 
     
@@ -653,13 +653,13 @@ user.setUser(newUserInfo, function(err, body) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
 </nav>
 
-<br clear="both">
+<br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Tue Nov 25 2014 15:18:59 GMT-0600 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Mar 01 2016 10:30:05 GMT-0600 (CST)
 </footer>
 
 <script> prettyPrint(); </script>
