@@ -46,9 +46,11 @@ if (!window.console) {
    * <p>{String} [systemSecret] This is the app secret that will be used in combination with the systemKey to authenticate your app</p>
    * <p>{String} [URI] This is the URI used to identify where the Platform is located. Default is https://platform.clearblade.com</p>
    * <p>{String} [messagingURI] This is the URI used to identify where the Messaging server is located. Default is platform.clearblade.com</p>
-n   * <p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904</p>
+   * <p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904</p>
    * <p>{Boolean} [logging] This is the property that tells the API whether or not the API will log to the console. This should be left `false` in production. Default is false</p>
    * <p>{Number} [callTimeout] This is the amount of time that the API will use to determine a timeout. Default is 30 seconds</p>
+	 * <p>{Boolean} [mqttAuth] Setting this to true and providing an email and password will use mqtt websockets to authenticate, rather than http.
+	 * <p>{String} [messagingAuthPort] is the port that the messaging auth websocket server is listening on.
    *</p>
    */
   ClearBlade.prototype.init = function (options) {
@@ -102,7 +104,6 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       throw new Error('Cannot authenticate or register a new user when useUser is set');
     }
 
-
     // store keys
     /**
      * This is the app key that will identify your app in order to connect to the Platform
@@ -140,8 +141,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      * @type String
      */
     ClearBlade.prototype.messagingURI = options.messagingURI;
-    this.messagingURI = options.messagingURI || "platform.clearblade.com";
-
+    this.messagingURI = options.messagingURI || "platform.clearblade.com";		
     /**
      * This is the default port used when connecting to the messaging server
      * @prpopert messagingPort
@@ -168,7 +168,14 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      */
     ClearBlade.prototype._callTimeout = options.callTimeout;
     this._callTimeout =  options.callTimeout || 30000; //default to 30 seconds
-
+		
+		/**
+		 * This property tells us which port to use for websocket mqtt auth.
+		 * @property messagingAuthPort
+		 * @type Number
+		 */
+		this.messagingAuthPort = options.messagingAuthPort || 8907;
+		
     this.user = null;
 
     if (options.useUser) {
@@ -184,9 +191,15 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         }
       });
     } else if (options.email) {
-      this.loginUser(options.email, options.password, function(err, user) {
-        execute(err, user, options.callback);
-      });
+			if (options.mqttAuth){
+				this.loginUserMqtt(options.email,options.password,function (err,user){
+					execute(err,user,options.callback);
+				});
+			} else {
+				this.loginUser(options.email, options.password, function(err, user) {
+					execute(err, user, options.callback);
+				});
+			}
     } else {
       this.loginAnon(function(err, user) {
         execute(err, user, options.callback);
@@ -380,6 +393,96 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     });
   };
 
+	/**
+   * Method to log user or developer in via MQTT over websockets
+   * @method  ClearBlade.loginUserMqtt
+	 * @param  {String} email
+	 * @param  {String} password
+	 * @param  {Function} callback
+	 * @example
+	 * cb.loginUserMqtt("foo@bar.baz","secret_password", function(err, body) {
+	 *    if(err) {
+	 *        //handle error
+	 *    } else {
+	 *        //do post login stuff
+	 *    }
+	 * })
+	 */
+	ClearBlade.prototype.loginUserMqtt = function(email, password,callback) {
+		var _this = this;
+		_validateEmailPassword(email,password);
+		var clientid = email+":"+password;
+		var client = new Paho.MQTT.Client(_this.messagingURI,
+																			_this.messagingAuthPort,
+																			"/mqtt_auth",
+																			clientid);
+		var ourTopic = _this.systemKey+"/"+email;
+		//helper
+		var getString = function(msg){
+			//take two bytes
+			if (msg.length < 2){
+				var err = new Error("Bad Return Value from mqtt auth: bad length");
+				callback(err,null);
+			}
+			var b1 = msg[0];
+			var b2 = msg[1];
+			//get the string length
+			var len = b1.charCodeAt(0) + b2.charCodeAt(0);
+			if (msg.length  < len+2){
+				var err = new Error("Bad return value from mqtt auth: length longer than substring")
+				callback(err,null);
+			}
+			return msg.substring(0,len)
+		};
+		
+		var onConnect = function(){
+			//subscribe to our topic
+			client.subscribe(ourTopic,{qos:0});
+		};
+
+		var success = false;
+		var msgArrived = function(msg){
+			//we only anticipate receiving one message
+			if (msg.destinationName != ourTopic){return;}
+			var body = msg.payloadString;
+			var tok = getString(body);
+			body = body.substring(tok.length+2);
+			//usrid is unused by the sdk at the momment
+			var usrid = getString(body);
+			body = body.substring(usrid.length+2);
+			var msgingHost = getString(body);
+			_this.setUser(email,tok);
+			_this.messagingURI = msgingHost;
+			success = true;
+			client.disconnect();
+			callback(false,_this.user);
+		}
+
+		var mqtt_options = {
+			useSSL: true,
+			cleanSession: true,
+			userName: _this.systemKey,
+			password: _this.systemSecret,
+			onSuccess: onConnect,
+				onFailure: function(msg){
+				if (!success){
+						var err = new Error("failed to authenticate: "+ JSON.stringify(msg));
+						console.log(err)
+					callback(err,null);
+				}
+			}
+		};
+		
+		client.onConnectionLost = function(msg){
+			if (!success){
+				var err = new Error("connection lost " + JSON.stringify(msg));
+				callback(err,null);
+			}
+		};
+		client.onMessageArrived = msgArrived;
+		client.connect(mqtt_options);
+	}
+  
   /*
    * Helper functions
    */
@@ -475,6 +578,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     // Set Credentials; Maybe some encryption later
     if (authToken) {
       httpRequest.setRequestHeader("CLEARBLADE-USERTOKEN", authToken);
+      httpRequest.setRequestHeader("ClearBlade-SystemKey", options.systemKey);
+      httpRequest.setRequestHeader("ClearBlade-SystemSecret", options.systemSecret);
     } else {
       httpRequest.setRequestHeader("ClearBlade-SystemKey", options.systemKey);
       httpRequest.setRequestHeader("ClearBlade-SystemSecret", options.systemSecret);
@@ -657,7 +762,11 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         };
         query = 'query='+ _parseQuery(query);
       } else {
-        query = 'query='+ _parseQuery(_query.query);
+        if (Object.keys(_query) < 1) {
+          query = '';
+        } else {
+          query = 'query='+ _parseQuery(_query.query);
+        }
       }
 
       var reqOptions = {
@@ -792,6 +901,43 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       };
       if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    collection.columns = function (callback) {
+      if (typeof callback === 'function') {
+        ClearBlade.request({
+          method: 'GET',
+          URI: this.URI,
+          endpoint: this.endpoint + '/columns',
+          systemKey: this.systemKey,
+          systemSecret: this.systemSecret,
+          user: this.user,
+        }, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    collection.count = function (_query, callback) {
+      if (typeof callback === 'function') {
+        var query;
+        if (_query === undefined || Object.keys(_query).length < 1) {
+          query = '';
+        } else {
+          query = 'query=' + _parseOperationQuery(_query.query);
+        }
+        ClearBlade.request({
+          method: 'GET',
+          URI: this.URI,
+          qs: query,
+          endpoint: this.endpoint + '/count',
+          systemKey: this.systemKey,
+          systemSecret: this.systemSecret,
+          user: this.user,
+        }, callback);
       } else {
         logger("No callback was defined!");
       }
@@ -1258,6 +1404,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     var user = {};
     user.user = this.user;
     user.URI = this.URI;
+    user.endpoint = 'api/v/1/user';
     user.systemKey = this.systemKey;
     user.systemSecret = this.systemSecret;
     user.callTimeout = this._callTimeout;
@@ -1279,7 +1426,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     user.getUser = function(callback){
       var reqOptions = {
         method: 'GET',
-        endpoint: 'api/v/1/user/info',
+        endpoint: this.endpoint + '/info',
         user: this.user,
         URI: this.URI
       };
@@ -1311,7 +1458,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     user.setUser = function(data, callback){
       var reqOptions = {
         method: 'PUT',
-        endpoint: 'api/v/1/user/info',
+        endpoint: this.endpoint + '/info',
         body: data,
         user: this.user,
         URI: this.URI
@@ -1322,6 +1469,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         logger("No callback was defined!");
       }
     };
+
     /**
      * Method to retrieve all the users in a system
      * @method ClearBlade.User.prototype.allUsers
@@ -1342,26 +1490,59 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      * //returns all the users with a name property equal to "John"
      */
     user.allUsers = function(_query, callback) {
-      var query;
-      if (callback === undefined) {
-        callback = _query;
-        query = '';
-      } else {
-        query = 'query=' + _parseQuery(_query.query);
-      }
-
-      var reqOptions = {
-        method: 'GET',
-        endpoint: 'api/v/1/user',
-        qs: query,
-        user: this.user,
-        URI: this.URI
-      };
-      var callCallback = function(err, data) {
-        callback(err, data);
-      };
       if (typeof callback === 'function') {
-        ClearBlade.request(reqOptions, callCallback);
+        var query;
+        if (callback === undefined) {
+          callback = _query;
+          query = '';
+        } else if (Object.keys(_query).length < 1) {
+          query = '';
+        } else {
+          query = 'query=' + _parseQuery(_query.query);
+        }
+        ClearBlade.request({
+          method: 'GET',
+          systemKey: this.systemKey,
+          systemSecret: this.systemSecret,
+          endpoint: this.endpoint,
+          qs: query,
+          user: this.user,
+          URI: this.URI
+        }, callback);
+      } else {
+        logger('No callback was defined!');
+      }
+    };
+
+    user.setPassword = function(oldPass, newPass, callback) {
+      if (typeof callback === 'function') {
+        ClearBlade.request({
+          method: 'PUT',
+          endpoint: this.endpoint + '/pass',
+          body: {oldPass:oldPass,newPass:newPass},
+          user: this.user,
+          URI: this.URI,
+        }, callback);
+      } else {
+        logger('No callback was defined!');
+      }
+    };
+
+    user.count = function(_query, callback) {
+      if (typeof callback === 'function') {
+        var query;
+        if (_query === undefined || Object.keys(_query).length < 1) {
+          query = '';
+        } else {
+          query = 'query=' + _parseOperationQuery(_query.query);
+        }
+        ClearBlade.request({
+          method: 'GET',
+          endpoint: this.endpoint + '/count',
+          qs: query,
+          user: this.user,
+          URI: this.URI,
+        }, callback);
       } else {
         logger('No callback was defined!');
       }
@@ -1397,11 +1578,15 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
    * var cb = ClearBlade.Messaging({"timeout":15}, callback);
    */
   ClearBlade.prototype.Messaging = function(options, callback){
+    if (!window.Paho) {
+      throw new Error('Please include the mqttws31.js script on the page');
+    }
     var _this = this;
     var messaging = {};
 
     messaging.user = this.user;
     messaging.URI = this.URI;
+    messaging.endpoint = 'api/v/1/message';
     messaging.systemKey = this.systemKey;
     messaging.systemSecret = this.systemSecret;
     messaging.callTimeout = this._callTimeout;
@@ -1421,10 +1606,12 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     }
 
     var clientID = Math.floor(Math.random() * 10e12).toString();
-    messaging.client = new Messaging.Client(conf.hosts[0],conf.ports[0],clientID);
+    messaging.client = new Paho.MQTT.Client(conf.hosts[0],conf.ports[0],clientID);//new Messaging.Client(conf.hosts[0],conf.ports[0],clientID);
 
     messaging.client.onConnectionLost = function(response){
       console.log("ClearBlade Messaging connection lost- attempting to reestablish");
+      delete conf.mqttVersionExplicit;
+      delete conf.uris;
       messaging.client.connect(conf);
     };
 
@@ -1435,13 +1622,13 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     // the mqtt websocket library uses "onConnect," but our terminology uses
     // "onSuccess" and "onFailure"
     var onSuccess = function(data) {
-      callback(data);
+      callback(undefined, data);
     };
 
     messaging.client.onConnect = onSuccess;
     var onFailure = function(err) {
       console.log("ClearBlade Messaging failed to connect");
-      callback(err);
+      callback(err, undefined);
     };
 
     conf.onSuccess = options.onSuccess || onSuccess;
@@ -1460,7 +1647,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     messaging.getMessageHistory = function(topic, startTime, count, callback) {
       var reqOptions = {
         method: 'GET',
-        endpoint: 'api/v/1/message/' + this.systemKey,
+        endpoint: this.endpoint + '/' + this.systemKey,
         qs: 'topic=' + topic + '&count=' + count + '&last=' + startTime,
         authToken: this.user.authToken,
         timeout: this.callTimeout,
@@ -1475,9 +1662,22 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       });
     };
 
+    messaging.currentTopics = function(callback) {
+      if (typeof callback === 'function') {
+        ClearBlade.request({
+          method: 'GET',
+          endpoint: this.endpoint + '/' + this.systemKey + '/currentTopics',
+          user: this.user,
+          URI: this.URI,
+        }, callback);
+      } else {
+        logger('No callback was defined!');
+      }
+    };
+
     /**
      * Publishes to a topic.
-     * @method ClearBlade.Messaging.prototype.Publish
+     * @method ClearBlade.Messaging.prototype.publish
      * @param {string} topic Is the topic path of the message to be published. This will be sent to all listeners on the topic. No default.
      * @param {string | ArrayBuffer} payload The payload to be sent. Also no default.
      * @example <caption> How to publish </caption>
@@ -1485,20 +1685,31 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      *   console.log(data);
      * };
      * var cb = ClearBlade.Messaging({}, callback);
-     * cb.Publish("ClearBlade/is awesome!","Totally rules");
+     * cb.publish("ClearBlade/is awesome!","Totally rules");
      * //Topics can include spaces and punctuation  except "/"
      */
-
-    messaging.Publish = function(topic, payload){
-      var msg = new Messaging.Message(payload);
+    messaging.publish = function(topic, payload){
+      var msg = new Paho.MQTT.Message(payload);
       msg.destinationName = topic;
       msg.qos = this._qos;
       messaging.client.send(msg);
     };
 
+    messaging.publishREST = function(topic, payload, callback){
+      ClearBlade.request({
+        method: 'POST',
+        endpoint: this.endpoint + '/' + this.systemKey + '/publish',
+        body: {topic:topic, payload:payload},
+        systemKey: this.systemKey,
+        systemSecret: this.systemSecret,
+        user: this.user,
+        URI: this.URI,
+      }, callback);
+    };
+
     /**
      * Subscribes to a topic
-     * @method ClearBlade.Messaging.prototype.Subscribe
+     * @method ClearBlade.Messaging.prototype.subscribe
      * @param {string} topic The topic to subscribe to. No default.
      * @param {Object} [options] The configuration object. Options:
      <p>{Number} [qos] The quality of service specified within MQTT. The default is 0, or fire and forget.</p>
@@ -1512,9 +1723,9 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      *   console.log(data);
      * };
      * var cb = ClearBlade.Messaging({}, callback);
-     * cb.Subscribe("ClearBlade/is awesome!",{});
+     * cb.subscribe("ClearBlade/is awesome!",{});
      */
-    messaging.Subscribe = function (topic,options,messageCallback){
+    messaging.subscribe = function (topic,options,messageCallback){
       var _this = this;
 
       var onSuccess = function() {
@@ -1538,7 +1749,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
 
     /**
      * Unsubscribes from a topic
-     * @method ClearBlade.Messaging.prototype.Unsubscribe
+     * @method ClearBlade.Messaging.prototype.unsubscribe
      * @param {string} topic The topic to subscribe to. No default.
      * @param {Object} [options] The configuration object
      <p>
@@ -1552,9 +1763,9 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      *   console.log(data);
      * };
      * var cb = ClearBlade.Messaging({}, callback);
-     * cb.Unsubscribe("ClearBlade/is awesome!",{"onSuccess":function(){console.log("we unsubscribe");});
+     * cb.unsubscribe("ClearBlade/is awesome!",{"onSuccess":function(){console.log("we unsubscribe");});
      */
-    messaging.Unsubscribe = function(topic,options){
+    messaging.unsubscribe = function(topic,options){
       var conf = {};
       conf["invocationContext"] = options["invocationContext"] ||  {};
       conf["onSuccess"] = options["onSuccess"] || function(){};//null;
@@ -1565,15 +1776,15 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
 
     /**
      * Disconnects from the server.
-     * @method ClearBlade.Messaging.prototype.Disconnect
+     * @method ClearBlade.Messaging.prototype.disconnect
      * @example <caption> How to publish </caption>
      * var callback = function (data) {
      *   console.log(data);
      * };
      * var cb = ClearBlade.Messaging({}, callback);
-     * cb.Disconnect()//why leave so soon :(
+     * cb.disconnect()//why leave so soon :(
      */
-    messaging.Disconnect = function(){
+    messaging.disconnect = function(){
       this.client.disconnect()
     };
 
@@ -1599,9 +1810,9 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     var formattedObject = {};
     Object.getOwnPropertyNames(payload).forEach(function(key, element) {
       if (key === "alert" || key === "badge" || key === "sound") {
-	if (!formattedObject.hasOwnProperty('aps')) {
-	  formattedObject.aps = {};
-	}
+  if (!formattedObject.hasOwnProperty('aps')) {
+    formattedObject.aps = {};
+  }
         formattedObject.aps[key] = payload[key];
       }
     });
