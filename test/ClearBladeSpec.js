@@ -51,6 +51,7 @@ describe("ClearBlade user setup", function () {
       systemSecret: 'fakeSystemSecret'
     };
     cb.init(initOptions);
+    cb.setUser(null, 'fakeAuthToken');
   });
 
   it('should register a new user correctly', function () {
@@ -62,6 +63,7 @@ describe("ClearBlade user setup", function () {
       useUser: false,
       systemKey: 'fakeSystemKey',
       systemSecret: 'fakeSystemSecret',
+      authToken: 'fakeAuthToken',
       timeout: 30000,
       URI: 'https://platform.clearblade.com',
       body: {
