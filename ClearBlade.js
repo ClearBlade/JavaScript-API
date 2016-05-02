@@ -251,6 +251,7 @@ if (!window.console) {
       endpoint: 'api/v/1/user/reg',
       useUser: false,
       body: { "email": email, "password": password },
+      authToken: this.user.authToken,
       systemKey: this.systemKey,
       systemSecret: this.systemSecret,
       timeout: this._callTimeout,
