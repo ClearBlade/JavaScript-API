@@ -1264,14 +1264,17 @@ if (!window.console) {
      * query.columns(["name","age"], callback);
      * //gets values in columns name and age
      */
-    query.columns = function(queryString,callback){
+    query.columns = function(queryString){
+      
       var reqOptions = {
         method: 'GET',
         qs: 'query=' + _parseQuery({"SELECTCOLUMNS": JSON.parse(queryString)}),
         user: this.user,
         endpoint: this.endpoint,
         URI: this.URI
-     };
+      };
+
+    };
 
     /**
      * Removes an item or set of items from the Query
