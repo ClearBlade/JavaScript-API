@@ -1265,10 +1265,11 @@ if (!window.console) {
      * query.fetch(callback);
      * //gets values in columns name and age
      */
-    query.columns = function(queryString){
+    query.columns = function(columnsArray){
       
-      this.query = {"SELECTCOLUMNS": queryString};
-
+      this.query.SELECTCOLUMNS =  columnsArray;
+      return this;
+      
     };
 
 
