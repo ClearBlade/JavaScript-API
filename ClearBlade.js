@@ -1268,7 +1268,7 @@ if (!window.console) {
       
       var reqOptions = {
         method: 'GET',
-        qs: 'query=' + _parseQuery({"SELECTCOLUMNS": JSON.parse(queryString)}),
+        qs: 'query=' + _parseQuery({"SELECTCOLUMNS": queryString}),
         user: this.user,
         endpoint: this.endpoint,
         URI: this.URI
