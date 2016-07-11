@@ -55,7 +55,7 @@ describe("single query operators", function () {
   it('select columns', function () {
     var query = cb.Query({collectionName: 'TestCollectionName'});
     query.columns(["name"]);
-    var expectedQuery = [[{"SELECTCOLUMNS":["name"]}]];
+    var expectedQuery = ["name"];
     expect(query.query.SELECTCOLUMNS).toEqual(expectedQuery);
   });
 });
