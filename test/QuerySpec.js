@@ -51,6 +51,13 @@ describe("single query operators", function () {
     var expectedQuery = [[{RE:[{name: 'Smith$'}]}]];
     expect(query.query.FILTERS).toEqual(expectedQuery);
   });
+
+  it('select columns', function () {
+    var query = cb.Query({collectionName: 'TestCollectionName'});
+    query.columns(["name"]);
+    var expectedQuery = ["name"];
+    expect(query.query.SELECTCOLUMNS).toEqual(expectedQuery);
+  });
 });
 
 describe('More complex queries', function () {

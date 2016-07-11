@@ -1246,6 +1246,34 @@ if (!window.console) {
     };
 
     /**
+     * Gets rows of the specified columns
+     * @method ClearBlade.Query.prototype.columns
+     * @param {Object} Columns object
+     * @param {function} callback Function that handles the response of the server
+     * @example <caption>Getting values of columns</caption>
+     * //This example assumes a collection of items that have the columns name and age.
+     * var query = ClearBlade.Query({'collectionName': 'COLLECTIONNAME'});
+     * var callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         console.log(data);
+     *     }
+     * };
+     *
+     * query.columns(["name","age"]);
+     * query.fetch(callback);
+     * //gets values in columns name and age
+     */
+    query.columns = function(columnsArray){
+      
+      this.query.SELECTCOLUMNS =  columnsArray;
+      return this;
+      
+    };
+
+
+    /**
      * Removes an item or set of items from the Query
      * @method ClearBlade.Query.prototype.remove
      * @param {function} callback Function that handles the response from the server
