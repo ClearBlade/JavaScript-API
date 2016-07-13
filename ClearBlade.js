@@ -1860,4 +1860,25 @@ if (!window.console) {
     ClearBlade.request(reqOptions, callback);
   };
 
+
+  /**
+   * Gets an array of Edges on the system.
+   * @method ClearBlade.getEdges
+   * @param {function} callback A function like `function (err, data) {}` to handle the response
+   */
+
+  ClearBlade.prototype.getEdges = function(callback) {
+    if (!callback || typeof callback !== 'function') {
+      throw new Error('Callback must be a function');
+    }
+    var endpoint = "api/v/2/edges/"+this.systemKey;
+    var reqOptions = {
+      method: 'GET',
+      endpoint: endpoint,
+      user: this.user,
+      URI: this.URI
+    };
+    ClearBlade.request(reqOptions, callback);
+  };
+
 })(window);
