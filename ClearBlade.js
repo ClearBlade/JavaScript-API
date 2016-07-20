@@ -520,15 +520,11 @@ if (!window.console) {
    */
 
    var _createItemList = function(err, data, options, callback) {
-    if (err) {
-      callback(err, data);
-    } else {
-      var itemArray = [];
-      for (var i = 0; i < data.length; i++) {
-        itemArray.push(ClearBlade.prototype.Item(data[i], options));
-      }
-      callback(err, itemArray);
+    var itemArray = [];
+    for (var i = 0; i < data.length; i++) {
+      itemArray.push(ClearBlade.prototype.Item(data[i], options));
     }
+    callback(err, itemArray);
    };
 
   var _request = function (options, callback) {
@@ -779,7 +775,11 @@ if (!window.console) {
       };
 
       var callCallback = function (err, data) {
-        _createItemList(err, data.DATA, options, callback);
+        if(err) {
+          callback(err, data);
+        } else {
+          _createItemList(err, data.DATA, options, callback);
+        }
       };
       if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callCallback);
@@ -1196,7 +1196,7 @@ if (!window.console) {
       };
       var callCallback = function (err, data) {
         if(err) {
-          _createItemList(err, data, options, callback);
+          callback(err, data);
         } else {
           _createItemList(err, data.DATA, options, callback);
         }
