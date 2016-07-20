@@ -520,11 +520,15 @@ if (!window.console) {
    */
 
    var _createItemList = function(err, data, options, callback) {
-    var itemArray = [];
-    for (var i = 0; i < data.length; i++) {
-      itemArray.push(ClearBlade.prototype.Item(data[i], options));
+    if(data !== undefined) {
+      var itemArray = [];
+      for (var i = 0; i < data.length; i++) {
+        itemArray.push(ClearBlade.prototype.Item(data[i], options));
+      }
+      callback(err, itemArray);
+    } else {
+      callback(true, "There was some problem. Data is undefined");
     }
-    callback(err, itemArray);
    };
 
   var _request = function (options, callback) {
