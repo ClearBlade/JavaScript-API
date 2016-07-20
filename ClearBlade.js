@@ -520,14 +520,14 @@ if (!window.console) {
    */
 
    var _createItemList = function(err, data, options, callback) {
-    if (err) {
-      callback(err, data);
-    } else {
+    if(data !== undefined) {
       var itemArray = [];
       for (var i = 0; i < data.length; i++) {
         itemArray.push(ClearBlade.prototype.Item(data[i], options));
       }
       callback(err, itemArray);
+    } else {
+      callback(true, "There was some problem. Data is undefined");
     }
    };
 
@@ -779,7 +779,11 @@ if (!window.console) {
       };
 
       var callCallback = function (err, data) {
-        _createItemList(err, data.DATA, options, callback);
+        if(err) {
+          callback(err, data);
+        } else {
+          _createItemList(err, data.DATA, options, callback);
+        }
       };
       if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callCallback);
@@ -1195,7 +1199,11 @@ if (!window.console) {
         URI: this.URI
       };
       var callCallback = function (err, data) {
-        _createItemList(err, data.DATA, options, callback);
+        if(err) {
+          callback(err, data);
+        } else {
+          _createItemList(err, data.DATA, options, callback);
+        }
       };
 
       if (typeof callback === 'function') {
