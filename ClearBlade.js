@@ -1195,7 +1195,11 @@ if (!window.console) {
         URI: this.URI
       };
       var callCallback = function (err, data) {
-        _createItemList(err, data.DATA, options, callback);
+        if(err) {
+          _createItemList(err, data, options, callback);
+        } else {
+          _createItemList(err, data.DATA, options, callback);
+        }
       };
 
       if (typeof callback === 'function') {
