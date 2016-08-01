@@ -1889,4 +1889,40 @@ if (!window.console) {
     ClearBlade.request(reqOptions, callback);
   };
 
+
+  ClearBlade.prototype.Device = function(){
+    var device = {};
+
+    device.user = this.user;
+    device.URI = this.URI;
+    device.systemKey = this.systemKey;
+    device.systemSecret = this.systemSecret;
+
+    device.getDeviceByName = function (name, callback) {
+      var reqOptions = {
+        method: 'GET',
+        user: this.user,
+        endpoint: "api/v/2/devices/" + this.systemKey + "/" + name,
+        URI: this.URI
+      };
+      ClearBlade.request(reqOptions, callback);
+    };
+    
+    device.updateDevice = function (name, object, trigger, callback){
+      if (typeof object != "object"){
+         throw new Error('Invalid object format');
+      }
+      object["causeTrigger"] = trigger;
+      var reqOptions = {
+        method: 'PUT',
+        user: this.user,
+        endpoint: "api/v/2/devices/" + this.systemKey + "/" + name,
+        URI: this.URI
+      }
+      reqOptions["body"] = object;
+      ClearBlade.request(reqOptions, callback);
+    };
+    
+    return device;
+  };
 })(window);
