@@ -1913,7 +1913,6 @@ if (!window.console) {
          throw new Error('Invalid object format');
       }
       object["causeTrigger"] = trigger;
-      console.log(object);
       var reqOptions = {
         method: 'PUT',
         user: this.user,
