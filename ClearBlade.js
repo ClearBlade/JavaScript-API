@@ -719,6 +719,8 @@ if (!window.console) {
       collection.endpoint = "api/v/1/data/" + options;
       options = {collectionID: options};
     } else if (options.collectionName && options.collectionName !== "") {
+      collection.isUsingCollectionName = true;
+      collection.name = options.collectionName;
       collection.endpoint = "api/v/1/collection/" + this.systemKey + "/" + options.collectionName;
     } else if(options.collectionID && options.collectionID !== "") {
       collection.endpoint = "api/v/1/data/" + options.collectionID;
@@ -916,7 +918,7 @@ if (!window.console) {
         ClearBlade.request({
           method: 'GET',
           URI: this.URI,
-          endpoint: this.endpoint + '/columns',
+          endpoint: this.isUsingCollectionName ? "api/v/2/collection/" + this.systemKey + "/" + this.name + "/columns" : this.endpoint + '/columns',
           systemKey: this.systemKey,
           systemSecret: this.systemSecret,
           user: this.user,
