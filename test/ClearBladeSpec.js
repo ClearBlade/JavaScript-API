@@ -60,7 +60,11 @@ describe("ClearBlade user setup", function () {
     var expectedData = {
       method: 'POST',
       endpoint: 'api/v/1/user/reg',
-      useUser: false,
+      useUser: true,
+      user: {
+        email: null,
+        authToken: "fakeAuthToken"
+      },
       systemKey: 'fakeSystemKey',
       systemSecret: 'fakeSystemSecret',
       authToken: 'fakeAuthToken',

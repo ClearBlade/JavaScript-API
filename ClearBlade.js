@@ -249,7 +249,8 @@ if (!window.console) {
     ClearBlade.request({
       method: 'POST',
       endpoint: 'api/v/1/user/reg',
-      useUser: false,
+      useUser: true,
+      user: this.user,
       body: { "email": email, "password": password },
       authToken: this.user.authToken,
       systemKey: this.systemKey,
@@ -260,9 +261,10 @@ if (!window.console) {
       if (err) {
         execute(true, response, callback);
       } else {
-        execute(false, "User successfully registered", callback);
+        this.setUser(email, response.user_token);
+        execute(false, this.user, callback);
       }
-    });
+    }.bind(this));
   };
   /**
    * Method to check if the current user has an active server session
