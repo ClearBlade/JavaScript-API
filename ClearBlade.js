@@ -942,7 +942,7 @@ if (!window.console) {
           method: 'GET',
           URI: this.URI,
           qs: query,
-          endpoint: this.endpoint + '/count',
+          endpoint: this.isUsingCollectionName ? "api/v/2/collection/"+ this.systemKey +"/"+ this.name +"/count" : this.endpoint + '/count',
           systemKey: this.systemKey,
           systemSecret: this.systemSecret,
           user: this.user,
