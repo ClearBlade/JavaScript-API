@@ -141,7 +141,7 @@ if (!window.console) {
      * @type String
      */
     ClearBlade.prototype.messagingURI = options.messagingURI;
-    this.messagingURI = options.messagingURI || "platform.clearblade.com";		
+    this.messagingURI = options.messagingURI || "platform.clearblade.com";
     /**
      * This is the default port used when connecting to the messaging server
      * @prpopert messagingPort
@@ -168,14 +168,14 @@ if (!window.console) {
      */
     ClearBlade.prototype._callTimeout = options.callTimeout;
     this._callTimeout =  options.callTimeout || 30000; //default to 30 seconds
-		
+
 		/**
 		 * This property tells us which port to use for websocket mqtt auth.
 		 * @property messagingAuthPort
 		 * @type Number
 		 */
 		this.messagingAuthPort = options.messagingAuthPort || 8907;
-		
+
     this.user = null;
 
     if (options.useUser) {
@@ -437,7 +437,7 @@ if (!window.console) {
 			}
 			return msg.substring(0,len)
 		};
-		
+
 		var onConnect = function(){
 			//subscribe to our topic
 			client.subscribe(ourTopic,{qos:0});
@@ -475,7 +475,7 @@ if (!window.console) {
 				}
 			}
 		};
-		
+
 		client.onConnectionLost = function(msg){
 			if (!success){
 				var err = new Error("connection lost " + JSON.stringify(msg));
@@ -485,13 +485,27 @@ if (!window.console) {
 		client.onMessageArrived = msgArrived;
 		client.connect(mqtt_options);
 	}
-  
+
+
+  var masterCallback = null
+
+  ClearBlade.prototype.registerMasterCallback = function(callback) {
+    if(typeof callback === 'function') {
+      this.masterCallback = callback;
+    } else {
+      logger("Did you forget to supply a valid Callback!");
+    }
+  }
+
   /*
    * Helper functions
    */
 
   var execute = function (error, response, callback) {
     if (typeof callback === 'function') {
+      if(masterCallback !== null) {
+        masterCallback(error, response);
+      }
       callback(error, response);
     } else {
       logger("Did you forget to supply a valid Callback!");
@@ -1278,10 +1292,10 @@ if (!window.console) {
      * //gets values in columns name and age
      */
     query.columns = function(columnsArray){
-      
+
       this.query.SELECTCOLUMNS =  columnsArray;
       return this;
-      
+
     };
 
 
@@ -1911,7 +1925,7 @@ if (!window.console) {
       };
       ClearBlade.request(reqOptions, callback);
     };
-    
+
     device.updateDevice = function (name, object, trigger, callback){
       if (typeof object != "object"){
          throw new Error('Invalid object format');
@@ -1926,7 +1940,7 @@ if (!window.console) {
       reqOptions["body"] = object;
       ClearBlade.request(reqOptions, callback);
     };
-    
+
     return device;
   };
 })(window);
