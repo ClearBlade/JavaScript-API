@@ -10,7 +10,7 @@ beforeEach(function() {
 });
 
 function TestRequest(requester, expectedRequest) {
-  
+
 }
 
 describe("ClearBlade initialization should", function () {
