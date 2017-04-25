@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: User</title>
+    <title>JSDoc: Class: MessagingStats</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: User</h1>
+    <h1 class="page-title">Class: MessagingStats</h1>
 
     
 
@@ -31,7 +31,7 @@
         <h2>
             <span class="ancestors"><a href="ClearBlade.html">ClearBlade</a>.</span>
         
-        User
+        MessagingStats
         </h2>
         
     
@@ -43,7 +43,7 @@
         
 <dt>
     
-        <h4 class="name" id="User"><span class="type-signature"></span>new User<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
+        <h4 class="name" id="MessagingStats"><span class="type-signature"></span>new MessagingStats<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
 
         
     
@@ -90,7 +90,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1502">line 1502</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1940">line 1940</a>
     </li></ul></dd>
     
 
@@ -117,7 +117,7 @@
     
             
 <div class="param-desc">
-    ClearBlade.User the created User object
+    ClearBlade.MessagingStats the created MessagingStats object
 </div>
 
 
@@ -161,7 +161,7 @@
             
 <dt>
     
-        <h4 class="name" id="allUsers"><span class="type-signature"></span>allUsers<span class="signature">(_query, callback)</span><span class="type-signature"></span></h4>
+        <h4 class="name" id="getAveragePayloadSize"><span class="type-signature"></span>getAveragePayloadSize<span class="signature">(topic, start, stop, callback)</span><span class="type-signature"></span></h4>
 
         
     
@@ -170,7 +170,7 @@
 
     
     <div class="description">
-        Method to retrieve all the users in a system
+        Method to retrieve the average payload size for a topic
     </div>
     
 
@@ -206,13 +206,13 @@
 
         <tr>
             
-                <td class="name"><code>_query</code></td>
+                <td class="name"><code>topic</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="ClearBlade.Query.html">ClearBlade.Query</a></span>
+<span class="param-type">string</span>
 
 
             
@@ -222,7 +222,53 @@
 
             
 
-            <td class="description last">ClearBlade query used to filter users</td>
+            <td class="description last">Topic to retrieve the average payload size for</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>start</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Point in time in which to begin the query (epoch timestamp)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>stop</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Point in time in which to end the query (epoch timestamp)</td>
         </tr>
 
     
@@ -283,7 +329,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1576">line 1576</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1954">line 1954</a>
     </li></ul></dd>
     
 
@@ -310,18 +356,14 @@
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>var user = cb.User();
-var query = cb.Query();
-query.equalTo("name", "John");
-query.setPage(0,0);
-user.allUsers(query, function(err, body) {
+    <pre class="prettyprint"><code>cb.MessagingStats().getAveragePayloadSize("mytopic", 1490819666, 1490819676, function(err, body) {
    if(err) {
        //handle error
    } else {
        console.log(body);
    }
 });
-//returns all the users with a name property equal to "John"</code></pre>
+//returns {"payloadsize":28}</code></pre>
 
     
 </dd>
@@ -330,7 +372,7 @@ user.allUsers(query, function(err, body) {
             
 <dt>
     
-        <h4 class="name" id="getUser"><span class="type-signature"></span>getUser<span class="signature">(callback)</span><span class="type-signature"></span></h4>
+        <h4 class="name" id="getCurrentSubscribers"><span class="type-signature"></span>getCurrentSubscribers<span class="signature">(topic, callback)</span><span class="type-signature"></span></h4>
 
         
     
@@ -339,7 +381,7 @@ user.allUsers(query, function(err, body) {
 
     
     <div class="description">
-        Retrieves info on the current user
+        Method to retrieve the number of subscribers for a topic
     </div>
     
 
@@ -375,13 +417,13 @@ user.allUsers(query, function(err, body) {
 
         <tr>
             
-                <td class="name"><code>callback</code></td>
+                <td class="name"><code>topic</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type">string</span>
 
 
             
@@ -391,149 +433,7 @@ user.allUsers(query, function(err, body) {
 
             
 
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-    
-
-    
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1515">line 1515</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Example</h5>
-        
-    <pre class="prettyprint"><code>var user = cb.User();
-user.getUser(function(err, body) {
-   if(err) {
-       //handle error
-   } else {
-       //do stuff with user info
-   }
-});</code></pre>
-
-    
-</dd>
-
-        
-            
-<dt>
-    
-        <h4 class="name" id="setUser"><span class="type-signature"></span>setUser<span class="signature">(data, callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Performs a put on the current users row
-    </div>
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Object containing the data to update</td>
+            <td class="description last">Topic to retrieve the current subscribers for</td>
         </tr>
 
     
@@ -594,7 +494,7 @@ user.getUser(function(err, body) {
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1542">line 1542</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line2006">line 2006</a>
     </li></ul></dd>
     
 
@@ -621,18 +521,156 @@ user.getUser(function(err, body) {
     
         <h5>Example</h5>
         
-    <pre class="prettyprint"><code>var newUserInfo = {
-   "name": "newName",
-   "age": 76
-}
-var user = cb.User();
-user.setUser(newUserInfo, function(err, body) {
+    <pre class="prettyprint"><code>cb.MessagingStats().getCurrentSubscribers("mytopic", function(err, body) {
    if(err) {
        //handle error
    } else {
        console.log(body);
    }
-});</code></pre>
+});
+//returns {"subscribers": 42}</code></pre>
+
+    
+</dd>
+
+        
+            
+<dt>
+    
+        <h4 class="name" id="getOpenConnections"><span class="type-signature"></span>getOpenConnections<span class="signature">(callback)</span><span class="type-signature"></span></h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Method to retrieve the number of MQTT connections for a system
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1982">line 1982</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
+    <pre class="prettyprint"><code>cb.MessagingStats().getOpenConnections(function(err, body) {
+   if(err) {
+       //handle error
+   } else {
+       console.log(body);
+   }
+});
+//returns {"connections":42}</code></pre>
 
     
 </dd>

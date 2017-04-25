@@ -36,6 +36,7 @@ if (!window.console) {
   ClearBlade.MESSAGING_QOS_AT_MOST_ONCE = 0;
   ClearBlade.MESSAGING_QOS_AT_LEAST_ONCE = 1;
   ClearBlade.MESSAGING_QOS_EXACTLY_ONCE = 2;
+
   /**
    * This method initializes the ClearBlade module with the values needed to connect to the platform
    * @method ClearBlade.init
@@ -46,11 +47,11 @@ if (!window.console) {
    * <p>{String} [systemSecret] This is the app secret that will be used in combination with the systemKey to authenticate your app</p>
    * <p>{String} [URI] This is the URI used to identify where the Platform is located. Default is https://platform.clearblade.com</p>
    * <p>{String} [messagingURI] This is the URI used to identify where the Messaging server is located. Default is platform.clearblade.com</p>
-   * <p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904</p>
+n   * <p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904</p>
    * <p>{Boolean} [logging] This is the property that tells the API whether or not the API will log to the console. This should be left `false` in production. Default is false</p>
    * <p>{Number} [callTimeout] This is the amount of time that the API will use to determine a timeout. Default is 30 seconds</p>
-	 * <p>{Boolean} [mqttAuth] Setting this to true and providing an email and password will use mqtt websockets to authenticate, rather than http.
-	 * <p>{String} [messagingAuthPort] is the port that the messaging auth websocket server is listening on.
+   * <p>{Boolean} [mqttAuth] Setting this to true and providing an email and password will use mqtt websockets to authenticate, rather than http.</p>
+   * <p>{String} [messagingAuthPort] is the port that the messaging auth websocket server is listening on.</p>
    *</p>
    */
   ClearBlade.prototype.init = function (options) {
@@ -104,6 +105,7 @@ if (!window.console) {
       throw new Error('Cannot authenticate or register a new user when useUser is set');
     }
 
+
     // store keys
     /**
      * This is the app key that will identify your app in order to connect to the Platform
@@ -142,6 +144,7 @@ if (!window.console) {
      */
     ClearBlade.prototype.messagingURI = options.messagingURI;
     this.messagingURI = options.messagingURI || "platform.clearblade.com";
+
     /**
      * This is the default port used when connecting to the messaging server
      * @prpopert messagingPort
@@ -168,13 +171,12 @@ if (!window.console) {
      */
     ClearBlade.prototype._callTimeout = options.callTimeout;
     this._callTimeout =  options.callTimeout || 30000; //default to 30 seconds
-
-		/**
-		 * This property tells us which port to use for websocket mqtt auth.
-		 * @property messagingAuthPort
-		 * @type Number
-		 */
-		this.messagingAuthPort = options.messagingAuthPort || 8907;
+    /**   
+     * This property tells us which port to use for websocket mqtt auth.    
+     * @property messagingAuthPort    
+     * @type Number   
+     */   
+    this.messagingAuthPort = options.messagingAuthPort || 8907;
 
     this.user = null;
 
@@ -191,15 +193,15 @@ if (!window.console) {
         }
       });
     } else if (options.email) {
-			if (options.mqttAuth){
-				this.loginUserMqtt(options.email,options.password,function (err,user){
-					execute(err,user,options.callback);
-				});
-			} else {
-				this.loginUser(options.email, options.password, function(err, user) {
-					execute(err, user, options.callback);
-				});
-			}
+      if (options.mqttAuth){
+        this.loginUserMqtt(options.email,options.password,function (err,user){
+          execute(err,user,options.callback);
+        });
+      } else {
+        this.loginUser(options.email, options.password, function(err, user) {
+          execute(err, user, options.callback);
+        });
+      }
     } else {
       this.loginAnon(function(err, user) {
         execute(err, user, options.callback);
@@ -396,96 +398,95 @@ if (!window.console) {
     });
   };
 
-	/**
+  /**
    * Method to log user or developer in via MQTT over websockets
    * @method  ClearBlade.loginUserMqtt
-	 * @param  {String} email
-	 * @param  {String} password
-	 * @param  {Function} callback
-	 * @example
-	 * cb.loginUserMqtt("foo@bar.baz","secret_password", function(err, body) {
-	 *    if(err) {
-	 *        //handle error
-	 *    } else {
-	 *        //do post login stuff
-	 *    }
-	 * })
-	 */
-	ClearBlade.prototype.loginUserMqtt = function(email, password,callback) {
-		var _this = this;
-		_validateEmailPassword(email,password);
-		var clientid = email+":"+password;
-		var client = new Paho.MQTT.Client(_this.messagingURI,
-																			_this.messagingAuthPort,
-																			"/mqtt_auth",
-																			clientid);
-		var ourTopic = _this.systemKey+"/"+email;
-		//helper
-		var getString = function(msg){
-			//take two bytes
-			if (msg.length < 2){
-				var err = new Error("Bad Return Value from mqtt auth: bad length");
-				callback(err,null);
-			}
-			var b1 = msg[0];
-			var b2 = msg[1];
-			//get the string length
-			var len = b1.charCodeAt(0) + b2.charCodeAt(0);
-			if (msg.length  < len+2){
-				var err = new Error("Bad return value from mqtt auth: length longer than substring")
-				callback(err,null);
-			}
-			return msg.substring(0,len)
-		};
+   * @param  {String} email
+   * @param  {String} password
+   * @param  {Function} callback
+   * @example
+   * cb.loginUserMqtt("foo@bar.baz","secret_password", function(err, body) {
+   *    if(err) {
+   *        //handle error
+   *    } else {
+   *        //do post login stuff
+   *    }
+   * })
+   */
+  ClearBlade.prototype.loginUserMqtt = function(email, password,callback) {
+    var _this = this;
+    _validateEmailPassword(email,password);
+    var clientid = email+":"+password;
+    var client = new Paho.MQTT.Client(_this.messagingURI,
+                                      _this.messagingAuthPort,
+                                      "/mqtt_auth",
+                                      clientid);
+    var ourTopic = _this.systemKey+"/"+email;
+    //helper
+    var getString = function(msg){
+      //take two bytes
+      if (msg.length < 2){
+        var err = new Error("Bad Return Value from mqtt auth: bad length");
+        callback(err,null);
+      }
+      var b1 = msg[0];
+      var b2 = msg[1];
+      //get the string length
+      var len = b1.charCodeAt(0) + b2.charCodeAt(0);
+      if (msg.length  < len+2){
+        var err = new Error("Bad return value from mqtt auth: length longer than substring")
+        callback(err,null);
+      }
+      return msg.substring(0,len)
+    };
 
-		var onConnect = function(){
-			//subscribe to our topic
-			client.subscribe(ourTopic,{qos:0});
-		};
+    var onConnect = function(){
+      //subscribe to our topic
+      client.subscribe(ourTopic,{qos:0});
+    };
 
-		var success = false;
-		var msgArrived = function(msg){
-			//we only anticipate receiving one message
-			if (msg.destinationName != ourTopic){return;}
-			var body = msg.payloadString;
-			var tok = getString(body);
-			body = body.substring(tok.length+2);
-			//usrid is unused by the sdk at the momment
-			var usrid = getString(body);
-			body = body.substring(usrid.length+2);
-			var msgingHost = getString(body);
-			_this.setUser(email,tok);
-			_this.messagingURI = msgingHost;
-			success = true;
-			client.disconnect();
-			callback(false,_this.user);
-		}
+    var success = false;
+    var msgArrived = function(msg){
+      //we only anticipate receiving one message
+      if (msg.destinationName != ourTopic){return;}
+      var body = msg.payloadString;
+      var tok = getString(body);
+      body = body.substring(tok.length+2);
+      //usrid is unused by the sdk at the momment
+      var usrid = getString(body);
+      body = body.substring(usrid.length+2);
+      var msgingHost = getString(body);
+      _this.setUser(email,tok);
+      _this.messagingURI = msgingHost;
+      success = true;
+      client.disconnect();
+      callback(false,_this.user);
+    }
 
-		var mqtt_options = {
-			useSSL: true,
-			cleanSession: true,
-			userName: _this.systemKey,
-			password: _this.systemSecret,
-			onSuccess: onConnect,
-				onFailure: function(msg){
-				if (!success){
-						var err = new Error("failed to authenticate: "+ JSON.stringify(msg));
-						console.log(err)
-					callback(err,null);
-				}
-			}
-		};
+    var mqtt_options = {
+      useSSL: true,
+      cleanSession: true,
+      userName: _this.systemKey,
+      password: _this.systemSecret,
+      onSuccess: onConnect,
+        onFailure: function(msg){
+        if (!success){
+            var err = new Error("failed to authenticate: "+ JSON.stringify(msg));
+            console.log(err)
+          callback(err,null);
+        }
+      }
+    };
 
-		client.onConnectionLost = function(msg){
-			if (!success){
-				var err = new Error("connection lost " + JSON.stringify(msg));
-				callback(err,null);
-			}
-		};
-		client.onMessageArrived = msgArrived;
-		client.connect(mqtt_options);
-	}
-
+    client.onConnectionLost = function(msg){
+      if (!success){
+        var err = new Error("connection lost " + JSON.stringify(msg));
+        callback(err,null);
+      }
+    };
+    client.onMessageArrived = msgArrived;
+    client.connect(mqtt_options);
+  }
 
   var masterCallback = null
 
@@ -496,7 +497,6 @@ if (!window.console) {
       logger("Did you forget to supply a valid Callback!");
     }
   }
-
   /*
    * Helper functions
    */
@@ -536,14 +536,14 @@ if (!window.console) {
    */
 
    var _createItemList = function(err, data, options, callback) {
-    if(data !== undefined) {
+    if (data === undefined) {
+      callback(true, "There was some problem. Data is undefined");
+    } else {
       var itemArray = [];
       for (var i = 0; i < data.length; i++) {
         itemArray.push(ClearBlade.prototype.Item(data[i], options));
       }
       callback(err, itemArray);
-    } else {
-      callback(true, "There was some problem. Data is undefined");
     }
    };
 
@@ -576,11 +576,11 @@ if (!window.console) {
       httpRequest = new XMLHttpRequest();
 
       // if "withCredentials is not in the XMLHttpRequest object CORS is not supported
-      if (!("withCredentials" in httpRequest)) {
-        logger("Sorry it seems that CORS is not supported on your Browser. The RESTful api calls will not work!");
-        httpRequest = null;
-        throw new Error("CORS is not supported!");
-      }
+      // if (!("withCredentials" in httpRequest)) {
+        // logger("Sorry it seems that CORS is not supported on your Browser. The RESTful api calls will not work!");
+        // httpRequest = null;
+        // throw new Error("CORS is not supported!");
+      // }
       httpRequest.open(method, url, true);
 
     } else if (typeof window.XDomainRequest !== 'undefined') { // IE 8/9
@@ -677,9 +677,10 @@ if (!window.console) {
             }
           }
         } else {
-          var msg = "Request Failed: Status " + httpRequest.status + " " + (httpRequest.statusText);
+          var msg = httpRequest.responseText;
+          // var msg = "Request Failed: Status " + httpRequest.status + " " + (httpRequest.statusText);
           /*jshint expr: true */
-          httpRequest.responseText && (msg += "\nmessage:" + httpRequest.responseText);
+          // httpRequest.responseText && (msg += "\nmessage:" + httpRequest.responseText);
           logger(msg);
           error = true;
           execute(error, msg, callback);
@@ -937,7 +938,7 @@ if (!window.console) {
           endpoint: this.isUsingCollectionName ? "api/v/2/collection/" + this.systemKey + "/" + this.name + "/columns" : this.endpoint + '/columns',
           systemKey: this.systemKey,
           systemSecret: this.systemSecret,
-          user: this.user,
+          user: this.user
         }, callback);
       } else {
         logger("No callback was defined!");
@@ -959,7 +960,7 @@ if (!window.console) {
           endpoint: this.isUsingCollectionName ? "api/v/2/collection/"+ this.systemKey +"/"+ this.name +"/count" : this.endpoint + '/count',
           systemKey: this.systemKey,
           systemSecret: this.systemSecret,
-          user: this.user,
+          user: this.user
         }, callback);
       } else {
         logger("No callback was defined!");
@@ -1291,13 +1292,12 @@ if (!window.console) {
      * query.fetch(callback);
      * //gets values in columns name and age
      */
-    query.columns = function(columnsArray){
+   query.columns = function(columnsArray){
 
       this.query.SELECTCOLUMNS =  columnsArray;
       return this;
 
     };
-
 
     /**
      * Removes an item or set of items from the Query
@@ -1333,6 +1333,8 @@ if (!window.console) {
         logger("No callback was defined!");
       }
     };
+
+
 
     return query;
   };
@@ -1448,6 +1450,52 @@ if (!window.console) {
         logger("No callback was defined!");
       }
     };
+
+    /**
+     * Retrieves a list of completed services for a system
+     * @method  ClearBlade.Code.prototype.getCompletedServices
+     * @param  {Function} callback
+     * @example
+     * cb.Code().getCompletedServices(function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
+    code.getCompletedServices = function (callback) {
+      var reqOptions = {
+        method: 'GET',
+        endpoint: 'api/v/3/code/' + this.systemKey + '/completed',
+        user: this.user,
+        URI: this.URI
+      };
+      ClearBlade.request(reqOptions, callback);
+    }
+
+    /**
+     * Retrieves a list of failed services for a system
+     * @method  ClearBlade.Code.prototype.getFailedServices
+     * @param  {Function} callback
+     * @example
+     * cb.Code().getFailedServices(function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
+    code.getFailedServices = function (callback) {
+      var reqOptions = {
+        method: 'GET',
+        endpoint: 'api/v/3/code/' + this.systemKey + '/failed',
+        user: this.user,
+        URI: this.URI
+      };
+      ClearBlade.request(reqOptions, callback);
+    }
 
     return code;
   };
@@ -1574,9 +1622,9 @@ if (!window.console) {
         ClearBlade.request({
           method: 'PUT',
           endpoint: this.endpoint + '/pass',
-          body: {oldPass:oldPass,newPass:newPass},
+          body: {old_password:oldPass,new_password:newPass},
           user: this.user,
-          URI: this.URI,
+          URI: this.URI
         }, callback);
       } else {
         logger('No callback was defined!');
@@ -1596,7 +1644,7 @@ if (!window.console) {
           endpoint: this.endpoint + '/count',
           qs: query,
           user: this.user,
-          URI: this.URI,
+          URI: this.URI
         }, callback);
       } else {
         logger('No callback was defined!');
@@ -1691,16 +1739,15 @@ if (!window.console) {
 
     messaging.client.connect(conf);
 
-
     /**
      * Gets the message history from a ClearBlade Messaging topic.
-     * @method ClearBlade.Messaging.getMessageHistory
+     * @method ClearBlade.Messaging.getMessageHistoryWithTimeFrame
      * @param {string} topic The topic from which to retrieve history
      * @param {number} last Epoch timestamp in seconds that will retrieve 'count' number of messages before that timestamp. Set to -1 if not used
      * @param {number} count Number that signifies how many messages to return; 0 returns all messages
      * @param {number} start Epoch timestamp in seconds that will retrieve 'count' number of  messages within timeframe. Set to -1 if not used
      * @param {number} stop Epoch timestamp in seconds that will retrieve 'count' number of  messages within timeframe. Set to -1 if not used
-     * @param {funtion} callback The function to be called upon execution of query -- called with a boolean error and the response
+     * @param {function} callback The function to be called upon execution of query -- called with a boolean error and the response
      */
     messaging.getMessageHistoryWithTimeFrame = function(topic, count, last, start, stop, callback) {
       var reqOptions = {
@@ -1727,7 +1774,7 @@ if (!window.console) {
      * @param {string} topic The topic from which to retrieve history
      * @param {number} last Epoch timestamp in seconds that will retrieve 'count' number of messages before that timestamp. Set to -1 if not used
      * @param {number} count Number that signifies how many messages to return; 0 returns all messages
-     * @param {funtion} callback The function to be called upon execution of query -- called with a boolean error and the response
+     * @param {function} callback The function to be called upon execution of query -- called with a boolean error and the response
      */
     messaging.getMessageHistory = function(topic, last, count, callback) {
       messaging.getMessageHistoryWithTimeFrame(topic, count, last, -1, -1);
@@ -1735,13 +1782,13 @@ if (!window.console) {
 
     /**
      * Gets the message history from a ClearBlade Messaging topic.
-     * @method ClearBlade.Messaging.getMessageHistory
+     * @method ClearBlade.Messaging.getAndDeleteMessageHistory
      * @param {string} topic The topic from which to retrieve history
      * @param {number} last Epoch timestamp in seconds that will retrieve and delete 'count' number of messages before that timestamp. Set to -1 if not used
      * @param {number} count Number that signifies how many messages to return and delete; 0 returns and deletes all messages
      * @param {number} start Epoch timestamp in seconds that will retrieve and delete 'count' number of messages within timeframe. Set to -1 if not used
      * @param {number} stop Epoch timestamp in seconds that will retrieve and delete 'count' number of  messages within timeframe. Set to -1 if not used
-     * @param {funtion} callback The function to be called upon execution of query -- called with a boolean error and the response
+     * @param {function} callback The function to be called upon execution of query -- called with a boolean error and the response
      */
     messaging.getAndDeleteMessageHistory = function(topic, count, last, start, stop, callback) {
       var reqOptions = {
@@ -1767,7 +1814,7 @@ if (!window.console) {
           method: 'GET',
           endpoint: this.endpoint + '/' + this.systemKey + '/currentTopics',
           user: this.user,
-          URI: this.URI,
+          URI: this.URI
         }, callback);
       } else {
         logger('No callback was defined!');
@@ -1802,7 +1849,7 @@ if (!window.console) {
         systemKey: this.systemKey,
         systemSecret: this.systemSecret,
         user: this.user,
-        URI: this.URI,
+        URI: this.URI
       }, callback);
     };
 
@@ -1891,6 +1938,101 @@ if (!window.console) {
   };
 
   /**
+   * @class ClearBlade.MessagingStats
+   * @returns {Object} ClearBlade.MessagingStats the created MessagingStats object
+   */
+  ClearBlade.prototype.MessagingStats = function () {
+
+    var _this = this;
+    var messagingStats = {};
+
+    messagingStats.user = this.user;
+    messagingStats.URI = this.URI;
+    messagingStats.endpoint = 'api/v/3/message';
+    messagingStats.systemKey = this.systemKey;
+
+    /**
+     * Method to retrieve the average payload size for a topic
+     * @method ClearBlade.MessagingStats.prototype.getAveragePayloadSize
+     * @param  {string} topic Topic to retrieve the average payload size for
+     * @param  {int}  start Point in time in which to begin the query (epoch timestamp)
+     * @param  {int}  stop Point in time in which to end the query (epoch timestamp)
+     * @param  {Function} callback
+     * @example
+     * cb.MessagingStats().getAveragePayloadSize("mytopic", 1490819666, 1490819676, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * });
+     * //returns {"payloadsize":28}
+     */
+    messagingStats.getAveragePayloadSize = function (topic, start, stop, callback) {
+      var reqOptions = {
+        method: 'GET',
+        endpoint: this.endpoint + '/' + this.systemKey + '/averagePayload',
+        qs: 'topic=' + topic + '&start=' + start + '&stop=' + stop,
+        user: this.user,
+        URI: this.URI
+      };
+      ClearBlade.request(reqOptions, callback);
+    }
+
+    /**
+     * Method to retrieve the number of MQTT connections for a system
+     * @method ClearBlade.MessagingStats.prototype.getOpenConnections
+     * @param  {Function} callback
+     * @example
+     * cb.MessagingStats().getOpenConnections(function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * });
+     * //returns {"connections":42}
+     */
+    messagingStats.getOpenConnections = function (callback) {
+      var reqOptions = {
+        method: 'GET',
+        endpoint: this.endpoint + '/' + this.systemKey + '/connections',
+        user: this.user,
+        URI: this.URI
+      };
+      ClearBlade.request(reqOptions, callback);
+    }
+
+    /**
+     * Method to retrieve the number of subscribers for a topic
+     * @method ClearBlade.MessagingStats.prototype.getCurrentSubscribers
+     * @param  {string} topic Topic to retrieve the current subscribers for
+     * @param  {Function} callback
+     * @example
+     * cb.MessagingStats().getCurrentSubscribers("mytopic", function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * });
+     * //returns {"subscribers": 42}
+     */
+    messagingStats.getCurrentSubscribers = function (topic, callback) {
+      var reqOptions = {
+        method: 'GET',
+        endpoint: this.endpoint + '/' + this.systemKey + '/subscribers/' + topic,
+        user: this.user,
+        URI: this.URI
+      };
+      ClearBlade.request(reqOptions, callback);
+    }
+
+    return messagingStats;
+
+  }
+
+  /**
    * Sends a push notification
    * @method ClearBlade.sendPush
    * @param {Array} users The list of users to which the message will be sent
@@ -1930,13 +2072,11 @@ if (!window.console) {
     ClearBlade.request(reqOptions, callback);
   };
 
-
-  /**
-   * Gets an array of Edges on the system.
-   * @method ClearBlade.getEdges
-   * @param {function} callback A function like `function (err, data) {}` to handle the response
+  /**   
+   * Gets an array of Edges on the system.    
+   * @method ClearBlade.getEdges    
+   * @param {function} callback A function like `function (err, data) {}` to handle the response    
    */
-
   ClearBlade.prototype.getEdges = function(callback) {
     if (!callback || typeof callback !== 'function') {
       throw new Error('Callback must be a function');
@@ -1951,6 +2091,84 @@ if (!window.console) {
     ClearBlade.request(reqOptions, callback);
   };
 
+  ClearBlade.prototype.Metrics = function () {
+    var metrics = {};
+    metrics.systemKey = this.systemKey;
+    metrics.URI = this.URI;
+    metrics.user = this.user;
+
+    metrics.setQuery = function (_query) {
+      metrics.query = _query.query;
+    };
+
+    metrics.getStatistics = function (callback) {
+      if (!callback || typeof callback !== 'function') {
+          throw new Error('Callback must be a function');
+      }
+      var endpoint = "api/v/3/platform/statistics/" + this.systemKey;
+      var query = 'query='+ _parseQuery(this.query);
+      var reqOptions = {
+        method: 'GET',
+        user: this.user,
+        endpoint: endpoint,
+        URI: this.URI,
+        qs: query
+      };
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    metrics.getStatisticsHistory = function (callback) {
+      if (!callback || typeof callback !== 'function') {
+        throw new Error('Callback must be a function');
+      }
+      var endpoint = 'api/v/3/platform/statistics/' + this.systemKey + "/history";
+      var query = 'query=' + _parseQuery(this.query);
+      var reqOptions = {
+        method: 'GET',
+          user: this.user,
+          endpoint: endpoint,
+          URI: this.URI,
+          qs: query
+      };
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    metrics.getDBConnections = function (callback) {
+      if (!callback || typeof callback !== 'function') {
+          throw new Error('Callback must be a function');
+      }
+      var endpoint = "api/v/3/platform/dbconnections/" + this.systemKey;
+      var query = 'query='+ _parseQuery(this.query);
+      var reqOptions = {
+          method: 'GET',
+          user: this.user,
+          endpoint: endpoint,
+          URI: this.URI
+      };
+      if (this.query) {
+        reqOptions.qs = query;
+      }
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    metrics.getLogs = function (callback) {
+      if (!callback || typeof callback !== 'function') {
+          throw new Error('Callback must be a function');
+      }
+      var endpoint = "api/v/3/platform/logs/" + this.systemKey;
+      var query = 'query='+ _parseQuery(this.query);
+      var reqOptions = {
+          method: 'GET',
+          user: this.user,
+          endpoint: endpoint,
+          URI: this.URI,
+          qs: query
+      };
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    return metrics;
+  };
 
   ClearBlade.prototype.Device = function(){
     var device = {};
@@ -1987,4 +2205,168 @@ if (!window.console) {
 
     return device;
   };
+
+  /**
+   * @class ClearBlade.Analytics
+   * @returns {Object} ClearBlade.Analytics the created Analytics object
+   */
+  ClearBlade.prototype.Analytics = function() {
+    var analytics = {};
+
+    analytics.user = this.user;
+    analytics.URI = this.URI;
+    analytics.systemKey = this.systemKey;
+    analytics.systemSecret = this.systemSecret;
+
+    /**
+     * Method to retrieve the average payload size for a topic
+     * @method ClearBlade.Analytics.prototype.getStorage
+     * @param  {string} topic Topic to retrieve the average payload size for
+     * @param  {int}  start Point in time in which to begin the query (epoch timestamp)
+     * @param  {int}  stop Point in time in which to end the query (epoch timestamp)
+     * @param  {Function} callback
+     * @example
+     * cb.MessagingStats().getStorage(filter, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * });
+     */
+    analytics.getStorage = function (filter, callback) {
+      var query = 'query=' + JSON.stringify(filter);
+      var reqOptions = {
+        method: 'GET',
+        user: this.user,
+        endpoint: "api/v/2/analytics/storage",
+        qs: query,
+        URI: this.URI
+      }
+
+      ClearBlade.request(reqOptions, callback);
+    }
+
+    /**
+     * Method to retrieve the average payload size for a topic
+     * @method ClearBlade.Analytics.prototype.getCount
+     * @param  {string} topic Topic to retrieve the average payload size for
+     * @param  {int}  start Point in time in which to begin the query (epoch timestamp)
+     * @param  {int}  stop Point in time in which to end the query (epoch timestamp)
+     * @param  {Function} callback
+     * @example
+     * cb.MessagingStats().getCount(filter, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * });
+     */
+    analytics.getCount = function (filter, callback) {
+      var query = 'query=' + JSON.stringify(filter);
+      var reqOptions = {
+        method: 'GET',
+        user: this.user,
+        endpoint: "api/v/2/analytics/count",
+        qs: query,
+        URI: this.URI
+      }
+
+      ClearBlade.request(reqOptions, callback);
+    }
+
+    /**
+     * Method to retrieve the average payload size for a topic
+     * @method ClearBlade.Analytics.prototype.getEventList
+     * @param  {string} topic Topic to retrieve the average payload size for
+     * @param  {int}  start Point in time in which to begin the query (epoch timestamp)
+     * @param  {int}  stop Point in time in which to end the query (epoch timestamp)
+     * @param  {Function} callback
+     * @example
+     * cb.MessagingStats().getEventList(filter, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * });
+     */
+    analytics.getEventList = function (filter, callback) {
+      var query = 'query=' + JSON.stringify(filter);
+      var reqOptions = {
+        method: 'GET',
+        user: this.user,
+        endpoint: "api/v/2/analytics/eventlist",
+        qs: query,
+        URI: this.URI
+      }
+
+      ClearBlade.request(reqOptions, callback);
+    }
+
+    /**
+     * Method to retrieve the average payload size for a topic
+     * @method ClearBlade.Analytics.prototype.getEventTotals
+     * @param  {string} topic Topic to retrieve the average payload size for
+     * @param  {int}  start Point in time in which to begin the query (epoch timestamp)
+     * @param  {int}  stop Point in time in which to end the query (epoch timestamp)
+     * @param  {Function} callback
+     * @example
+     * cb.MessagingStats().getEventTotals(filter, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * });
+     */
+    analytics.getEventTotals = function (filter, callback) {
+      var query = 'query=' + JSON.stringify(filter);
+      var reqOptions = {
+        method: 'GET',
+        user: this.user,
+        endpoint: "api/v/2/analytics/eventtotals",
+        qs: query,
+        URI: this.URI
+      }
+
+      ClearBlade.request(reqOptions, callback);
+    }
+
+    /**
+     * Method to retrieve the average payload size for a topic
+     * @method ClearBlade.Analytics.prototype.getUserEvents
+     * @param  {string} topic Topic to retrieve the average payload size for
+     * @param  {int}  start Point in time in which to begin the query (epoch timestamp)
+     * @param  {int}  stop Point in time in which to end the query (epoch timestamp)
+     * @param  {Function} callback
+     * @example
+     * cb.MessagingStats().getUserEvents(filter, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * });
+     */
+    analytics.getUserEvents = function (filter, callback) {
+      var query = 'query=' + JSON.stringify(filter);
+      var reqOptions = {
+        method: 'GET',
+        user: this.user,
+        endpoint: "api/v/2/analytics/userevents",
+        qs: query,
+        URI: this.URI
+      }
+
+      ClearBlade.request(reqOptions, callback);
+    }
+
+    return analytics;
+  }
+
+
+
+
 })(window);
