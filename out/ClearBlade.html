@@ -28,7 +28,9 @@
 
 <header>
     
-        <h2>ClearBlade</h2>
+        <h2>
+        ClearBlade
+        </h2>
         
     
 </header>
@@ -44,8 +46,6 @@
 
 
 <dl class="details">
-
-    
 
     
 
@@ -105,6 +105,9 @@ cb.init(initOptions);</code></pre>
         <h3 class="subsection-title">Classes</h3>
 
         <dl>
+            <dt><a href="ClearBlade.Analytics.html">Analytics</a></dt>
+            <dd></dd>
+        
             <dt><a href="ClearBlade.Code.html">Code</a></dt>
             <dd></dd>
         
@@ -115,6 +118,9 @@ cb.init(initOptions);</code></pre>
             <dd></dd>
         
             <dt><a href="ClearBlade.Messaging.html">Messaging</a></dt>
+            <dd></dd>
+        
+            <dt><a href="ClearBlade.MessagingStats.html">MessagingStats</a></dt>
             <dd></dd>
         
             <dt><a href="ClearBlade.Query.html">Query</a></dt>
@@ -134,31 +140,162 @@ cb.init(initOptions);</code></pre>
     
         <h3 class="subsection-title">Methods</h3>
 
+        <dl>
+            
+<dt>
+    
+        <h4 class="name" id="getEdges"><span class="type-signature">(static) </span>getEdges<span class="signature">(callback)</span><span class="type-signature"></span></h4>
+
         
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Gets an array of Edges on the system.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
             
 
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A function like `function (err, data) {}` to handle the response</td>
+        </tr>
+
+    
+    </tbody>
+</table>
     
 
-    <h4 class="name" id=".init"><span class="type-signature">(static) </span>init<span class="signature">(options)</span><span class="type-signature"></span></h4>
-
     
 
 
+<dl class="details">
 
-<div class="description">
-    This method initializes the ClearBlade module with the values needed to connect to the platform
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line2075">line 2075</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<dt>
+    
+        <h4 class="name" id="init"><span class="type-signature">(static) </span>init<span class="signature">(options)</span><span class="type-signature"></span></h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        This method initializes the ClearBlade module with the values needed to connect to the platform
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
 
 <table class="params">
     <thead>
@@ -205,21 +342,20 @@ The connect options and their defaults are:
 <p>{String} [systemSecret] This is the app secret that will be used in combination with the systemKey to authenticate your app</p>
 <p>{String} [URI] This is the URI used to identify where the Platform is located. Default is https://platform.clearblade.com</p>
 <p>{String} [messagingURI] This is the URI used to identify where the Messaging server is located. Default is platform.clearblade.com</p>
-<p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904</p>
+n   * <p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904</p>
 <p>{Boolean} [logging] This is the property that tells the API whether or not the API will log to the console. This should be left `false` in production. Default is false</p>
 <p>{Number} [callTimeout] This is the amount of time that the API will use to determine a timeout. Default is 30 seconds</p>
-<p>{Boolean} [mqttAuth] Setting this to true and providing an email and password will use mqtt websockets to authenticate, rather than http.
-<p>{String} [messagingAuthPort] is the port that the messaging auth websocket server is listening on.
+<p>{Boolean} [mqttAuth] Setting this to true and providing an email and password will use mqtt websockets to authenticate, rather than http.</p>
+<p>{String} [messagingAuthPort] is the port that the messaging auth websocket server is listening on.</p>
 </p></td>
         </tr>
 
     
     </tbody>
 </table>
+    
 
-
-
-
+    
 
 
 <dl class="details">
@@ -247,11 +383,9 @@ The connect options and their defaults are:
     
 
     
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line39">line 39</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line40">line 40</a>
     </li></ul></dd>
     
 
@@ -263,45 +397,47 @@ The connect options and their defaults are:
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-
+    
+</dd>
 
         
             
+<dt>
+    
+        <h4 class="name" id="isCurrentUserAuthenticated"><span class="type-signature">(static) </span>isCurrentUserAuthenticated<span class="signature">(callback)</span><span class="type-signature"></span></h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Method to check if the current user has an active server session
+    </div>
+    
 
     
 
-    <h4 class="name" id=".isCurrentUserAuthenticated"><span class="type-signature">(static) </span>isCurrentUserAuthenticated<span class="signature">(callback)</span><span class="type-signature"></span></h4>
+    
 
     
 
-
-
-<div class="description">
-    Method to check if the current user has an active server session
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+        <h5>Parameters:</h5>
+        
 
 <table class="params">
     <thead>
@@ -347,10 +483,9 @@ The connect options and their defaults are:
     
     </tbody>
 </table>
+    
 
-
-
-
+    
 
 
 <dl class="details">
@@ -378,11 +513,9 @@ The connect options and their defaults are:
     
 
     
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line266">line 266</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line271">line 271</a>
     </li></ul></dd>
     
 
@@ -394,21 +527,21 @@ The connect options and their defaults are:
 </dl>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
     <pre class="prettyprint"><code>cb.isCurrentUserAuthenticated(function(err, body) {
    if(err) {
      //handle error
@@ -417,33 +550,35 @@ The connect options and their defaults are:
    }
 })</code></pre>
 
-
+    
+</dd>
 
         
             
+<dt>
+    
+        <h4 class="name" id="loginAnon"><span class="type-signature">(static) </span>loginAnon<span class="signature">(callback)</span><span class="type-signature"></span></h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Method to create an anonymous session with the ClearBlade Platform
+    </div>
+    
 
     
 
-    <h4 class="name" id=".loginAnon"><span class="type-signature">(static) </span>loginAnon<span class="signature">(callback)</span><span class="type-signature"></span></h4>
+    
 
     
 
-
-
-<div class="description">
-    Method to create an anonymous session with the ClearBlade Platform
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+        <h5>Parameters:</h5>
+        
 
 <table class="params">
     <thead>
@@ -489,10 +624,9 @@ The connect options and their defaults are:
     
     </tbody>
 </table>
+    
 
-
-
-
+    
 
 
 <dl class="details">
@@ -520,11 +654,9 @@ The connect options and their defaults are:
     
 
     
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line327">line 327</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line332">line 332</a>
     </li></ul></dd>
     
 
@@ -536,21 +668,21 @@ The connect options and their defaults are:
 </dl>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
     <pre class="prettyprint"><code>cb.loginAnon(function(err, body) {
    if(err) {
        //handle error
@@ -559,33 +691,35 @@ The connect options and their defaults are:
    }
 })</code></pre>
 
-
+    
+</dd>
 
         
             
+<dt>
+    
+        <h4 class="name" id="loginUserMqtt"><span class="type-signature">(static) </span>loginUserMqtt<span class="signature">(email, password, callback)</span><span class="type-signature"></span></h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Method to log user or developer in via MQTT over websockets
+    </div>
+    
 
     
 
-    <h4 class="name" id=".loginUserMqtt"><span class="type-signature">(static) </span>loginUserMqtt<span class="signature">(email, password, callback)</span><span class="type-signature"></span></h4>
+    
 
     
 
-
-
-<div class="description">
-    Method to log user or developer in via MQTT over websockets
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+        <h5>Parameters:</h5>
+        
 
 <table class="params">
     <thead>
@@ -677,10 +811,9 @@ The connect options and their defaults are:
     
     </tbody>
 </table>
+    
 
-
-
-
+    
 
 
 <dl class="details">
@@ -708,11 +841,9 @@ The connect options and their defaults are:
     
 
     
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line396">line 396</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line401">line 401</a>
     </li></ul></dd>
     
 
@@ -724,21 +855,21 @@ The connect options and their defaults are:
 </dl>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
     <pre class="prettyprint"><code>cb.loginUserMqtt("foo@bar.baz","secret_password", function(err, body) {
    if(err) {
        //handle error
@@ -747,33 +878,35 @@ The connect options and their defaults are:
    }
 })</code></pre>
 
-
+    
+</dd>
 
         
             
+<dt>
+    
+        <h4 class="name" id="logoutUser"><span class="type-signature">(static) </span>logoutUser<span class="signature">(callback)</span><span class="type-signature"></span></h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Method to end the server session for the current user
+    </div>
+    
 
     
 
-    <h4 class="name" id=".logoutUser"><span class="type-signature">(static) </span>logoutUser<span class="signature">(callback)</span><span class="type-signature"></span></h4>
+    
 
     
 
-
-
-<div class="description">
-    Method to end the server session for the current user
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+        <h5>Parameters:</h5>
+        
 
 <table class="params">
     <thead>
@@ -819,10 +952,9 @@ The connect options and their defaults are:
     
     </tbody>
 </table>
+    
 
-
-
-
+    
 
 
 <dl class="details">
@@ -850,11 +982,9 @@ The connect options and their defaults are:
     
 
     
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line296">line 296</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line301">line 301</a>
     </li></ul></dd>
     
 
@@ -866,21 +996,21 @@ The connect options and their defaults are:
 </dl>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
     <pre class="prettyprint"><code>cb.logoutUser(function(err, body) {
    if(err) {
        //handle error
@@ -889,33 +1019,35 @@ The connect options and their defaults are:
    }
 })</code></pre>
 
-
+    
+</dd>
 
         
             
+<dt>
+    
+        <h4 class="name" id="registerUser"><span class="type-signature">(static) </span>registerUser<span class="signature">(email, password, callback)</span><span class="type-signature"></span></h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Method to register a user with the ClearBlade Platform
+    </div>
+    
 
     
 
-    <h4 class="name" id=".registerUser"><span class="type-signature">(static) </span>registerUser<span class="signature">(email, password, callback)</span><span class="type-signature"></span></h4>
+    
 
     
 
-
-
-<div class="description">
-    Method to register a user with the ClearBlade Platform
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+        <h5>Parameters:</h5>
+        
 
 <table class="params">
     <thead>
@@ -1007,10 +1139,9 @@ The connect options and their defaults are:
     
     </tbody>
 </table>
+    
 
-
-
-
+    
 
 
 <dl class="details">
@@ -1038,11 +1169,9 @@ The connect options and their defaults are:
     
 
     
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line232">line 232</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line234">line 234</a>
     </li></ul></dd>
     
 
@@ -1054,58 +1183,60 @@ The connect options and their defaults are:
 </dl>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
     
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
         <p class="code-caption"> Register User </p>
     
     <pre class="prettyprint"><code>cb.registerUser("newUser@domain.com", "qwerty", function(err, body) {
-    if(err) {
-      //handle error
-    } else {
-      console.log(body);
-    }
- });</code></pre>
+   if(err) {
+     //handle error
+   } else {
+     console.log(body);
+   }
+});</code></pre>
 
-
+    
+</dd>
 
         
             
+<dt>
+    
+        <h4 class="name" id="sendPush"><span class="type-signature">(static) </span>sendPush<span class="signature">(users, payload, appId, callback)</span><span class="type-signature"></span></h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Sends a push notification
+    </div>
+    
 
     
 
-    <h4 class="name" id=".sendPush"><span class="type-signature">(static) </span>sendPush<span class="signature">(users, payload, appId, callback)</span><span class="type-signature"></span></h4>
+    
 
     
 
-
-
-<div class="description">
-    Sends a push notification
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+        <h5>Parameters:</h5>
+        
 
 <table class="params">
     <thead>
@@ -1220,10 +1351,9 @@ The connect options and their defaults are:
     
     </tbody>
 </table>
+    
 
-
-
-
+    
 
 
 <dl class="details">
@@ -1251,11 +1381,9 @@ The connect options and their defaults are:
     
 
     
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1794">line 1794</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line2035">line 2035</a>
     </li></ul></dd>
     
 
@@ -1267,45 +1395,47 @@ The connect options and their defaults are:
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
+    
 
-
-
-
-
-
-
-
+    
+</dd>
 
         
             
+<dt>
+    
+        <h4 class="name" id="setUser"><span class="type-signature">(static) </span>setUser<span class="signature">(email, authToken)</span><span class="type-signature"></span></h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        Used when assuming the role of a user to make subsequent requests
+    </div>
+    
 
     
 
-    <h4 class="name" id=".setUser"><span class="type-signature">(static) </span>setUser<span class="signature">(email, authToken)</span><span class="type-signature"></span></h4>
+    
 
     
 
-
-
-<div class="description">
-    Used when assuming the role of a user to make subsequent requests
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
     
+        <h5>Parameters:</h5>
+        
 
 <table class="params">
     <thead>
@@ -1374,10 +1504,9 @@ The connect options and their defaults are:
     
     </tbody>
 </table>
+    
 
-
-
-
+    
 
 
 <dl class="details">
@@ -1405,11 +1534,9 @@ The connect options and their defaults are:
     
 
     
-
-    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line218">line 218</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line220">line 220</a>
     </li></ul></dd>
     
 
@@ -1421,21 +1548,22 @@ The connect options and their defaults are:
 </dl>
 
 
+    
 
+    
 
+    
 
+    
 
+    
 
+    
 
+    
+</dd>
 
-
-
-
-
-
-
-
-        
+        </dl>
     
 
     
@@ -1451,13 +1579,13 @@ The connect options and their defaults are:
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Analytics.html">Analytics</a></li><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.MessagingStats.html">MessagingStats</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
 </nav>
 
-<br class="clear">
+<br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Mar 01 2016 10:30:05 GMT-0600 (CST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Tue Apr 25 2017 12:03:19 GMT-0500 (CDT)
 </footer>
 
 <script> prettyPrint(); </script>
