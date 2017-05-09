@@ -1777,7 +1777,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      * @param {function} callback The function to be called upon execution of query -- called with a boolean error and the response
      */
     messaging.getMessageHistory = function(topic, last, count, callback) {
-      messaging.getMessageHistoryWithTimeFrame(topic, count, last, -1, -1);
+      messaging.getMessageHistoryWithTimeFrame(topic, count, last, -1, -1, callback);
     };
 
     /**
