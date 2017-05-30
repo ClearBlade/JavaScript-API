@@ -456,8 +456,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       var usrid = getString(body);
       body = body.substring(usrid.length+2);
       var msgingHost = getString(body);
-      _this.setUser(email,tok.substring(2, tok.length) + "==");
-      // _this.messagingURI = msgingHost;
+      _this.setUser(email,tok.substring(2, tok.length) + "=="); // first 2 bytes are length
+      // _this.messagingURI = msgingHost; // We will add this back once the backend is fixed. Right now its always "messaging.clearblade.com"
       success = true;
       client.disconnect();
       callback(false,_this.user);
