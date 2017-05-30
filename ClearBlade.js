@@ -171,11 +171,11 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      */
     ClearBlade.prototype._callTimeout = options.callTimeout;
     this._callTimeout =  options.callTimeout || 30000; //default to 30 seconds
-    /**   
-     * This property tells us which port to use for websocket mqtt auth.    
-     * @property messagingAuthPort    
-     * @type Number   
-     */   
+    /**
+     * This property tells us which port to use for websocket mqtt auth.
+     * @property messagingAuthPort
+     * @type Number
+     */
     this.messagingAuthPort = options.messagingAuthPort || 8907;
 
     this.user = null;
@@ -456,8 +456,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       var usrid = getString(body);
       body = body.substring(usrid.length+2);
       var msgingHost = getString(body);
-      _this.setUser(email,tok);
-      _this.messagingURI = msgingHost;
+      _this.setUser(email,tok.substring(2, tok.length) + "=="); // first 2 bytes are length
+      // _this.messagingURI = msgingHost; // We will add this back once the backend is fixed. Right now its always "messaging.clearblade.com"
       success = true;
       client.disconnect();
       callback(false,_this.user);
@@ -1707,7 +1707,6 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     } else {
       messaging._qos = this.defaultQoS;
     }
-
     var clientID = Math.floor(Math.random() * 10e12).toString();
     messaging.client = new Paho.MQTT.Client(conf.hosts[0],conf.ports[0],clientID);//new Messaging.Client(conf.hosts[0],conf.ports[0],clientID);
 
@@ -2072,10 +2071,10 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     ClearBlade.request(reqOptions, callback);
   };
 
-  /**   
-   * Gets an array of Edges on the system.    
-   * @method ClearBlade.getEdges    
-   * @param {function} callback A function like `function (err, data) {}` to handle the response    
+  /**
+   * Gets an array of Edges on the system.
+   * @method ClearBlade.getEdges
+   * @param {function} callback A function like `function (err, data) {}` to handle the response
    */
   ClearBlade.prototype.getEdges = function(callback) {
     if (!callback || typeof callback !== 'function') {
