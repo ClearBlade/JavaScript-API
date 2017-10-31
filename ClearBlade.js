@@ -2206,6 +2206,82 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
   };
 
   /**
+   * Creates a representation of all devices
+   * @class ClearBlade.Devices
+   * @classdesc It does not actully make a connection upon instantiation, but has all the methods necessary to do so.
+   * @example
+   * var devices = cb.Devices();
+   */
+   ClearBlade.prototype.Devices = function(options) {
+     var devices = {};
+
+     devices.user = this.user;
+     devices.URI = this.URI;
+     devices.systemKey = this.systemKey;
+     devices.systemSecret = this.systemSecret;
+
+     if (!options) {
+       options = {};
+     }
+     /**
+      * Reqests an item or a set of items from the devices list.
+      * @method ClearBlade.Devices.prototype.fetch
+      * @param {Query} _query Used to request a specific item or subset of items from the devices on the server. Optional.
+      * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
+      * @return {object} An array of objects representing each device
+      * @example <caption>Fetching data from devices</caption>
+      * var returnedData = [];
+      * var callback = function (err, data) {
+      *     if (err) {
+      *         throw new Error (data);
+      *     } else {
+      *         returnedData = data;
+      *     }
+      * };
+      *
+      * devices.fetch(query, callback);
+      * //this will give returnedData the value of what ever was returned from the server.
+      */
+     devices.fetch = function (_query, callback) {
+       var query;
+       /*
+        * The following logic may look funny, but it is intentional.
+        * I do this because it is typeical for the callback to be the last parameter.
+        * However, '_query' is an optional parameter, so I have to check if 'callback' is undefined
+        * in order to see weather or not _query is defined.
+        */
+       if (callback === undefined) {
+         callback = _query;
+         query = {
+           FILTERS: []
+         };
+         query = 'query='+ _parseQuery(query);
+       } else {
+         if (Object.keys(_query) < 1) {
+           query = '';
+         } else {
+           query = 'query='+ _parseQuery(_query.query);
+         }
+       }
+
+       var reqOptions = {
+         method: 'GET',
+         user: this.user,
+         endpoint: "api/v/2/devices/" + this.systemKey,
+         URI: this.URI
+       };
+
+       if (typeof callback === 'function') {
+         ClearBlade.request(reqOptions, callback);
+       } else {
+         logger("No callback was defined!");
+       }
+     };
+
+     return devices;
+   };
+
+  /**
    * @class ClearBlade.Analytics
    * @returns {Object} ClearBlade.Analytics the created Analytics object
    */

@@ -199,11 +199,11 @@ n   * &lt;p>{Number} [messagingPort] This is the default port used when connecti
      */
     ClearBlade.prototype._callTimeout = options.callTimeout;
     this._callTimeout =  options.callTimeout || 30000; //default to 30 seconds
-    /**   
-     * This property tells us which port to use for websocket mqtt auth.    
-     * @property messagingAuthPort    
-     * @type Number   
-     */   
+    /**
+     * This property tells us which port to use for websocket mqtt auth.
+     * @property messagingAuthPort
+     * @type Number
+     */
     this.messagingAuthPort = options.messagingAuthPort || 8907;
 
     this.user = null;
@@ -484,8 +484,8 @@ n   * &lt;p>{Number} [messagingPort] This is the default port used when connecti
       var usrid = getString(body);
       body = body.substring(usrid.length+2);
       var msgingHost = getString(body);
-      _this.setUser(email,tok);
-      _this.messagingURI = msgingHost;
+      _this.setUser(email,tok.substring(2, tok.length) + "=="); // first 2 bytes are length
+      // _this.messagingURI = msgingHost; // We will add this back once the backend is fixed. Right now its always "messaging.clearblade.com"
       success = true;
       client.disconnect();
       callback(false,_this.user);
@@ -1735,7 +1735,6 @@ n   * &lt;p>{Number} [messagingPort] This is the default port used when connecti
     } else {
       messaging._qos = this.defaultQoS;
     }
-
     var clientID = Math.floor(Math.random() * 10e12).toString();
     messaging.client = new Paho.MQTT.Client(conf.hosts[0],conf.ports[0],clientID);//new Messaging.Client(conf.hosts[0],conf.ports[0],clientID);
 
@@ -1805,7 +1804,7 @@ n   * &lt;p>{Number} [messagingPort] This is the default port used when connecti
      * @param {function} callback The function to be called upon execution of query -- called with a boolean error and the response
      */
     messaging.getMessageHistory = function(topic, last, count, callback) {
-      messaging.getMessageHistoryWithTimeFrame(topic, count, last, -1, -1);
+      messaging.getMessageHistoryWithTimeFrame(topic, count, last, -1, -1, callback);
     };
 
     /**
@@ -2100,10 +2099,10 @@ n   * &lt;p>{Number} [messagingPort] This is the default port used when connecti
     ClearBlade.request(reqOptions, callback);
   };
 
-  /**   
-   * Gets an array of Edges on the system.    
-   * @method ClearBlade.getEdges    
-   * @param {function} callback A function like `function (err, data) {}` to handle the response    
+  /**
+   * Gets an array of Edges on the system.
+   * @method ClearBlade.getEdges
+   * @param {function} callback A function like `function (err, data) {}` to handle the response
    */
   ClearBlade.prototype.getEdges = function(callback) {
     if (!callback || typeof callback !== 'function') {
@@ -2233,6 +2232,82 @@ n   * &lt;p>{Number} [messagingPort] This is the default port used when connecti
 
     return device;
   };
+
+  /**
+   * Creates a representation of all devices
+   * @class ClearBlade.Devices
+   * @classdesc It does not actully make a connection upon instantiation, but has all the methods necessary to do so.
+   * @example
+   * var devices = cb.Devices();
+   */
+   ClearBlade.prototype.Devices = function(options) {
+     var devices = {};
+
+     devices.user = this.user;
+     devices.URI = this.URI;
+     devices.systemKey = this.systemKey;
+     devices.systemSecret = this.systemSecret;
+
+     if (!options) {
+       options = {};
+     }
+     /**
+      * Reqests an item or a set of items from the devices list.
+      * @method ClearBlade.Devices.prototype.fetch
+      * @param {Query} _query Used to request a specific item or subset of items from the devices on the server. Optional.
+      * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
+      * @return {object} An array of objects representing each device
+      * @example &lt;caption>Fetching data from devices&lt;/caption>
+      * var returnedData = [];
+      * var callback = function (err, data) {
+      *     if (err) {
+      *         throw new Error (data);
+      *     } else {
+      *         returnedData = data;
+      *     }
+      * };
+      *
+      * devices.fetch(query, callback);
+      * //this will give returnedData the value of what ever was returned from the server.
+      */
+     devices.fetch = function (_query, callback) {
+       var query;
+       /*
+        * The following logic may look funny, but it is intentional.
+        * I do this because it is typeical for the callback to be the last parameter.
+        * However, '_query' is an optional parameter, so I have to check if 'callback' is undefined
+        * in order to see weather or not _query is defined.
+        */
+       if (callback === undefined) {
+         callback = _query;
+         query = {
+           FILTERS: []
+         };
+         query = 'query='+ _parseQuery(query);
+       } else {
+         if (Object.keys(_query) &lt; 1) {
+           query = '';
+         } else {
+           query = 'query='+ _parseQuery(_query.query);
+         }
+       }
+
+       var reqOptions = {
+         method: 'GET',
+         user: this.user,
+         endpoint: "api/v/2/devices/" + this.systemKey,
+         URI: this.URI
+       };
+
+       if (typeof callback === 'function') {
+         ClearBlade.request(reqOptions, callback);
+       } else {
+         logger("No callback was defined!");
+       }
+     };
+
+     return devices;
+   };
 
   /**
    * @class ClearBlade.Analytics
@@ -2408,13 +2483,13 @@ n   * &lt;p>{Number} [messagingPort] This is the default port used when connecti
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Analytics.html">Analytics</a></li><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.MessagingStats.html">MessagingStats</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Analytics.html">Analytics</a></li><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Devices.html">Devices</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.MessagingStats.html">MessagingStats</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
 </nav>
 
-<br clear="both">
+<br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Tue Apr 25 2017 12:03:19 GMT-0500 (CDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Oct 31 2017 15:54:51 GMT-0500 (CDT)
 </footer>
 
 <script> prettyPrint(); </script>

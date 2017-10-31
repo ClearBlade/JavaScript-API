@@ -28,11 +28,8 @@
 
 <header>
     
-        <h2>
-            <span class="ancestors"><a href="ClearBlade.html">ClearBlade</a>.</span>
-        
-        Collection
-        </h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="ClearBlade.html">ClearBlade</a>.</span>Collection<span class="signature">(collectionID)</span><span class="type-signature"></span></h2>
         
             <div class="class-description">This class represents a server-side collection. It does not actully make a connection upon instantiation, but has all the methods necessary to do so. It also has all the methods necessary to do operations on the server-side collections.</div>
         
@@ -43,30 +40,33 @@
     <div class="container-overview">
     
         
-<dt>
-    
-        <h4 class="name" id="Collection"><span class="type-signature"></span>new Collection<span class="signature">(collectionID)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
 
     
-    <div class="description">
-        Creates a new Collection that represents the server-side collection with the specified collection ID
-    </div>
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="Collection"><span class="type-signature"></span>new Collection<span class="signature">(collectionID)</span><span class="type-signature"></span></h4>
     
 
     
 
-    
 
-    
 
+<div class="description">
+    Creates a new Collection that represents the server-side collection with the specified collection ID
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
     
-        <h5>Parameters:</h5>
-        
 
 <table class="params">
     <thead>
@@ -112,12 +112,15 @@
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
+
+    
 
     
 
@@ -156,25 +159,26 @@
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
     <pre class="prettyprint"><code>var col = cb.Collection("12asd3049qwe834qe23asdf1234");</code></pre>
 
-    
-</dd>
+
 
     
     </div>
@@ -185,7 +189,9 @@
 
     
 
-     
+    
+
+    
 
     
 
@@ -194,32 +200,33 @@
     
         <h3 class="subsection-title">Methods</h3>
 
-        <dl>
+        
             
-<dt>
-    
-        <h4 class="name" id="create"><span class="type-signature"></span>create<span class="signature">(newItem, callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Creates a new item in the collection and returns the created item to the callback
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id="create"><span class="type-signature"></span>create<span class="signature">(newItem, callback)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Creates a new item in the collection and returns the created item to the callback
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -288,12 +295,15 @@
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
+
+    
 
     
 
@@ -332,68 +342,70 @@
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
         <p class="code-caption">Creating a new item in the collection</p>
     
     <pre class="prettyprint"><code>//This example assumes a collection of items that have the columns: name, height, and age.
 var newPerson = {
-   name: 'Jim',
-   height: 70,
-   age: 32
+    name: 'Jim',
+    height: 70,
+    age: 32
 };
 var callback = function (err, data) {
-   if (err) {
-       throw new Error (data);
-   } else {
-       console.log(data);
-   }
+    if (err) {
+        throw new Error (data);
+    } else {
+        console.log(data);
+    }
 };
 col.create(newPerson, callback);
 //this inserts the the newPerson item into the collection that col represents</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="fetch"><span class="type-signature"></span>fetch<span class="signature">(_query, callback)</span><span class="type-signature"> &rarr; {<a href="ClearBlade.Item.html">ClearBlade.Item</a>}</span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Reqests an item or a set of items from the collection.
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id="fetch"><span class="type-signature"></span>fetch<span class="signature">(_query, callback)</span><span class="type-signature"> &rarr; {<a href="ClearBlade.Item.html">ClearBlade.Item</a>}</span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Reqests an item or a set of items from the collection.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -462,12 +474,15 @@ col.create(newPerson, callback);
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
+
+    
 
     
 
@@ -506,20 +521,20 @@ col.create(newPerson, callback);
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
-    <h5>Returns:</h5>
-    
-            
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
 <div class="param-desc">
     An array of ClearBlade Items
 </div>
@@ -538,54 +553,56 @@ col.create(newPerson, callback);
     </dd>
 </dl>
 
-        
-
     
-        <h5>Example</h5>
-        
+
+
+
+
+    <h5>Example</h5>
+    
         <p class="code-caption">Fetching data from a collection</p>
     
     <pre class="prettyprint"><code>var returnedData = [];
 var callback = function (err, data) {
-   if (err) {
-       throw new Error (data);
-   } else {
-       returnedData = data;
-   }
+    if (err) {
+        throw new Error (data);
+    } else {
+        returnedData = data;
+    }
 };
 
 col.fetch(query, callback);
 //this will give returnedData the value of what ever was returned from the server.</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="remove"><span class="type-signature"></span>remove<span class="signature">(_query, callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Removes an item or set of items from the specified collection
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id="remove"><span class="type-signature"></span>remove<span class="signature">(_query, callback)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Removes an item or set of items from the specified collection
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -654,12 +671,15 @@ col.fetch(query, callback);
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
+
+    
 
     
 
@@ -698,66 +718,68 @@ col.fetch(query, callback);
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
         <p class="code-caption">Removing an item in a collection</p>
     
     <pre class="prettyprint"><code>//This example assumes that you have a collection with the item whose 'name' attribute is 'John'
 var query = ClearBlade.Query();
 query.equalTo('name', 'John');
 var callback = function (err, data) {
-   if (err) {
-       throw new Error (data);
-   } else {
-       console.log(data);
-   }
+    if (err) {
+        throw new Error (data);
+    } else {
+        console.log(data);
+    }
 };
 
 col.remove(query, callback);
 //removes every item whose 'name' attribute is equal to 'John'</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="update"><span class="type-signature"></span>update<span class="signature">(_query, changes, callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Updates an existing item or set of items
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id="update"><span class="type-signature"></span>update<span class="signature">(_query, changes, callback)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Updates an existing item or set of items
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -849,12 +871,15 @@ col.remove(query, callback);
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
+
+    
 
     
 
@@ -893,44 +918,45 @@ col.remove(query, callback);
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
         <p class="code-caption">Updating a set of items</p>
     
     <pre class="prettyprint"><code>//This example assumes a collection of items that have the columns name and age.
 var query = ClearBlade.Query();
 query.equalTo('name', 'John');
 var changes = {
-   age: 23
+    age: 23
 };
 var callback = function (err, data) {
-   if (err) {
-       throw new Error (data);
-   } else {
-       console.log(data);
-   }
+    if (err) {
+        throw new Error (data);
+    } else {
+        console.log(data);
+    }
 };
 
 col.update(query, changes, callback);
 //sets John's age to 23</code></pre>
 
-    
-</dd>
 
-        </dl>
+
+        
     
 
     
@@ -946,13 +972,13 @@ col.update(query, changes, callback);
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Analytics.html">Analytics</a></li><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.MessagingStats.html">MessagingStats</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Analytics.html">Analytics</a></li><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Devices.html">Devices</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.MessagingStats.html">MessagingStats</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
 </nav>
 
-<br clear="both">
+<br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Tue Apr 25 2017 12:03:19 GMT-0500 (CDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Oct 31 2017 15:54:51 GMT-0500 (CDT)
 </footer>
 
 <script> prettyPrint(); </script>
