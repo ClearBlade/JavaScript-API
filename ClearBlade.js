@@ -2169,16 +2169,42 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     return metrics;
   };
 
+  /**
+   * Creates a representation of devices
+   * @class ClearBlade.Device
+   * @classdesc It does not actually make a connection upon instantiation, but has all the methods necessary to do so.
+   * @example
+   * var device = cb.Device();
+   */
   ClearBlade.prototype.Device = function(){
-    var device = {};
+    let device = {};
 
     device.user = this.user;
     device.URI = this.URI;
     device.systemKey = this.systemKey;
     device.systemSecret = this.systemSecret;
 
+    /**
+     * Requests the named device
+     * @method ClearBlade.Device.prototype.getDeviceByName
+     * @param {String} name Used to indicate which device to get
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
+     * @return {Object} An object containing device's data
+     * @example <caption>Fetching data from device</caption>
+     * let returnedData = {};
+     * const callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         returnedData = data;
+     *     }
+     * };
+     *
+     * device.updateDeviceByName(name, callback);
+     * //this will give returnedData the value of what ever was returned from the server.
+     */
     device.getDeviceByName = function (name, callback) {
-      var reqOptions = {
+      const reqOptions = {
         method: 'GET',
         user: this.user,
         endpoint: "api/v/2/devices/" + this.systemKey + "/" + name,
@@ -2187,12 +2213,29 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       ClearBlade.request(reqOptions, callback);
     };
 
-    device.updateDevice = function (name, object, trigger, callback){
+    /**
+     * Updates data for a device
+     * @method ClearBlade.Device.prototype.updateDevice
+     * @param {String} name Specifies which device to update
+     * @param {Object} object Supplies the data to update
+     * @param {Boolean} trigger Indicates whether or not should cause a trigger
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
+     * @return {Object} An object containing updated device's data
+     * const callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     }
+     * };
+     *
+     * device.updateDevice(name, object, trigger, callback);
+     * 
+     */
+    device.updateDevice = function (name, object, trigger, callback) {
       if (typeof object != "object"){
-         throw new Error('Invalid object format');
+        throw new Error('Invalid object format');
       }
       object["causeTrigger"] = trigger;
-      var reqOptions = {
+      const reqOptions = {
         method: 'PUT',
         user: this.user,
         endpoint: "api/v/2/devices/" + this.systemKey + "/" + name,
@@ -2202,84 +2245,65 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       ClearBlade.request(reqOptions, callback);
     };
 
+    /**
+     * Requests a list of all devices, unless query specifies item or a set of items.
+     * @method ClearBlade.Device.prototype.fetch
+     * @param {Query} _query Used to request a specific item or subset of items from the devices on the server. Optional.
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
+     * @return {Object} An array of objects
+     * @example <caption>Fetching data from devices</caption>
+     * let returnedData = [];
+     * const callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         returnedData = data;
+     *     }
+     * };
+     *
+     * device.fetch(query, callback);
+     * //this will give returnedData the value of what ever was returned from the server.
+     */
+    device.fetch = function (_query, callback) {
+      let query;
+      /*
+       * The following logic may look funny, but it is intentional.
+       * I do this because it is typeical for the callback to be the last parameter.
+       * However, '_query' is an optional parameter, so I have to check if 'callback' is undefined
+       * in order to see weather or not _query is defined.
+       */
+      if (callback === undefined) {
+        callback = _query;
+        query = {
+          FILTERS: []
+        };
+        query = 'query='+ _parseQuery(query);
+      } else {
+        if (Object.keys(_query) < 1) {
+          query = '';
+        } else {
+          query = 'query='+ _parseQuery(_query.query);
+        }
+      }
+
+      const reqOptions = {
+        method: 'GET',
+        user: this.user,
+        endpoint: "api/v/2/devices/" + this.systemKey,
+        qs: query,
+        URI: this.URI
+      };
+
+      if (typeof callback === 'function') {
+        ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
     return device;
   };
 
-  /**
-   * Creates a representation of all devices
-   * @class ClearBlade.Devices
-   * @classdesc It does not actully make a connection upon instantiation, but has all the methods necessary to do so.
-   * @example
-   * var devices = cb.Devices();
-   */
-   ClearBlade.prototype.Devices = function(options) {
-     var devices = {};
-
-     devices.user = this.user;
-     devices.URI = this.URI;
-     devices.systemKey = this.systemKey;
-     devices.systemSecret = this.systemSecret;
-
-     if (!options) {
-       options = {};
-     }
-     /**
-      * Reqests an item or a set of items from the devices list.
-      * @method ClearBlade.Devices.prototype.fetch
-      * @param {Query} _query Used to request a specific item or subset of items from the devices on the server. Optional.
-      * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
-      * @return {object} An array of objects representing each device
-      * @example <caption>Fetching data from devices</caption>
-      * var returnedData = [];
-      * var callback = function (err, data) {
-      *     if (err) {
-      *         throw new Error (data);
-      *     } else {
-      *         returnedData = data;
-      *     }
-      * };
-      *
-      * devices.fetch(query, callback);
-      * //this will give returnedData the value of what ever was returned from the server.
-      */
-     devices.fetch = function (_query, callback) {
-       var query;
-       /*
-        * The following logic may look funny, but it is intentional.
-        * I do this because it is typeical for the callback to be the last parameter.
-        * However, '_query' is an optional parameter, so I have to check if 'callback' is undefined
-        * in order to see weather or not _query is defined.
-        */
-       if (callback === undefined) {
-         callback = _query;
-         query = {
-           FILTERS: []
-         };
-         query = 'query='+ _parseQuery(query);
-       } else {
-         if (Object.keys(_query) < 1) {
-           query = '';
-         } else {
-           query = 'query='+ _parseQuery(_query.query);
-         }
-       }
-
-       var reqOptions = {
-         method: 'GET',
-         user: this.user,
-         endpoint: "api/v/2/devices/" + this.systemKey,
-         URI: this.URI
-       };
-
-       if (typeof callback === 'function') {
-         ClearBlade.request(reqOptions, callback);
-       } else {
-         logger("No callback was defined!");
-       }
-     };
-
-     return devices;
-   };
 
   /**
    * @class ClearBlade.Analytics
