@@ -28,9 +28,7 @@
 
 <header>
     
-        <h2>
-        ClearBlade
-        </h2>
+        <h2>ClearBlade</h2>
         
     
 </header>
@@ -46,6 +44,8 @@
 
 
 <dl class="details">
+
+    
 
     
 
@@ -114,6 +114,9 @@ cb.init(initOptions);</code></pre>
             <dt><a href="ClearBlade.Collection.html">Collection</a></dt>
             <dd></dd>
         
+            <dt><a href="ClearBlade.Device.html">Device</a></dt>
+            <dd></dd>
+        
             <dt><a href="ClearBlade.Item.html">Item</a></dt>
             <dd></dd>
         
@@ -131,7 +134,9 @@ cb.init(initOptions);</code></pre>
         </dl>
     
 
-     
+    
+
+    
 
     
 
@@ -140,32 +145,33 @@ cb.init(initOptions);</code></pre>
     
         <h3 class="subsection-title">Methods</h3>
 
-        <dl>
+        
             
-<dt>
-    
-        <h4 class="name" id="getEdges"><span class="type-signature">(static) </span>getEdges<span class="signature">(callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Gets an array of Edges on the system.
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id=".getEdges"><span class="type-signature">(static) </span>getEdges<span class="signature">(callback)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Gets an array of Edges on the system.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -211,9 +217,10 @@ cb.init(initOptions);</code></pre>
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
@@ -241,9 +248,11 @@ cb.init(initOptions);</code></pre>
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line2075">line 2075</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line2074">line 2074</a>
     </li></ul></dd>
     
 
@@ -255,47 +264,49 @@ cb.init(initOptions);</code></pre>
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
-</dd>
+
+
+
+
+
+
+
+
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="init"><span class="type-signature">(static) </span>init<span class="signature">(options)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        This method initializes the ClearBlade module with the values needed to connect to the platform
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id=".init"><span class="type-signature">(static) </span>init<span class="signature">(options)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    This method initializes the ClearBlade module with the values needed to connect to the platform
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -353,12 +364,15 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
+
+    
 
     
 
@@ -397,47 +411,49 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
-</dd>
+
+
+
+
+
+
+
+
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="isCurrentUserAuthenticated"><span class="type-signature">(static) </span>isCurrentUserAuthenticated<span class="signature">(callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Method to check if the current user has an active server session
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id=".isCurrentUserAuthenticated"><span class="type-signature">(static) </span>isCurrentUserAuthenticated<span class="signature">(callback)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Method to check if the current user has an active server session
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -483,12 +499,15 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
+
+    
 
     
 
@@ -527,21 +546,23 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
     <pre class="prettyprint"><code>cb.isCurrentUserAuthenticated(function(err, body) {
    if(err) {
      //handle error
@@ -550,35 +571,35 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
    }
 })</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="loginAnon"><span class="type-signature">(static) </span>loginAnon<span class="signature">(callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Method to create an anonymous session with the ClearBlade Platform
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id=".loginAnon"><span class="type-signature">(static) </span>loginAnon<span class="signature">(callback)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Method to create an anonymous session with the ClearBlade Platform
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -624,12 +645,15 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
+
+    
 
     
 
@@ -668,21 +692,23 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
     <pre class="prettyprint"><code>cb.loginAnon(function(err, body) {
    if(err) {
        //handle error
@@ -691,35 +717,35 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
    }
 })</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="loginUserMqtt"><span class="type-signature">(static) </span>loginUserMqtt<span class="signature">(email, password, callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Method to log user or developer in via MQTT over websockets
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id=".loginUserMqtt"><span class="type-signature">(static) </span>loginUserMqtt<span class="signature">(email, password, callback)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Method to log user or developer in via MQTT over websockets
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -811,12 +837,15 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
+
+    
 
     
 
@@ -855,21 +884,23 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
     <pre class="prettyprint"><code>cb.loginUserMqtt("foo@bar.baz","secret_password", function(err, body) {
    if(err) {
        //handle error
@@ -878,35 +909,35 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
    }
 })</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="logoutUser"><span class="type-signature">(static) </span>logoutUser<span class="signature">(callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Method to end the server session for the current user
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id=".logoutUser"><span class="type-signature">(static) </span>logoutUser<span class="signature">(callback)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Method to end the server session for the current user
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -952,12 +983,15 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
+
+    
 
     
 
@@ -996,21 +1030,23 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
     <pre class="prettyprint"><code>cb.logoutUser(function(err, body) {
    if(err) {
        //handle error
@@ -1019,35 +1055,35 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
    }
 })</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="registerUser"><span class="type-signature">(static) </span>registerUser<span class="signature">(email, password, callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Method to register a user with the ClearBlade Platform
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id=".registerUser"><span class="type-signature">(static) </span>registerUser<span class="signature">(email, password, callback)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Method to register a user with the ClearBlade Platform
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -1139,12 +1175,15 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
+
+    
 
     
 
@@ -1183,60 +1222,62 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
         <p class="code-caption"> Register User </p>
     
     <pre class="prettyprint"><code>cb.registerUser("newUser@domain.com", "qwerty", function(err, body) {
-   if(err) {
-     //handle error
-   } else {
-     console.log(body);
-   }
-});</code></pre>
+    if(err) {
+      //handle error
+    } else {
+      console.log(body);
+    }
+ });</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="sendPush"><span class="type-signature">(static) </span>sendPush<span class="signature">(users, payload, appId, callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Sends a push notification
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id=".sendPush"><span class="type-signature">(static) </span>sendPush<span class="signature">(users, payload, appId, callback)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Sends a push notification
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -1351,9 +1392,10 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
@@ -1381,9 +1423,11 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line2035">line 2035</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line2034">line 2034</a>
     </li></ul></dd>
     
 
@@ -1395,47 +1439,49 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
-</dd>
+
+
+
+
+
+
+
+
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="setUser"><span class="type-signature">(static) </span>setUser<span class="signature">(email, authToken)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Used when assuming the role of a user to make subsequent requests
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id=".setUser"><span class="type-signature">(static) </span>setUser<span class="signature">(email, authToken)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Used when assuming the role of a user to make subsequent requests
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -1504,12 +1550,15 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
+
+    
 
     
 
@@ -1548,22 +1597,23 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
-</dd>
 
-        </dl>
+
+
+
+
+
+
+
+
+
+        
     
 
     
@@ -1579,13 +1629,13 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Analytics.html">Analytics</a></li><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.MessagingStats.html">MessagingStats</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Analytics.html">Analytics</a></li><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Device.html">Device</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.MessagingStats.html">MessagingStats</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
 </nav>
 
-<br clear="both">
+<br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Tue Apr 25 2017 12:03:19 GMT-0500 (CDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Nov 03 2017 11:01:58 GMT-0500 (CDT)
 </footer>
 
 <script> prettyPrint(); </script>

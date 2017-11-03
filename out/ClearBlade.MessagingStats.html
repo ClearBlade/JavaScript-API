@@ -28,11 +28,8 @@
 
 <header>
     
-        <h2>
-            <span class="ancestors"><a href="ClearBlade.html">ClearBlade</a>.</span>
-        
-        MessagingStats
-        </h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="ClearBlade.html">ClearBlade</a>.</span>MessagingStats<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h2>
         
     
 </header>
@@ -41,26 +38,27 @@
     <div class="container-overview">
     
         
-<dt>
-    
-        <h4 class="name" id="MessagingStats"><span class="type-signature"></span>new MessagingStats<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
-
-        
-    
-</dt>
-<dd>
 
     
 
     
-
+    <h4 class="name" id="MessagingStats"><span class="type-signature"></span>new MessagingStats<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
 
     
 
-    
 
-    
+
+
+
+
+
+
+
+
+
+
+
 
 
 <dl class="details">
@@ -88,9 +86,11 @@
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1940">line 1940</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1939">line 1939</a>
     </li></ul></dd>
     
 
@@ -102,20 +102,20 @@
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
-    <h5>Returns:</h5>
-    
-            
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
 <div class="param-desc">
     ClearBlade.MessagingStats the created MessagingStats object
 </div>
@@ -134,10 +134,11 @@
     </dd>
 </dl>
 
-        
-
     
-</dd>
+
+
+
+
 
     
     </div>
@@ -148,7 +149,9 @@
 
     
 
-     
+    
+
+    
 
     
 
@@ -157,32 +160,33 @@
     
         <h3 class="subsection-title">Methods</h3>
 
-        <dl>
+        
             
-<dt>
-    
-        <h4 class="name" id="getAveragePayloadSize"><span class="type-signature"></span>getAveragePayloadSize<span class="signature">(topic, start, stop, callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Method to retrieve the average payload size for a topic
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id="getAveragePayloadSize"><span class="type-signature"></span>getAveragePayloadSize<span class="signature">(topic, start, stop, callback)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Method to retrieve the average payload size for a topic
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -297,9 +301,10 @@
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
@@ -327,9 +332,11 @@
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1954">line 1954</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1953">line 1953</a>
     </li></ul></dd>
     
 
@@ -341,21 +348,23 @@
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
     <pre class="prettyprint"><code>cb.MessagingStats().getAveragePayloadSize("mytopic", 1490819666, 1490819676, function(err, body) {
    if(err) {
        //handle error
@@ -365,35 +374,35 @@
 });
 //returns {"payloadsize":28}</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="getCurrentSubscribers"><span class="type-signature"></span>getCurrentSubscribers<span class="signature">(topic, callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Method to retrieve the number of subscribers for a topic
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id="getCurrentSubscribers"><span class="type-signature"></span>getCurrentSubscribers<span class="signature">(topic, callback)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Method to retrieve the number of subscribers for a topic
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -462,9 +471,10 @@
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
@@ -492,9 +502,11 @@
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line2006">line 2006</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line2005">line 2005</a>
     </li></ul></dd>
     
 
@@ -506,21 +518,23 @@
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
     <pre class="prettyprint"><code>cb.MessagingStats().getCurrentSubscribers("mytopic", function(err, body) {
    if(err) {
        //handle error
@@ -530,35 +544,35 @@
 });
 //returns {"subscribers": 42}</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="getOpenConnections"><span class="type-signature"></span>getOpenConnections<span class="signature">(callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Method to retrieve the number of MQTT connections for a system
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id="getOpenConnections"><span class="type-signature"></span>getOpenConnections<span class="signature">(callback)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Method to retrieve the number of MQTT connections for a system
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -604,9 +618,10 @@
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
@@ -634,9 +649,11 @@
     
 
     
+
+    
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1982">line 1982</a>
+        <a href="ClearBlade.js.html">ClearBlade.js</a>, <a href="ClearBlade.js.html#line1981">line 1981</a>
     </li></ul></dd>
     
 
@@ -648,21 +665,23 @@
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
     <pre class="prettyprint"><code>cb.MessagingStats().getOpenConnections(function(err, body) {
    if(err) {
        //handle error
@@ -672,10 +691,9 @@
 });
 //returns {"connections":42}</code></pre>
 
-    
-</dd>
 
-        </dl>
+
+        
     
 
     
@@ -691,13 +709,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Analytics.html">Analytics</a></li><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.MessagingStats.html">MessagingStats</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Analytics.html">Analytics</a></li><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Device.html">Device</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.MessagingStats.html">MessagingStats</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
 </nav>
 
-<br clear="both">
+<br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Tue Apr 25 2017 12:03:19 GMT-0500 (CDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Nov 03 2017 11:01:58 GMT-0500 (CDT)
 </footer>
 
 <script> prettyPrint(); </script>
