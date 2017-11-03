@@ -2185,11 +2185,11 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     device.systemSecret = this.systemSecret;
 
     /**
-     * Requests the named device
+     * Requests the named device from Devices Auth table
      * @method ClearBlade.Device.prototype.getDeviceByName
      * @param {String} name Used to indicate which device to get
      * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
-     * @return {Object} An object containing device's data
+     * @return {Object} An object representing the requested device
      * @example <caption>Fetching data from device</caption>
      * let returnedData = {};
      * var callback = function (err, data) {
@@ -2214,14 +2214,18 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     };
 
     /**
-     * Updates data for a device
+     * Updates a device in the Devices Auth table
      * @method ClearBlade.Device.prototype.updateDevice
      * @param {String} name Specifies which device to update
-     * @param {Object} object Supplies the data to update
-     * @param {Boolean} trigger Indicates whether or not should cause a trigger
+     * @param {Object} object Supplies which columns in the Devices table to update
+     * @param {Boolean} trigger Indicates whether or not to enable trigger
      * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
-     * @return {Object} An object containing updated device's data
+     * @return {Object} A success attribute
      * @example <caption>Updating device data</caption>
+     * var object = {
+     *   active_key: "example_active_key",
+     *   allow_key_auth: false
+     * }
      * var callback = function (err, data) {
      *     if (err) {
      *         throw new Error (data);
@@ -2246,13 +2250,15 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     };
 
     /**
-     * Requests a list of all devices, unless query specifies item or a set of items.
+     * Requests all devices defined within a system, unless query specifies one item or a set of items.
      * @method ClearBlade.Device.prototype.fetch
      * @param {Query} _query Used to request a specific item or subset of items from the devices on the server. Optional.
      * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
-     * @return {Object} An array of objects
+     * @return {Object} An array of JSON objects, whose attributes correspond to columns in the Devices tables
      * @example <caption>Fetching data from devices</caption>
-     * let returnedData = [];
+     * var returnedData = [];
+     * var query = ClearBlade.Query();
+     * query.equalTo('enabled', 'true');
      * var callback = function (err, data) {
      *     if (err) {
      *         throw new Error (data);
@@ -2262,7 +2268,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      * };
      *
      * device.fetch(query, callback);
-     * //this will give returnedData the value of what ever was returned from the server.
+     * //this will give returnedData the value of what ever was returned from the server, every device whose "enabled" attribute is equal to "true".
      */
     device.fetch = function (_query, callback) {
       let query;
