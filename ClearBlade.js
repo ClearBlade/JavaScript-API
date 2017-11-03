@@ -2192,7 +2192,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      * @return {Object} An object containing device's data
      * @example <caption>Fetching data from device</caption>
      * let returnedData = {};
-     * const callback = function (err, data) {
+     * var callback = function (err, data) {
      *     if (err) {
      *         throw new Error (data);
      *     } else {
@@ -2204,7 +2204,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      * //this will give returnedData the value of what ever was returned from the server.
      */
     device.getDeviceByName = function (name, callback) {
-      const reqOptions = {
+      var reqOptions = {
         method: 'GET',
         user: this.user,
         endpoint: "api/v/2/devices/" + this.systemKey + "/" + name,
@@ -2222,7 +2222,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
      * @return {Object} An object containing updated device's data
      * @example <caption>Updating device data</caption>
-     * const callback = function (err, data) {
+     * var callback = function (err, data) {
      *     if (err) {
      *         throw new Error (data);
      *     }
@@ -2235,7 +2235,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         throw new Error('Invalid object format');
       }
       object["causeTrigger"] = trigger;
-      const reqOptions = {
+      var reqOptions = {
         method: 'PUT',
         user: this.user,
         endpoint: "api/v/2/devices/" + this.systemKey + "/" + name,
@@ -2253,7 +2253,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      * @return {Object} An array of objects
      * @example <caption>Fetching data from devices</caption>
      * let returnedData = [];
-     * const callback = function (err, data) {
+     * var callback = function (err, data) {
      *     if (err) {
      *         throw new Error (data);
      *     } else {
@@ -2286,7 +2286,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         }
       }
 
-      const reqOptions = {
+      var reqOptions = {
         method: 'GET',
         user: this.user,
         endpoint: "api/v/2/devices/" + this.systemKey,
