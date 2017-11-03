@@ -2169,14 +2169,40 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     return metrics;
   };
 
+  /**
+   * Creates a representation of devices
+   * @class ClearBlade.Device
+   * @classdesc It does not actually make a connection upon instantiation, but has all the methods necessary to do so.
+   * @example
+   * var device = cb.Device();
+   */
   ClearBlade.prototype.Device = function(){
-    var device = {};
+    let device = {};
 
     device.user = this.user;
     device.URI = this.URI;
     device.systemKey = this.systemKey;
     device.systemSecret = this.systemSecret;
 
+    /**
+     * Requests the named device from Devices Auth table
+     * @method ClearBlade.Device.prototype.getDeviceByName
+     * @param {String} name Used to indicate which device to get
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
+     * @return {Object} An object representing the requested device
+     * @example <caption>Fetching data from device</caption>
+     * let returnedData = {};
+     * var callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         returnedData = data;
+     *     }
+     * };
+     *
+     * device.updateDeviceByName(name, callback);
+     * //this will give returnedData the value of what ever was returned from the server.
+     */
     device.getDeviceByName = function (name, callback) {
       var reqOptions = {
         method: 'GET',
@@ -2187,9 +2213,30 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       ClearBlade.request(reqOptions, callback);
     };
 
-    device.updateDevice = function (name, object, trigger, callback){
+    /**
+     * Updates a device in the Devices Auth table
+     * @method ClearBlade.Device.prototype.updateDevice
+     * @param {String} name Specifies which device to update
+     * @param {Object} object Supplies which columns in the Devices table to update
+     * @param {Boolean} trigger Indicates whether or not to enable trigger
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
+     * @return {Object} A success attribute
+     * @example <caption>Updating device data</caption>
+     * var object = {
+     *   active_key: "example_active_key",
+     *   allow_key_auth: false
+     * }
+     * var callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     }
+     * };
+     *
+     * device.updateDevice(name, object, trigger, callback);
+     */
+    device.updateDevice = function (name, object, trigger, callback) {
       if (typeof object != "object"){
-         throw new Error('Invalid object format');
+        throw new Error('Invalid object format');
       }
       object["causeTrigger"] = trigger;
       var reqOptions = {
@@ -2200,6 +2247,64 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       }
       reqOptions["body"] = object;
       ClearBlade.request(reqOptions, callback);
+    };
+
+    /**
+     * Requests all devices defined within a system, unless query specifies one item or a set of items.
+     * @method ClearBlade.Device.prototype.fetch
+     * @param {Query} _query Used to request a specific item or subset of items from the devices on the server. Optional.
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
+     * @return {Object} An array of JSON objects, whose attributes correspond to columns in the Devices tables
+     * @example <caption>Fetching data from devices</caption>
+     * var returnedData = [];
+     * var query = ClearBlade.Query();
+     * query.equalTo('enabled', 'true');
+     * var callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         returnedData = data;
+     *     }
+     * };
+     *
+     * device.fetch(query, callback);
+     * //this will give returnedData the value of what ever was returned from the server, every device whose "enabled" attribute is equal to "true".
+     */
+    device.fetch = function (_query, callback) {
+      let query;
+      /*
+       * The following logic may look funny, but it is intentional.
+       * I do this because it is typeical for the callback to be the last parameter.
+       * However, '_query' is an optional parameter, so I have to check if 'callback' is undefined
+       * in order to see weather or not _query is defined.
+       */
+      if (callback === undefined) {
+        callback = _query;
+        query = {
+          FILTERS: []
+        };
+        query = 'query='+ _parseQuery(query);
+      } else {
+        if (Object.keys(_query) < 1) {
+          query = '';
+        } else {
+          query = 'query='+ _parseQuery(_query.query);
+        }
+      }
+
+      var reqOptions = {
+        method: 'GET',
+        user: this.user,
+        endpoint: "api/v/2/devices/" + this.systemKey,
+        qs: query,
+        URI: this.URI
+      };
+
+      if (typeof callback === 'function') {
+        ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
     };
 
     return device;
