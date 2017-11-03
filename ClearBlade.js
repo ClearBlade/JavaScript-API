@@ -2221,6 +2221,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      * @param {Boolean} trigger Indicates whether or not should cause a trigger
      * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
      * @return {Object} An object containing updated device's data
+     * @example <caption>Updating device data</caption>
      * const callback = function (err, data) {
      *     if (err) {
      *         throw new Error (data);
@@ -2228,7 +2229,6 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      * };
      *
      * device.updateDevice(name, object, trigger, callback);
-     * 
      */
     device.updateDevice = function (name, object, trigger, callback) {
       if (typeof object != "object"){
