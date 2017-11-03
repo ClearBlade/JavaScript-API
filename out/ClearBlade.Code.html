@@ -28,11 +28,8 @@
 
 <header>
     
-        <h2>
-            <span class="ancestors"><a href="ClearBlade.html">ClearBlade</a>.</span>
-        
-        Code
-        </h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="ClearBlade.html">ClearBlade</a>.</span>Code<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h2>
         
     
 </header>
@@ -41,33 +38,36 @@
     <div class="container-overview">
     
         
-<dt>
-    
-        <h4 class="name" id="Code"><span class="type-signature"></span>new Code<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        creates and returns a Code object that can be used to execute ClearBlade Code Services
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id="Code"><span class="type-signature"></span>new Code<span class="signature">()</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
 
     
 
-    
+
+
+<div class="description">
+    creates and returns a Code object that can be used to execute ClearBlade Code Services
+</div>
+
+
+
+
+
+
+
+
+
+
+
 
 
 <dl class="details">
+
+    
 
     
 
@@ -106,20 +106,20 @@
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
-    <h5>Returns:</h5>
-    
-            
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
 <div class="param-desc">
     ClearBlade.Code
 </div>
@@ -138,10 +138,11 @@
     </dd>
 </dl>
 
-        
-
     
-</dd>
+
+
+
+
 
     
     </div>
@@ -152,7 +153,9 @@
 
     
 
-     
+    
+
+    
 
     
 
@@ -161,32 +164,33 @@
     
         <h3 class="subsection-title">Methods</h3>
 
-        <dl>
+        
             
-<dt>
-    
-        <h4 class="name" id="execute"><span class="type-signature"></span>execute<span class="signature">(name, params, callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Executes a ClearBlade Code Service
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id="execute"><span class="type-signature"></span>execute<span class="signature">(name, params, callback)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Executes a ClearBlade Code Service
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -278,12 +282,15 @@
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
+
+    
 
     
 
@@ -322,21 +329,23 @@
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
     <pre class="prettyprint"><code>cb.Code().execute("ServiceName", {stringParam: "stringVal", numParam: 1, objParam: {"key": "val"}, arrayParam: ["ClearBlade", "is", "awesome"]}, function(err, body) {
    if(err) {
        //handle error
@@ -345,35 +354,35 @@
    }
 })</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="getCompletedServices"><span class="type-signature"></span>getCompletedServices<span class="signature">(callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Retrieves a list of completed services for a system
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id="getCompletedServices"><span class="type-signature"></span>getCompletedServices<span class="signature">(callback)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Retrieves a list of completed services for a system
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -419,12 +428,15 @@
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
+
+    
 
     
 
@@ -463,21 +475,23 @@
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
     <pre class="prettyprint"><code>cb.Code().getCompletedServices(function(err, body) {
    if(err) {
        //handle error
@@ -486,35 +500,35 @@
    }
 })</code></pre>
 
-    
-</dd>
+
 
         
             
-<dt>
-    
-        <h4 class="name" id="getFailedServices"><span class="type-signature"></span>getFailedServices<span class="signature">(callback)</span><span class="type-signature"></span></h4>
-
-        
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        Retrieves a list of failed services for a system
-    </div>
-    
 
     
 
     
-
+    <h4 class="name" id="getFailedServices"><span class="type-signature"></span>getFailedServices<span class="signature">(callback)</span><span class="type-signature"></span></h4>
     
 
     
-        <h5>Parameters:</h5>
-        
+
+
+
+<div class="description">
+    Retrieves a list of failed services for a system
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
 
 <table class="params">
     <thead>
@@ -560,12 +574,15 @@
     
     </tbody>
 </table>
-    
 
-    
+
+
+
 
 
 <dl class="details">
+
+    
 
     
 
@@ -604,21 +621,23 @@
 </dl>
 
 
-    
 
-    
 
-    
 
-    
 
-    
 
-    
 
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
     
-        <h5>Example</h5>
-        
     <pre class="prettyprint"><code>cb.Code().getFailedServices(function(err, body) {
    if(err) {
        //handle error
@@ -627,10 +646,9 @@
    }
 })</code></pre>
 
-    
-</dd>
 
-        </dl>
+
+        
     
 
     
@@ -646,13 +664,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Analytics.html">Analytics</a></li><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.MessagingStats.html">MessagingStats</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ClearBlade.Analytics.html">Analytics</a></li><li><a href="ClearBlade.Code.html">Code</a></li><li><a href="ClearBlade.Collection.html">Collection</a></li><li><a href="ClearBlade.Device.html">Device</a></li><li><a href="ClearBlade.Item.html">Item</a></li><li><a href="ClearBlade.Messaging.html">Messaging</a></li><li><a href="ClearBlade.MessagingStats.html">MessagingStats</a></li><li><a href="ClearBlade.Query.html">Query</a></li><li><a href="ClearBlade.User.html">User</a></li></ul><h3>Namespaces</h3><ul><li><a href="ClearBlade.html">ClearBlade</a></li></ul>
 </nav>
 
-<br clear="both">
+<br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha10</a> on Tue Apr 25 2017 12:03:19 GMT-0500 (CDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Nov 03 2017 10:51:33 GMT-0500 (CDT)
 </footer>
 
 <script> prettyPrint(); </script>
