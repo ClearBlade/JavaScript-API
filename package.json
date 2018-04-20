@@ -1,12 +1,13 @@
 {
-  "name": "JavaScript-API",
-  "version": "0.0.0",
+  "name": "clearblade-js-client",
+  "version": "1.0.0",
   "description": "ClearBlade JavaScript API =========================",
-  "main": "ClearBlade.js",
+  "main": "index.js",
   "directories": {
     "test": "test"
   },
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "karma": "~0.12",
     "jasmine": "~2.0",
     "karma-jasmine": "~0.3",
@@ -15,9 +16,8 @@
     "karma-firefox-launcher": "~0.1",
     "karma-safari-launcher": "~0.1",
     "karma-chrome-launcher": "~0.1",
-    "karma-cli" : "~0.0.4"
-   },
-  "devDependencies": {},
+    "karma-cli": "~0.0.4"
+  },
   "scripts": {
     "test": "./node_modules/.bin/karma start --single-run --browsers PhantomJS"
   },
