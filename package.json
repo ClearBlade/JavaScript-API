@@ -1,6 +1,6 @@
 {
   "name": "clearblade-js-client",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "ClearBlade JavaScript API =========================",
   "main": "index.js",
   "directories": {
@@ -9,13 +9,7 @@
   "dependencies": {
     "@types/paho-mqtt": "^1.0.3"
   },
-  "keywords": [
-    "iot",
-    "clearblade",
-    "javascript",
-    "browser",
-    "client"
-  ],
+  "keywords": ["iot", "clearblade", "javascript", "browser", "client"],
   "devDependencies": {
     "jasmine": "~2.0",
     "karma": "~0.12",

@@ -1,20 +1,20 @@
 /*******************************************************************************
-* Copyright 2013 ClearBlade, Inc
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-*
-* Any redistribution of this program in any form must include this copyright
-*******************************************************************************/
+ * Copyright 2013 ClearBlade, Inc
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Any redistribution of this program in any form must include this copyright
+ *******************************************************************************/
 
 if (!window.console) {
   window.console = window.console || {};
-  window.console.log = window.console.log || function () {};
+  window.console.log = window.console.log || function() {};
 }
 
-(function (window, undefined) {
-  'use strict';
+(function(window, undefined) {
+  "use strict";
 
   var ClearBlade, $cb, currentUser;
   /**
@@ -27,11 +27,8 @@ if (!window.console) {
    *
    */
 
-  if (typeof exports != 'undefined') {
-    window = exports;
-  } else {
-    ClearBlade = $cb = window.$cb = window.ClearBlade = window.ClearBlade || function() { };
-  }
+  ClearBlade = $cb = window.$cb = window.ClearBlade =
+    window.ClearBlade || function() {};
 
   ClearBlade.MESSAGING_QOS_AT_MOST_ONCE = 0;
   ClearBlade.MESSAGING_QOS_AT_LEAST_ONCE = 1;
@@ -49,59 +46,69 @@ if (!window.console) {
    * <p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904</p>
    * <p>{Boolean} [logging] This is the property that tells the API whether or not the API will log to the console. This should be left `false` in production. Default is false</p>
    * <p>{Number} [callTimeout] This is the amount of time that the API will use to determine a timeout. Default is 30 seconds</p>
-	 * <p>{Boolean} [mqttAuth] Setting this to true and providing an email and password will use mqtt websockets to authenticate, rather than http.
-	 * <p>{String} [messagingAuthPort] is the port that the messaging auth websocket server is listening on.
+   * <p>{Boolean} [mqttAuth] Setting this to true and providing an email and password will use mqtt websockets to authenticate, rather than http.
+   * <p>{String} [messagingAuthPort] is the port that the messaging auth websocket server is listening on.
    *</p>
    */
-  ClearBlade.prototype.init = function (options) {
+  ClearBlade.prototype.init = function(options) {
     var _this = this;
 
     //check for undefined/null then check if they are the correct types for required params
-    if (!options || typeof options !== 'object')
-      throw new Error('Options must be an object or it is undefined');
+    if (!options || typeof options !== "object")
+      throw new Error("Options must be an object or it is undefined");
 
-    if (!options.systemKey || typeof options.systemKey !== 'string')
-      throw new Error('systemKey must be defined/a string');
+    if (!options.systemKey || typeof options.systemKey !== "string")
+      throw new Error("systemKey must be defined/a string");
 
-    if (!options.systemSecret || typeof options.systemSecret !== 'string')
-      throw new Error('systemSecret must be defined/a string');
+    if (!options.systemSecret || typeof options.systemSecret !== "string")
+      throw new Error("systemSecret must be defined/a string");
 
     //check for optional params.
-    if (options.logging && typeof options.logging !== 'boolean')
-      throw new Error('logging must be a true boolean if present');
+    if (options.logging && typeof options.logging !== "boolean")
+      throw new Error("logging must be a true boolean if present");
 
-    if (options.callback && typeof options.callback !== 'function') {
-      throw new Error('callback must be a function');
+    if (options.callback && typeof options.callback !== "function") {
+      throw new Error("callback must be a function");
     }
-    if (options.email && typeof options.email !== 'string') {
-      throw new Error('email must be a string');
+    if (options.email && typeof options.email !== "string") {
+      throw new Error("email must be a string");
     }
-    if (options.password && typeof options.password !== 'string') {
-      throw new Error('password must be a string');
+    if (options.password && typeof options.password !== "string") {
+      throw new Error("password must be a string");
     }
-    if (options.registerUser && typeof options.registerUser !== 'boolean') {
-      throw new Error('registerUser must be a true boolean if present');
+    if (options.registerUser && typeof options.registerUser !== "boolean") {
+      throw new Error("registerUser must be a true boolean if present");
     }
 
-    if (options.useUser && (!options.useUser.email || !options.useUser.authToken)) {
-      throw new Error('useUser must contain both an email and an authToken ' +
-        '{"email":email,"authToken":authToken}');
+    if (
+      options.useUser &&
+      (!options.useUser.email || !options.useUser.authToken)
+    ) {
+      throw new Error(
+        "useUser must contain both an email and an authToken " +
+          '{"email":email,"authToken":authToken}'
+      );
     }
 
     if (options.email && !options.password) {
-      throw new Error('Must provide a password for email');
+      throw new Error("Must provide a password for email");
     }
 
     if (options.password && !options.email) {
-      throw new Error('Must provide a email for password');
+      throw new Error("Must provide a email for password");
     }
 
     if (options.registerUser && !options.email) {
-      throw new Error('Cannot register anonymous user. Must provide an email');
+      throw new Error("Cannot register anonymous user. Must provide an email");
     }
 
-    if (options.useUser && (options.email || options.password || options.registerUser)) {
-      throw new Error('Cannot authenticate or register a new user when useUser is set');
+    if (
+      options.useUser &&
+      (options.email || options.password || options.registerUser)
+    ) {
+      throw new Error(
+        "Cannot authenticate or register a new user when useUser is set"
+      );
     }
 
     // store keys
@@ -141,7 +148,7 @@ if (!window.console) {
      * @type String
      */
     ClearBlade.prototype.messagingURI = options.messagingURI;
-    this.messagingURI = options.messagingURI || "platform.clearblade.com";		
+    this.messagingURI = options.messagingURI || "platform.clearblade.com";
     /**
      * This is the default port used when connecting to the messaging server
      * @prpopert messagingPort
@@ -167,21 +174,24 @@ if (!window.console) {
      * @private
      */
     ClearBlade.prototype._callTimeout = options.callTimeout;
-    this._callTimeout =  options.callTimeout || 30000; //default to 30 seconds
-		
-		/**
-		 * This property tells us which port to use for websocket mqtt auth.
-		 * @property messagingAuthPort
-		 * @type Number
-		 */
-		this.messagingAuthPort = options.messagingAuthPort || 8907;
-		
+    this._callTimeout = options.callTimeout || 30000; //default to 30 seconds
+
+    /**
+     * This property tells us which port to use for websocket mqtt auth.
+     * @property messagingAuthPort
+     * @type Number
+     */
+    this.messagingAuthPort = options.messagingAuthPort || 8907;
+
     this.user = null;
 
     if (options.useUser) {
       _this.setUser(options.useUser.email, options.useUser.authToken);
     } else if (options.registerUser) {
-      this.registerUser(options.email, options.password, function(err, response) {
+      this.registerUser(options.email, options.password, function(
+        err,
+        response
+      ) {
         if (err) {
           execute(err, response, options.callback);
         } else {
@@ -191,15 +201,18 @@ if (!window.console) {
         }
       });
     } else if (options.email) {
-			if (options.mqttAuth){
-				this.loginUserMqtt(options.email,options.password,function (err,user){
-					execute(err,user,options.callback);
-				});
-			} else {
-				this.loginUser(options.email, options.password, function(err, user) {
-					execute(err, user, options.callback);
-				});
-			}
+      if (options.mqttAuth) {
+        this.loginUserMqtt(options.email, options.password, function(
+          err,
+          user
+        ) {
+          execute(err, user, options.callback);
+        });
+      } else {
+        this.loginUser(options.email, options.password, function(err, user) {
+          execute(err, user, options.callback);
+        });
+      }
     } else {
       this.loginAnon(function(err, user) {
         execute(err, user, options.callback);
@@ -208,60 +221,67 @@ if (!window.console) {
   };
 
   var _validateEmailPassword = function(email, password) {
-    if (email == null || email == undefined || typeof email != 'string') {
+    if (email == null || email == undefined || typeof email != "string") {
       throw new Error("Email must be given and must be a string");
     }
-    if (password == null || password == undefined || typeof password != 'string') {
+    if (
+      password == null ||
+      password == undefined ||
+      typeof password != "string"
+    ) {
       throw new Error("Password must be given and must be a string");
     }
   };
   /**
-  * Used when assuming the role of a user to make subsequent requests
-  * @method ClearBlade.setUser
-  * @param email {String} the email of the user
-  * @param authToken {String} the authToken for the user
-  */
+   * Used when assuming the role of a user to make subsequent requests
+   * @method ClearBlade.setUser
+   * @param email {String} the email of the user
+   * @param authToken {String} the authToken for the user
+   */
   ClearBlade.prototype.setUser = function(email, authToken) {
     this.user = {
-      "email": email,
-      "authToken": authToken
+      email: email,
+      authToken: authToken
     };
     ClearBlade.prototype.user = this.user;
   };
 
   /**
-  * Method to register a user with the ClearBlade Platform
-  * @method ClearBlade.registerUser
-  * @param email {String} the users email
-  * @param password {String} the password for the user
-  * @param callback {function} returns a Boolean error value and a response as parameters
-  * @example <caption> Register User </caption>
-  * cb.registerUser("newUser@domain.com", "qwerty", function(err, body) {
-  *     if(err) {
-  *       //handle error
-  *     } else {
-  *       console.log(body);
-  *     }
-  *  });
-  */
+   * Method to register a user with the ClearBlade Platform
+   * @method ClearBlade.registerUser
+   * @param email {String} the users email
+   * @param password {String} the password for the user
+   * @param callback {function} returns a Boolean error value and a response as parameters
+   * @example <caption> Register User </caption>
+   * cb.registerUser("newUser@domain.com", "qwerty", function(err, body) {
+   *     if(err) {
+   *       //handle error
+   *     } else {
+   *       console.log(body);
+   *     }
+   *  });
+   */
   ClearBlade.prototype.registerUser = function(email, password, callback) {
     _validateEmailPassword(email, password);
-    ClearBlade.request({
-      method: 'POST',
-      endpoint: 'api/v/1/user/reg',
-      useUser: false,
-      body: { "email": email, "password": password },
-      systemKey: this.systemKey,
-      systemSecret: this.systemSecret,
-      timeout: this._callTimeout,
-      URI: this.URI
-    }, function (err, response) {
-      if (err) {
-        execute(true, response, callback);
-      } else {
-        execute(false, "User successfully registered", callback);
+    ClearBlade.request(
+      {
+        method: "POST",
+        endpoint: "api/v/1/user/reg",
+        useUser: false,
+        body: { email: email, password: password },
+        systemKey: this.systemKey,
+        systemSecret: this.systemSecret,
+        timeout: this._callTimeout,
+        URI: this.URI
+      },
+      function(err, response) {
+        if (err) {
+          execute(true, response, callback);
+        } else {
+          execute(false, "User successfully registered", callback);
+        }
       }
-    });
+    );
   };
   /**
    * Method to check if the current user has an active server session
@@ -277,21 +297,24 @@ if (!window.console) {
    * })
    */
   ClearBlade.prototype.isCurrentUserAuthenticated = function(callback) {
-    ClearBlade.request({
-      method: 'POST',
-      endpoint: 'api/v/1/user/checkauth',
-      systemKey: this.systemKey,
-      systemSecret: this.systemSecret,
-      timeout: this._callTimeout,
-      user: this.user,
-      URI: this.URI
-    }, function (err, response) {
-      if (err) {
-        execute(true, response, callback);
-      } else {
-        execute(false, response.is_authenticated, callback);
+    ClearBlade.request(
+      {
+        method: "POST",
+        endpoint: "api/v/1/user/checkauth",
+        systemKey: this.systemKey,
+        systemSecret: this.systemSecret,
+        timeout: this._callTimeout,
+        user: this.user,
+        URI: this.URI
+      },
+      function(err, response) {
+        if (err) {
+          execute(true, response, callback);
+        } else {
+          execute(false, response.is_authenticated, callback);
+        }
       }
-    });
+    );
   };
   /**
    * Method to end the server session for the current user
@@ -307,21 +330,24 @@ if (!window.console) {
    * })
    */
   ClearBlade.prototype.logoutUser = function(callback) {
-    ClearBlade.request({
-      method: 'POST',
-      endpoint: 'api/v/1/user/logout',
-      systemKey: this.systemKey,
-      systemSecret: this.systemSecret,
-      timeout: this._callTimeout,
-      user: this.user,
-      URI: this.URI
-    }, function(err, response) {
-      if (err) {
-        execute(true, response, callback);
-      } else {
-        execute(false, "User Logged out", callback);
+    ClearBlade.request(
+      {
+        method: "POST",
+        endpoint: "api/v/1/user/logout",
+        systemKey: this.systemKey,
+        systemSecret: this.systemSecret,
+        timeout: this._callTimeout,
+        user: this.user,
+        URI: this.URI
+      },
+      function(err, response) {
+        if (err) {
+          execute(true, response, callback);
+        } else {
+          execute(false, "User Logged out", callback);
+        }
       }
-    });
+    );
   };
 
   /**
@@ -339,22 +365,25 @@ if (!window.console) {
    */
   ClearBlade.prototype.loginAnon = function(callback) {
     var _this = this;
-    ClearBlade.request({
-      method: 'POST',
-      useUser: false,
-      endpoint: 'api/v/1/user/anon',
-      systemKey: this.systemKey,
-      systemSecret: this.systemSecret,
-      timeout: this._callTimeout,
-      URI: this.URI
-    }, function(err, response) {
-      if (err) {
-        execute(true, response, callback);
-      } else {
-        _this.setUser(null, response.user_token);
-        execute(false, _this.user, callback);
+    ClearBlade.request(
+      {
+        method: "POST",
+        useUser: false,
+        endpoint: "api/v/1/user/anon",
+        systemKey: this.systemKey,
+        systemSecret: this.systemSecret,
+        timeout: this._callTimeout,
+        URI: this.URI
+      },
+      function(err, response) {
+        if (err) {
+          execute(true, response, callback);
+        } else {
+          _this.setUser(null, response.user_token);
+          execute(false, _this.user, callback);
+        }
       }
-    });
+    );
   };
   /**
    * Method to create an authenticated session with the ClearBlade Platform
@@ -374,137 +403,146 @@ if (!window.console) {
   ClearBlade.prototype.loginUser = function(email, password, callback) {
     var _this = this;
     _validateEmailPassword(email, password);
-    ClearBlade.request({
-      method: 'POST',
-      useUser: false,
-      endpoint: 'api/v/1/user/auth',
-      systemKey: this.systemKey,
-      systemSecret: this.systemSecret,
-      URI: this.URI,
-      timeout: this._callTimeout,
-      body: { "email": email, "password": password }
-    }, function (err, response) {
-      if (err) {
-        execute(true, response, callback);
-      } else {
-        _this.setUser(email, response.user_token);
-        execute(false, _this.user, callback);
+    ClearBlade.request(
+      {
+        method: "POST",
+        useUser: false,
+        endpoint: "api/v/1/user/auth",
+        systemKey: this.systemKey,
+        systemSecret: this.systemSecret,
+        URI: this.URI,
+        timeout: this._callTimeout,
+        body: { email: email, password: password }
+      },
+      function(err, response) {
+        if (err) {
+          execute(true, response, callback);
+        } else {
+          _this.setUser(email, response.user_token);
+          execute(false, _this.user, callback);
+        }
       }
-    });
+    );
   };
 
-	/**
+  /**
    * Method to log user or developer in via MQTT over websockets
    * @method  ClearBlade.loginUserMqtt
-	 * @param  {String} email
-	 * @param  {String} password
-	 * @param  {Function} callback
-	 * @example
-	 * cb.loginUserMqtt("foo@bar.baz","secret_password", function(err, body) {
-	 *    if(err) {
-	 *        //handle error
-	 *    } else {
-	 *        //do post login stuff
-	 *    }
-	 * })
-	 */
-	ClearBlade.prototype.loginUserMqtt = function(email, password,callback) {
-		var _this = this;
-		_validateEmailPassword(email,password);
-		var clientid = email+":"+password;
-		var client = new Paho.MQTT.Client(_this.messagingURI,
-																			_this.messagingAuthPort,
-																			"/mqtt_auth",
-																			clientid);
-		var ourTopic = _this.systemKey+"/"+email;
-		//helper
-		var getString = function(msg){
-			//take two bytes
-			if (msg.length < 2){
-				var err = new Error("Bad Return Value from mqtt auth: bad length");
-				callback(err,null);
-			}
-			var b1 = msg[0];
-			var b2 = msg[1];
-			//get the string length
-			var len = b1.charCodeAt(0) + b2.charCodeAt(0);
-			if (msg.length  < len+2){
-				var err = new Error("Bad return value from mqtt auth: length longer than substring")
-				callback(err,null);
-			}
-			return msg.substring(0,len)
-		};
-		
-		var onConnect = function(){
-			//subscribe to our topic
-			client.subscribe(ourTopic,{qos:0});
-		};
+   * @param  {String} email
+   * @param  {String} password
+   * @param  {Function} callback
+   * @example
+   * cb.loginUserMqtt("foo@bar.baz","secret_password", function(err, body) {
+   *    if(err) {
+   *        //handle error
+   *    } else {
+   *        //do post login stuff
+   *    }
+   * })
+   */
+  ClearBlade.prototype.loginUserMqtt = function(email, password, callback) {
+    var _this = this;
+    _validateEmailPassword(email, password);
+    var clientid = email + ":" + password;
+    var client = new Paho.MQTT.Client(
+      _this.messagingURI,
+      _this.messagingAuthPort,
+      "/mqtt_auth",
+      clientid
+    );
+    var ourTopic = _this.systemKey + "/" + email;
+    //helper
+    var getString = function(msg) {
+      //take two bytes
+      if (msg.length < 2) {
+        var err = new Error("Bad Return Value from mqtt auth: bad length");
+        callback(err, null);
+      }
+      var b1 = msg[0];
+      var b2 = msg[1];
+      //get the string length
+      var len = b1.charCodeAt(0) + b2.charCodeAt(0);
+      if (msg.length < len + 2) {
+        var err = new Error(
+          "Bad return value from mqtt auth: length longer than substring"
+        );
+        callback(err, null);
+      }
+      return msg.substring(0, len);
+    };
 
-		var success = false;
-		var msgArrived = function(msg){
-			//we only anticipate receiving one message
-			if (msg.destinationName != ourTopic){return;}
-			var body = msg.payloadString;
-			var tok = getString(body);
-			body = body.substring(tok.length+2);
-			//usrid is unused by the sdk at the momment
-			var usrid = getString(body);
-			body = body.substring(usrid.length+2);
-			var msgingHost = getString(body);
-			_this.setUser(email,tok);
-			_this.messagingURI = msgingHost;
-			success = true;
-			client.disconnect();
-			callback(false,_this.user);
-		}
+    var onConnect = function() {
+      //subscribe to our topic
+      client.subscribe(ourTopic, { qos: 0 });
+    };
 
-		var mqtt_options = {
-			useSSL: true,
-			cleanSession: true,
-			userName: _this.systemKey,
-			password: _this.systemSecret,
-			onSuccess: onConnect,
-				onFailure: function(msg){
-				if (!success){
-						var err = new Error("failed to authenticate: "+ JSON.stringify(msg));
-						console.log(err)
-					callback(err,null);
-				}
-			}
-		};
-		
-		client.onConnectionLost = function(msg){
-			if (!success){
-				var err = new Error("connection lost " + JSON.stringify(msg));
-				callback(err,null);
-			}
-		};
-		client.onMessageArrived = msgArrived;
-		client.connect(mqtt_options);
-	}
-  
+    var success = false;
+    var msgArrived = function(msg) {
+      //we only anticipate receiving one message
+      if (msg.destinationName != ourTopic) {
+        return;
+      }
+      var body = msg.payloadString;
+      var tok = getString(body);
+      body = body.substring(tok.length + 2);
+      //usrid is unused by the sdk at the momment
+      var usrid = getString(body);
+      body = body.substring(usrid.length + 2);
+      var msgingHost = getString(body);
+      _this.setUser(email, tok);
+      _this.messagingURI = msgingHost;
+      success = true;
+      client.disconnect();
+      callback(false, _this.user);
+    };
+
+    var mqtt_options = {
+      useSSL: true,
+      cleanSession: true,
+      userName: _this.systemKey,
+      password: _this.systemSecret,
+      onSuccess: onConnect,
+      onFailure: function(msg) {
+        if (!success) {
+          var err = new Error("failed to authenticate: " + JSON.stringify(msg));
+          console.log(err);
+          callback(err, null);
+        }
+      }
+    };
+
+    client.onConnectionLost = function(msg) {
+      if (!success) {
+        var err = new Error("connection lost " + JSON.stringify(msg));
+        callback(err, null);
+      }
+    };
+    client.onMessageArrived = msgArrived;
+    client.connect(mqtt_options);
+  };
+
   /*
    * Helper functions
    */
 
-  var execute = function (error, response, callback) {
-    if (typeof callback === 'function') {
+  var execute = function(error, response, callback) {
+    if (typeof callback === "function") {
       callback(error, response);
     } else {
       logger("Did you forget to supply a valid Callback!");
     }
   };
 
-  var logger = function (message) {
+  var logger = function(message) {
     if (ClearBlade.logging) {
       console.log(message);
     }
     return;
   };
 
-  var isObjectEmpty = function (object) {
+  var isObjectEmpty = function(object) {
     /*jshint forin:false */
-    if (typeof object !== 'object') {
+    if (typeof object !== "object") {
       return true;
     }
     for (var keys in object) {
@@ -518,7 +556,7 @@ if (!window.console) {
    *
    */
 
-   var _createItemList = function(err, data, options, callback) {
+  var _createItemList = function(err, data, options, callback) {
     if (err) {
       callback(err, data);
     } else {
@@ -528,14 +566,14 @@ if (!window.console) {
       }
       callback(err, itemArray);
     }
-   };
+  };
 
-  var _request = function (options, callback) {
-    var method = options.method || 'GET';
-    var endpoint = options.endpoint || '';
+  var _request = function(options, callback) {
+    var method = options.method || "GET";
+    var endpoint = options.endpoint || "";
     var body = options.body || {};
-    var qs = options.qs || '';
-    var url = options.URI || 'https://platform.clearblade.com';
+    var qs = options.qs || "";
+    var url = options.URI || "https://platform.clearblade.com";
     var useUser = options.useUser || true;
     var authToken = useUser && options.authToken;
     var callTimeout = options.timeout || 30000;
@@ -544,7 +582,7 @@ if (!window.console) {
     }
     var params = qs;
     if (endpoint) {
-      url +=  ('/' + endpoint);
+      url += "/" + endpoint;
     }
 
     if (params) {
@@ -554,23 +592,28 @@ if (!window.console) {
     //begin XMLHttpRequest
     var httpRequest;
 
-    if (typeof window.XMLHttpRequest !== 'undefined') { // Mozilla, Safari, IE 10 ..
+    if (typeof window.XMLHttpRequest !== "undefined") {
+      // Mozilla, Safari, IE 10 ..
 
       httpRequest = new XMLHttpRequest();
 
       // if "withCredentials is not in the XMLHttpRequest object CORS is not supported
       if (!("withCredentials" in httpRequest)) {
-        logger("Sorry it seems that CORS is not supported on your Browser. The RESTful api calls will not work!");
+        logger(
+          "Sorry it seems that CORS is not supported on your Browser. The RESTful api calls will not work!"
+        );
         httpRequest = null;
         throw new Error("CORS is not supported!");
       }
       httpRequest.open(method, url, true);
-
-    } else if (typeof window.XDomainRequest !== 'undefined') { // IE 8/9
+    } else if (typeof window.XDomainRequest !== "undefined") {
+      // IE 8/9
       httpRequest = new XDomainRequest();
       httpRequest.open(method, url);
     } else {
-      alert("Sorry it seems that CORS is not supported on your Browser. The RESTful api calls will not work!");
+      alert(
+        "Sorry it seems that CORS is not supported on your Browser. The RESTful api calls will not work!"
+      );
       httpRequest = null;
       throw new Error("CORS is not supported!");
     }
@@ -579,14 +622,19 @@ if (!window.console) {
     if (authToken) {
       httpRequest.setRequestHeader("CLEARBLADE-USERTOKEN", authToken);
       httpRequest.setRequestHeader("ClearBlade-SystemKey", options.systemKey);
-      httpRequest.setRequestHeader("ClearBlade-SystemSecret", options.systemSecret);
+      httpRequest.setRequestHeader(
+        "ClearBlade-SystemSecret",
+        options.systemSecret
+      );
     } else {
       httpRequest.setRequestHeader("ClearBlade-SystemKey", options.systemKey);
-      httpRequest.setRequestHeader("ClearBlade-SystemSecret", options.systemSecret);
+      httpRequest.setRequestHeader(
+        "ClearBlade-SystemSecret",
+        options.systemSecret
+      );
     }
 
     if (!isObjectEmpty(body) || params) {
-
       if (method === "POST" || method === "PUT") {
         // Content-Type is expected for POST and PUT; bad things can happen if you don't specify this.
         httpRequest.setRequestHeader("Content-Type", "application/json");
@@ -595,19 +643,22 @@ if (!window.console) {
       httpRequest.setRequestHeader("Accept", "application/json");
     }
 
-    httpRequest.onreadystatechange = function () {
+    httpRequest.onreadystatechange = function() {
       if (httpRequest.readyState === 4) {
         // Looks like we didn't time out!
         clearTimeout(xhrTimeout);
 
         //define error for the entire scope of the if statement
         var error = false;
-        if (httpRequest.status >= 200 &&  httpRequest.status < 300) {
+        if (httpRequest.status >= 200 && httpRequest.status < 300) {
           var parsedResponse;
           var response;
           var flag = true;
           // try to parse response, it should be JSON
-          if (httpRequest.responseText == '[{}]' || httpRequest.responseText == '[]') {
+          if (
+            httpRequest.responseText == "[{}]" ||
+            httpRequest.responseText == "[]"
+          ) {
             error = false;
             execute(error, [], callback);
           } else {
@@ -617,21 +668,21 @@ if (!window.console) {
               for (var item in response) {
                 if (response[item] instanceof Object) {
                   for (var key in response[item]) {
-                    if (response[item][key] instanceof Object ){
-                      if (response[item][key]['_key']) {
-                        delete response[item][key]['_key'];
+                    if (response[item][key] instanceof Object) {
+                      if (response[item][key]["_key"]) {
+                        delete response[item][key]["_key"];
                       }
-                      if (response[item][key]['collectionID']) {
-                        delete response[item][key]['collectionID'];
+                      if (response[item][key]["collectionID"]) {
+                        delete response[item][key]["collectionID"];
                       }
                       parsedResponse.push(response[item][key]);
                       continue;
                     } else {
-                      if (response[item]['_key']) {
-                        delete response[item]['_key'];
+                      if (response[item]["_key"]) {
+                        delete response[item]["_key"];
                       }
-                      if (response[item]['collectionID']) {
-                        delete response[item]['collectionID'];
+                      if (response[item]["collectionID"]) {
+                        delete response[item]["collectionID"];
                       }
                       parsedResponse.push(response[item]);
                       break;
@@ -660,9 +711,14 @@ if (!window.console) {
             }
           }
         } else {
-          var msg = "Request Failed: Status " + httpRequest.status + " " + (httpRequest.statusText);
+          var msg =
+            "Request Failed: Status " +
+            httpRequest.status +
+            " " +
+            httpRequest.statusText;
           /*jshint expr: true */
-          httpRequest.responseText && (msg += "\nmessage:" + httpRequest.responseText);
+          httpRequest.responseText &&
+            (msg += "\nmessage:" + httpRequest.responseText);
           logger(msg);
           error = true;
           execute(error, msg, callback);
@@ -670,7 +726,7 @@ if (!window.console) {
       }
     };
 
-    logger('calling: ' + method + ' ' + url);
+    logger("calling: " + method + " " + url);
 
     body = JSON.stringify(body);
 
@@ -684,11 +740,10 @@ if (!window.console) {
     // set timeout and timeout function
     var xhrTimeout = setTimeout(callAbort, callTimeout);
     httpRequest.send(body);
-
   };
 
-  ClearBlade.request = function (options, callback) {
-    if (!options || typeof options !== 'object') {
+  ClearBlade.request = function(options, callback) {
+    if (!options || typeof options !== "object") {
       throw new Error("Request: options is not an object or is empty");
     }
 
@@ -714,15 +769,18 @@ if (!window.console) {
    */
   ClearBlade.prototype.Collection = function(options) {
     var collection = {};
-    if(typeof options === "string") {
+    if (typeof options === "string") {
       collection.endpoint = "api/v/1/data/" + options;
-      options = {collectionID: options};
+      options = { collectionID: options };
     } else if (options.collectionName && options.collectionName !== "") {
-      collection.endpoint = "api/v/1/collection/" + this.systemKey + "/" + options.collectionName;
-    } else if(options.collectionID && options.collectionID !== "") {
+      collection.endpoint =
+        "api/v/1/collection/" + this.systemKey + "/" + options.collectionName;
+    } else if (options.collectionID && options.collectionID !== "") {
       collection.endpoint = "api/v/1/data/" + options.collectionID;
     } else {
-      throw new Error("Must supply a collectionID or collectionName key in options object");
+      throw new Error(
+        "Must supply a collectionID or collectionName key in options object"
+      );
     }
     collection.user = this.user;
     collection.URI = this.URI;
@@ -747,7 +805,7 @@ if (!window.console) {
      * col.fetch(query, callback);
      * //this will give returnedData the value of what ever was returned from the server.
      */
-    collection.fetch = function (_query, callback) {
+    collection.fetch = function(_query, callback) {
       var query;
       /*
        * The following logic may look funny, but it is intentional.
@@ -760,27 +818,27 @@ if (!window.console) {
         query = {
           FILTERS: []
         };
-        query = 'query='+ _parseQuery(query);
+        query = "query=" + _parseQuery(query);
       } else {
         if (Object.keys(_query) < 1) {
-          query = '';
+          query = "";
         } else {
-          query = 'query='+ _parseQuery(_query.query);
+          query = "query=" + _parseQuery(_query.query);
         }
       }
 
       var reqOptions = {
-        method: 'GET',
+        method: "GET",
         endpoint: this.endpoint,
         qs: query,
         user: this.user,
         URI: this.URI
       };
 
-      var callCallback = function (err, data) {
+      var callCallback = function(err, data) {
         _createItemList(err, data.DATA, options, callback);
       };
-      if (typeof callback === 'function') {
+      if (typeof callback === "function") {
         ClearBlade.request(reqOptions, callCallback);
       } else {
         logger("No callback was defined!");
@@ -810,15 +868,15 @@ if (!window.console) {
      * //this inserts the the newPerson item into the collection that col represents
      *
      */
-    collection.create = function (newItem, callback) {
+    collection.create = function(newItem, callback) {
       var reqOptions = {
-        method: 'POST',
+        method: "POST",
         endpoint: this.endpoint,
         body: newItem,
         user: this.user,
         URI: this.URI
       };
-      if (typeof callback === 'function') {
+      if (typeof callback === "function") {
         ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
@@ -849,15 +907,15 @@ if (!window.console) {
      * col.update(query, changes, callback);
      * //sets John's age to 23
      */
-    collection.update = function (_query, changes, callback) {
+    collection.update = function(_query, changes, callback) {
       var reqOptions = {
-        method: 'PUT',
+        method: "PUT",
         endpoint: this.endpoint,
-        body: {query: _query.query.FILTERS, $set: changes},
+        body: { query: _query.query.FILTERS, $set: changes },
         user: this.user,
         URI: this.URI
       };
-      if (typeof callback === 'function') {
+      if (typeof callback === "function") {
         ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
@@ -884,60 +942,66 @@ if (!window.console) {
      * col.remove(query, callback);
      * //removes every item whose 'name' attribute is equal to 'John'
      */
-    collection.remove = function (_query, callback) {
+    collection.remove = function(_query, callback) {
       var query;
       if (_query === undefined) {
         throw new Error("no query defined!");
       } else {
-        query = 'query=' + _parseOperationQuery(_query.query);
+        query = "query=" + _parseOperationQuery(_query.query);
       }
 
       var reqOptions = {
-        method: 'DELETE',
+        method: "DELETE",
         endpoint: this.endpoint,
         qs: query,
         user: this.user,
         URI: this.URI
       };
-      if (typeof callback === 'function') {
+      if (typeof callback === "function") {
         ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
       }
     };
 
-    collection.columns = function (callback) {
-      if (typeof callback === 'function') {
-        ClearBlade.request({
-          method: 'GET',
-          URI: this.URI,
-          endpoint: this.endpoint + '/columns',
-          systemKey: this.systemKey,
-          systemSecret: this.systemSecret,
-          user: this.user,
-        }, callback);
+    collection.columns = function(callback) {
+      if (typeof callback === "function") {
+        ClearBlade.request(
+          {
+            method: "GET",
+            URI: this.URI,
+            endpoint: this.endpoint + "/columns",
+            systemKey: this.systemKey,
+            systemSecret: this.systemSecret,
+            user: this.user
+          },
+          callback
+        );
       } else {
         logger("No callback was defined!");
       }
     };
 
-    collection.count = function (_query, callback) {
-      if (typeof callback === 'function') {
+    collection.count = function(_query, callback) {
+      if (typeof callback === "function") {
         var query;
         if (_query === undefined || Object.keys(_query).length < 1) {
-          query = '';
+          query = "";
         } else {
-          query = 'query=' + _parseOperationQuery(_query.query);
+          query = "query=" + _parseOperationQuery(_query.query);
         }
-        ClearBlade.request({
-          method: 'GET',
-          URI: this.URI,
-          qs: query,
-          endpoint: this.endpoint + '/count',
-          systemKey: this.systemKey,
-          systemSecret: this.systemSecret,
-          user: this.user,
-        }, callback);
+        ClearBlade.request(
+          {
+            method: "GET",
+            URI: this.URI,
+            qs: query,
+            endpoint: this.endpoint + "/count",
+            systemKey: this.systemKey,
+            systemSecret: this.systemSecret,
+            user: this.user
+          },
+          callback
+        );
       } else {
         logger("No callback was defined!");
       }
@@ -946,26 +1010,25 @@ if (!window.console) {
     return collection;
   };
 
-
-
   /**
    * creates and returns a Query object that can be used in Collection methods or on its own to operate on items on the server
    * @class ClearBlade.Query
    * @param {Object} options Object that has configuration values used when instantiating a Query object
    * @returns {Object} Clearblade.Query the created query
    */
-  ClearBlade.prototype.Query = function (options) {
+  ClearBlade.prototype.Query = function(options) {
     var _this = this;
     var query = {};
     if (!options) {
       options = {};
     }
-    if(typeof options === "string") {
+    if (typeof options === "string") {
       query.endpoint = "api/v/1/data/" + options;
-      options = {collectionID: options};
+      options = { collectionID: options };
     } else if (options.collectionName && options.collectionName !== "") {
-      query.endpoint = "api/v/1/collection/" + this.systemKey + "/" + options.collectionName;
-    } else if(options.collectionID && options.collectionID !== "") {
+      query.endpoint =
+        "api/v/1/collection/" + this.systemKey + "/" + options.collectionName;
+    } else if (options.collectionID && options.collectionID !== "") {
       query.endpoint = "api/v/1/data/" + options.collectionID;
     }
     query.user = this.user;
@@ -980,20 +1043,20 @@ if (!window.console) {
     query.limit = options.limit || 10;
 
     query.addSortToQuery = function(queryObj, direction, column) {
-      if (typeof queryObj.query.SORT === 'undefined') {
+      if (typeof queryObj.query.SORT === "undefined") {
         queryObj.query.SORT = [];
       }
-      var newSort = {}
+      var newSort = {};
       newSort[direction] = column;
       queryObj.query.SORT.push(newSort);
     };
 
-    query.addFilterToQuery = function (queryObj, condition, key, value) {
+    query.addFilterToQuery = function(queryObj, condition, key, value) {
       var newObj = {};
       newObj[key] = value;
       var newFilter = {};
       newFilter[condition] = [newObj];
-      if (typeof queryObj.query.FILTERS === 'undefined') {
+      if (typeof queryObj.query.FILTERS === "undefined") {
         queryObj.query.FILTERS = [];
         queryObj.query.FILTERS.push([newFilter]);
         return;
@@ -1012,12 +1075,12 @@ if (!window.console) {
       }
     };
 
-    query.ascending = function (field) {
+    query.ascending = function(field) {
       this.addSortToQuery(this, "ASC", field);
       return this;
     };
 
-    query.descending = function (field) {
+    query.descending = function(field) {
       this.addSortToQuery(this, "DESC", field);
       return this;
     };
@@ -1032,7 +1095,7 @@ if (!window.console) {
      * query.equalTo('name', 'John');
      * //will only match if an item has an attribute 'name' that is equal to 'John'
      */
-    query.equalTo = function (field, value) {
+    query.equalTo = function(field, value) {
       this.addFilterToQuery(this, "EQ", field, value);
       return this;
     };
@@ -1047,7 +1110,7 @@ if (!window.console) {
      * query.greaterThan('age', 21);
      * //will only match if an item has an attribute 'age' that is greater than 21
      */
-    query.greaterThan = function (field, value) {
+    query.greaterThan = function(field, value) {
       this.addFilterToQuery(this, "GT", field, value);
       return this;
     };
@@ -1062,7 +1125,7 @@ if (!window.console) {
      * query.greaterThanEqualTo('age', 21);
      * //will only match if an item has an attribute 'age' that is greater than or equal to 21
      */
-    query.greaterThanEqualTo = function (field, value) {
+    query.greaterThanEqualTo = function(field, value) {
       this.addFilterToQuery(this, "GTE", field, value);
       return this;
     };
@@ -1077,7 +1140,7 @@ if (!window.console) {
      * query.lessThan('age', 50);
      * //will only match if an item has an attribute 'age' that is less than 50
      */
-    query.lessThan = function (field, value) {
+    query.lessThan = function(field, value) {
       this.addFilterToQuery(this, "LT", field, value);
       return this;
     };
@@ -1092,7 +1155,7 @@ if (!window.console) {
      * query.lessThanEqualTo('age', 50);
      * //will only match if an item has an attribute 'age' that is less than or equal to 50
      */
-    query.lessThanEqualTo = function (field, value) {
+    query.lessThanEqualTo = function(field, value) {
       this.addFilterToQuery(this, "LTE", field, value);
       return this;
     };
@@ -1107,7 +1170,7 @@ if (!window.console) {
      * query.notEqualTo('name', 'Jim');
      * //will only match if an item has an attribute 'name' that is not equal to 'Jim'
      */
-    query.notEqualTo = function (field, value) {
+    query.notEqualTo = function(field, value) {
       this.addFilterToQuery(this, "NEQ", field, value);
       return this;
     };
@@ -1122,7 +1185,7 @@ if (!window.console) {
      * query.matches('name', 'Smith$');
      * //will only match if an item has an attribute 'name' that That ends in 'Smith'
      */
-    query.matches = function (field, pattern) {
+    query.matches = function(field, pattern) {
       this.addFilterToQuery(this, "RE", field, pattern);
       return this;
     };
@@ -1139,13 +1202,19 @@ if (!window.console) {
      * query1.or(query2);
      * //will match if an item has an attribute 'name' that is equal to 'John' or 'Jim'
      */
-    query.or = function (that) {
-      if (this.query.hasOwnProperty('FILTERS') && that.query.hasOwnProperty('FILTERS')) {
+    query.or = function(that) {
+      if (
+        this.query.hasOwnProperty("FILTERS") &&
+        that.query.hasOwnProperty("FILTERS")
+      ) {
         for (var i = 0; i < that.query.FILTERS.length; i++) {
           this.query.FILTERS.push(that.query.FILTERS[i]);
         }
         return this;
-      } else if (!this.query.hasOwnProperty('FILTERS') && that.query.hasOwnProperty('FILTERS')) {
+      } else if (
+        !this.query.hasOwnProperty("FILTERS") &&
+        that.query.hasOwnProperty("FILTERS")
+      ) {
         for (var j = 0; j < that.query.FILTERS.length; j++) {
           this.query.FILTERS = [];
           this.query.FILTERS.push(that.query.FILTERS[j]);
@@ -1162,7 +1231,7 @@ if (!window.console) {
      * @param {int} pageNum  Page number, taking into account the page size. The
      * default is 1.
      */
-    query.setPage = function (pageSize, pageNum) {
+    query.setPage = function(pageSize, pageNum) {
       this.query.PAGESIZE = pageSize;
       this.query.PAGENUM = pageNum;
       return this;
@@ -1185,19 +1254,19 @@ if (!window.console) {
      * };
      * query.fetch(callback);
      */
-    query.fetch = function (callback) {
+    query.fetch = function(callback) {
       var reqOptions = {
-        method: 'GET',
-        qs: 'query=' + _parseQuery(this.query),
+        method: "GET",
+        qs: "query=" + _parseQuery(this.query),
         user: this.user,
         endpoint: this.endpoint,
         URI: this.URI
       };
-      var callCallback = function (err, data) {
+      var callCallback = function(err, data) {
         _createItemList(err, data.DATA, options, callback);
       };
 
-      if (typeof callback === 'function') {
+      if (typeof callback === "function") {
         ClearBlade.request(reqOptions, callCallback);
       } else {
         logger("No callback was defined!");
@@ -1228,16 +1297,16 @@ if (!window.console) {
      * query.update(changes, callback);
      * //sets John's age to 23
      */
-    query.update = function (changes, callback) {
+    query.update = function(changes, callback) {
       var reqOptions = {
-        method: 'PUT',
-        body: {query: this.query.FILTERS, $set: changes},
+        method: "PUT",
+        body: { query: this.query.FILTERS, $set: changes },
         user: this.user,
         endpoint: this.endpoint,
         URI: this.URI
       };
 
-      if (typeof callback === 'function') {
+      if (typeof callback === "function") {
         ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
@@ -1263,16 +1332,16 @@ if (!window.console) {
      * query.remove(callback);
      * //removes every item whose 'name' attribute is equal to 'John'
      */
-    query.remove = function (callback) {
+    query.remove = function(callback) {
       var reqOptions = {
-        method: 'DELETE',
-        qs: 'query=' + _parseQuery(this.query),
+        method: "DELETE",
+        qs: "query=" + _parseQuery(this.query),
         user: this.user,
         endpoint: this.endpoint,
         URI: this.URI
       };
 
-      if (typeof callback === 'function') {
+      if (typeof callback === "function") {
         ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
@@ -1287,25 +1356,25 @@ if (!window.console) {
    * @param {Object} data Object that contains necessary data for an item in a ClearBlade Collection
    * @param {String} collection Collection ID of the collection the item belongs to
    */
-  ClearBlade.prototype.Item = function (data, options) {
+  ClearBlade.prototype.Item = function(data, options) {
     var item = {};
     if (!(data instanceof Object)) {
       throw new Error("data must be of type Object");
     }
-    if(options === undefined || options === null || options === "") {
+    if (options === undefined || options === null || options === "") {
       throw new Error("Must supply an options parameter");
     }
-    if(typeof options === "string") {
-      options = {collectionID: options};
+    if (typeof options === "string") {
+      options = { collectionID: options };
     }
     item.data = data;
 
-    item.save = function (callback) {
+    item.save = function(callback) {
       //do a put or a post to the database to save the item in the db
       var self = this;
       var query = ClearBlade.prototype.Query(options);
-      query.equalTo('item_id', this.data.item_id);
-      var callCallback = function (err, data) {
+      query.equalTo("item_id", this.data.item_id);
+      var callCallback = function(err, data) {
         if (err) {
           callback(err, data);
         } else {
@@ -1316,12 +1385,12 @@ if (!window.console) {
       query.update(this.data, callCallback);
     };
 
-    item.refresh = function (callback) {
+    item.refresh = function(callback) {
       //do a get to make the local item reflect the database
       var self = this;
       var query = ClearBlade.prototype.Query(options);
-      query.equalTo('item_id', this.data.item_id);
-      var callCallback = function (err, data) {
+      query.equalTo("item_id", this.data.item_id);
+      var callCallback = function(err, data) {
         if (err) {
           callback(err, data);
         } else {
@@ -1332,12 +1401,12 @@ if (!window.console) {
       query.fetch(callCallback);
     };
 
-    item.destroy = function (callback) {
+    item.destroy = function(callback) {
       //deletes the relative record in the DB then deletes the item locally
       var self = this;
       var query = ClearBlade.prototype.Query(options);
-      query.equalTo('item_id', this.data.item_id);
-      var callCallback = function (err, data) {
+      query.equalTo("item_id", this.data.item_id);
+      var callCallback = function(err, data) {
         if (err) {
           callback(err, data);
         } else {
@@ -1357,7 +1426,7 @@ if (!window.console) {
    * @class  ClearBlade.Code
    * @returns {Object} ClearBlade.Code
    */
-  ClearBlade.prototype.Code = function(){
+  ClearBlade.prototype.Code = function() {
     var code = {};
     code.user = this.user;
     code.URI = this.URI;
@@ -1379,15 +1448,15 @@ if (!window.console) {
      *    }
      * })
      */
-    code.execute = function(name, params, callback){
+    code.execute = function(name, params, callback) {
       var reqOptions = {
-        method: 'POST',
-        endpoint: 'api/v/1/code/' + this.systemKey + '/' + name,
+        method: "POST",
+        endpoint: "api/v/1/code/" + this.systemKey + "/" + name,
         body: params,
         user: this.user,
         URI: this.URI
       };
-      if (typeof callback === 'function') {
+      if (typeof callback === "function") {
         ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
@@ -1400,11 +1469,11 @@ if (!window.console) {
    * @class ClearBlade.User
    * @returns {Object} ClearBlade.User the created User object
    */
-  ClearBlade.prototype.User = function(){
+  ClearBlade.prototype.User = function() {
     var user = {};
     user.user = this.user;
     user.URI = this.URI;
-    user.endpoint = 'api/v/1/user';
+    user.endpoint = "api/v/1/user";
     user.systemKey = this.systemKey;
     user.systemSecret = this.systemSecret;
     user.callTimeout = this._callTimeout;
@@ -1423,14 +1492,14 @@ if (!window.console) {
      *    }
      * });
      */
-    user.getUser = function(callback){
+    user.getUser = function(callback) {
       var reqOptions = {
-        method: 'GET',
-        endpoint: this.endpoint + '/info',
+        method: "GET",
+        endpoint: this.endpoint + "/info",
         user: this.user,
         URI: this.URI
       };
-      if (typeof callback === 'function') {
+      if (typeof callback === "function") {
         ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
@@ -1455,15 +1524,15 @@ if (!window.console) {
      *    }
      * });
      */
-    user.setUser = function(data, callback){
+    user.setUser = function(data, callback) {
       var reqOptions = {
-        method: 'PUT',
-        endpoint: this.endpoint + '/info',
+        method: "PUT",
+        endpoint: this.endpoint + "/info",
         body: data,
         user: this.user,
         URI: this.URI
       };
-      if (typeof callback === 'function') {
+      if (typeof callback === "function") {
         ClearBlade.request(reqOptions, callback);
       } else {
         logger("No callback was defined!");
@@ -1490,61 +1559,70 @@ if (!window.console) {
      * //returns all the users with a name property equal to "John"
      */
     user.allUsers = function(_query, callback) {
-      if (typeof callback === 'function') {
+      if (typeof callback === "function") {
         var query;
         if (callback === undefined) {
           callback = _query;
-          query = '';
+          query = "";
         } else if (Object.keys(_query).length < 1) {
-          query = '';
+          query = "";
         } else {
-          query = 'query=' + _parseQuery(_query.query);
+          query = "query=" + _parseQuery(_query.query);
         }
-        ClearBlade.request({
-          method: 'GET',
-          systemKey: this.systemKey,
-          systemSecret: this.systemSecret,
-          endpoint: this.endpoint,
-          qs: query,
-          user: this.user,
-          URI: this.URI
-        }, callback);
+        ClearBlade.request(
+          {
+            method: "GET",
+            systemKey: this.systemKey,
+            systemSecret: this.systemSecret,
+            endpoint: this.endpoint,
+            qs: query,
+            user: this.user,
+            URI: this.URI
+          },
+          callback
+        );
       } else {
-        logger('No callback was defined!');
+        logger("No callback was defined!");
       }
     };
 
     user.setPassword = function(oldPass, newPass, callback) {
-      if (typeof callback === 'function') {
-        ClearBlade.request({
-          method: 'PUT',
-          endpoint: this.endpoint + '/pass',
-          body: {oldPass:oldPass,newPass:newPass},
-          user: this.user,
-          URI: this.URI,
-        }, callback);
+      if (typeof callback === "function") {
+        ClearBlade.request(
+          {
+            method: "PUT",
+            endpoint: this.endpoint + "/pass",
+            body: { oldPass: oldPass, newPass: newPass },
+            user: this.user,
+            URI: this.URI
+          },
+          callback
+        );
       } else {
-        logger('No callback was defined!');
+        logger("No callback was defined!");
       }
     };
 
     user.count = function(_query, callback) {
-      if (typeof callback === 'function') {
+      if (typeof callback === "function") {
         var query;
         if (_query === undefined || Object.keys(_query).length < 1) {
-          query = '';
+          query = "";
         } else {
-          query = 'query=' + _parseOperationQuery(_query.query);
+          query = "query=" + _parseOperationQuery(_query.query);
         }
-        ClearBlade.request({
-          method: 'GET',
-          endpoint: this.endpoint + '/count',
-          qs: query,
-          user: this.user,
-          URI: this.URI,
-        }, callback);
+        ClearBlade.request(
+          {
+            method: "GET",
+            endpoint: this.endpoint + "/count",
+            qs: query,
+            user: this.user,
+            URI: this.URI
+          },
+          callback
+        );
       } else {
-        logger('No callback was defined!');
+        logger("No callback was defined!");
       }
     };
 
@@ -1577,16 +1655,16 @@ if (!window.console) {
    * //A connect with a nonstandard timeout
    * var cb = ClearBlade.Messaging({"timeout":15}, callback);
    */
-  ClearBlade.prototype.Messaging = function(options, callback){
+  ClearBlade.prototype.Messaging = function(options, callback) {
     if (!window.Paho) {
-      throw new Error('Please include the mqttws31.js script on the page');
+      throw new Error("Please include the mqttws31.js script on the page");
     }
     var _this = this;
     var messaging = {};
 
     messaging.user = this.user;
     messaging.URI = this.URI;
-    messaging.endpoint = 'api/v/1/message';
+    messaging.endpoint = "api/v/1/message";
     messaging.systemKey = this.systemKey;
     messaging.systemSecret = this.systemSecret;
     messaging.callTimeout = this._callTimeout;
@@ -1606,19 +1684,25 @@ if (!window.console) {
     }
 
     var clientID = Math.floor(Math.random() * 10e12).toString();
-    messaging.client = new Paho.MQTT.Client(conf.hosts[0],conf.ports[0],clientID);//new Messaging.Client(conf.hosts[0],conf.ports[0],clientID);
+    messaging.client = new Paho.MQTT.Client(
+      conf.hosts[0],
+      conf.ports[0],
+      clientID
+    ); //new Messaging.Client(conf.hosts[0],conf.ports[0],clientID);
 
-    messaging.client.onConnectionLost = function(response){
-      console.log("ClearBlade Messaging connection lost- attempting to reestablish");
+    messaging.client.onConnectionLost = function(response) {
+      console.log(
+        "ClearBlade Messaging connection lost- attempting to reestablish"
+      );
       delete conf.mqttVersionExplicit;
       delete conf.uris;
       messaging.client.connect(conf);
     };
 
-    messaging.client.onMessageArrived = function(message){
+    messaging.client.onMessageArrived = function(message) {
       // messageCallback from Subscribe()
       messaging.messageCallback(message.payloadString);
-    };;
+    };
     // the mqtt websocket library uses "onConnect," but our terminology uses
     // "onSuccess" and "onFailure"
     var onSuccess = function(data) {
@@ -1646,9 +1730,9 @@ if (!window.console) {
      */
     messaging.getMessageHistory = function(topic, startTime, count, callback) {
       var reqOptions = {
-        method: 'GET',
-        endpoint: this.endpoint + '/' + this.systemKey,
-        qs: 'topic=' + topic + '&count=' + count + '&last=' + startTime,
+        method: "GET",
+        endpoint: this.endpoint + "/" + this.systemKey,
+        qs: "topic=" + topic + "&count=" + count + "&last=" + startTime,
         authToken: this.user.authToken,
         timeout: this.callTimeout,
         URI: this.URI
@@ -1663,15 +1747,18 @@ if (!window.console) {
     };
 
     messaging.currentTopics = function(callback) {
-      if (typeof callback === 'function') {
-        ClearBlade.request({
-          method: 'GET',
-          endpoint: this.endpoint + '/' + this.systemKey + '/currentTopics',
-          user: this.user,
-          URI: this.URI,
-        }, callback);
+      if (typeof callback === "function") {
+        ClearBlade.request(
+          {
+            method: "GET",
+            endpoint: this.endpoint + "/" + this.systemKey + "/currentTopics",
+            user: this.user,
+            URI: this.URI
+          },
+          callback
+        );
       } else {
-        logger('No callback was defined!');
+        logger("No callback was defined!");
       }
     };
 
@@ -1688,23 +1775,26 @@ if (!window.console) {
      * cb.publish("ClearBlade/is awesome!","Totally rules");
      * //Topics can include spaces and punctuation  except "/"
      */
-    messaging.publish = function(topic, payload){
+    messaging.publish = function(topic, payload) {
       var msg = new Paho.MQTT.Message(payload);
       msg.destinationName = topic;
       msg.qos = this._qos;
       messaging.client.send(msg);
     };
 
-    messaging.publishREST = function(topic, payload, callback){
-      ClearBlade.request({
-        method: 'POST',
-        endpoint: this.endpoint + '/' + this.systemKey + '/publish',
-        body: {topic:topic, payload:payload},
-        systemKey: this.systemKey,
-        systemSecret: this.systemSecret,
-        user: this.user,
-        URI: this.URI,
-      }, callback);
+    messaging.publishREST = function(topic, payload, callback) {
+      ClearBlade.request(
+        {
+          method: "POST",
+          endpoint: this.endpoint + "/" + this.systemKey + "/publish",
+          body: { topic: topic, payload: payload },
+          systemKey: this.systemKey,
+          systemSecret: this.systemSecret,
+          user: this.user,
+          URI: this.URI
+        },
+        callback
+      );
     };
 
     /**
@@ -1725,17 +1815,17 @@ if (!window.console) {
      * var cb = ClearBlade.Messaging({}, callback);
      * cb.subscribe("ClearBlade/is awesome!",{});
      */
-    messaging.subscribe = function (topic,options,messageCallback){
+    messaging.subscribe = function(topic, options, messageCallback) {
       var _this = this;
 
       var onSuccess = function() {
         var conf = {};
         conf["qos"] = this._qos || 0;
-        conf["invocationContext"] = options["invocationContext"] ||  {};
+        conf["invocationContext"] = options["invocationContext"] || {};
         conf["onSuccess"] = options["onSuccess"] || null;
         conf["onFailure"] = options["onFailure"] || null;
         conf["timeout"] = options["timeout"] || 60;
-        _this.client.subscribe(topic,conf);
+        _this.client.subscribe(topic, conf);
       };
 
       var onFailure = function() {
@@ -1765,13 +1855,13 @@ if (!window.console) {
      * var cb = ClearBlade.Messaging({}, callback);
      * cb.unsubscribe("ClearBlade/is awesome!",{"onSuccess":function(){console.log("we unsubscribe");});
      */
-    messaging.unsubscribe = function(topic,options){
+    messaging.unsubscribe = function(topic, options) {
       var conf = {};
-      conf["invocationContext"] = options["invocationContext"] ||  {};
-      conf["onSuccess"] = options["onSuccess"] || function(){};//null;
-      conf["onFailure"] = options["onFailure"] || function(){};//null;
+      conf["invocationContext"] = options["invocationContext"] || {};
+      conf["onSuccess"] = options["onSuccess"] || function() {}; //null;
+      conf["onFailure"] = options["onFailure"] || function() {}; //null;
       conf["timeout"] = options["timeout"] || 60;
-      this.client.unsubscribe(topic,conf);
+      this.client.unsubscribe(topic, conf);
     };
 
     /**
@@ -1784,8 +1874,8 @@ if (!window.console) {
      * var cb = ClearBlade.Messaging({}, callback);
      * cb.disconnect()//why leave so soon :(
      */
-    messaging.disconnect = function(){
-      this.client.disconnect()
+    messaging.disconnect = function() {
+      this.client.disconnect();
     };
 
     return messaging;
@@ -1800,19 +1890,19 @@ if (!window.console) {
    * @param {function} callback A function like `function (err, data) {}` to handle the response
    */
 
-  ClearBlade.prototype.sendPush = function (users, payload, appId, callback) {
-    if (!callback || typeof callback !== 'function') {
-      throw new Error('Callback must be a function');
+  ClearBlade.prototype.sendPush = function(users, payload, appId, callback) {
+    if (!callback || typeof callback !== "function") {
+      throw new Error("Callback must be a function");
     }
     if (!Array.isArray(users)) {
-      throw new Error('User list must be an array of user IDs');
+      throw new Error("User list must be an array of user IDs");
     }
     var formattedObject = {};
     Object.getOwnPropertyNames(payload).forEach(function(key, element) {
       if (key === "alert" || key === "badge" || key === "sound") {
-  if (!formattedObject.hasOwnProperty('aps')) {
-    formattedObject.aps = {};
-  }
+        if (!formattedObject.hasOwnProperty("aps")) {
+          formattedObject.aps = {};
+        }
         formattedObject.aps[key] = payload[key];
       }
     });
@@ -1822,13 +1912,12 @@ if (!window.console) {
       appid: appId
     };
     var reqOptions = {
-      method: 'POST',
-      endpoint: 'api/v/1/push/' + this.systemKey,
+      method: "POST",
+      endpoint: "api/v/1/push/" + this.systemKey,
       body: body,
       user: this.user,
       URI: this.URI
     };
     ClearBlade.request(reqOptions, callback);
   };
-
 })(window);
