@@ -7,16 +7,24 @@
     "test": "test"
   },
   "dependencies": {},
+  "keywords": [
+    "iot",
+    "clearblade",
+    "javascript",
+    "browser",
+    "client"
+  ],
   "devDependencies": {
-    "karma": "~0.12",
+    "@types/paho-mqtt": "^1.0.3",
     "jasmine": "~2.0",
-    "karma-jasmine": "~0.3",
-    "phantomjs": "~1.9",
-    "karma-phantomjs-launcher": "~0.1",
-    "karma-firefox-launcher": "~0.1",
-    "karma-safari-launcher": "~0.1",
+    "karma": "~0.12",
     "karma-chrome-launcher": "~0.1",
-    "karma-cli": "~0.0.4"
+    "karma-cli": "~0.0.4",
+    "karma-firefox-launcher": "~0.1",
+    "karma-jasmine": "~0.3",
+    "karma-phantomjs-launcher": "~0.1",
+    "karma-safari-launcher": "~0.1",
+    "phantomjs": "~1.9"
   },
   "scripts": {
     "test": "./node_modules/.bin/karma start --single-run --browsers PhantomJS"
