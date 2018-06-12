@@ -91,6 +91,7 @@ interface IClearBlade {
   Collection(
     options: string | CollectionOptionsWithName | CollectionOptionsWithID
   ): Collection;
+  Query(): QueryObj;
   Query(options: string | QueryOptionsWithName | QueryOptionsWithID): QueryObj;
   Item(data: object, collectionID: string | ItemOptions): Item;
   Code(): Code;

@@ -9,20 +9,36 @@
   "dependencies": {
     "@types/paho-mqtt": "^1.0.3"
   },
-  "keywords": ["iot", "clearblade", "javascript", "browser", "client"],
+  "keywords": [
+    "iot",
+    "clearblade",
+    "javascript",
+    "browser",
+    "client"
+  ],
   "devDependencies": {
-    "jasmine": "~2.0",
-    "karma": "~0.12",
-    "karma-chrome-launcher": "~0.1",
-    "karma-cli": "~0.0.4",
-    "karma-firefox-launcher": "~0.1",
-    "karma-jasmine": "~0.3",
-    "karma-phantomjs-launcher": "~0.1",
-    "karma-safari-launcher": "~0.1",
-    "phantomjs": "~1.9"
+    "@types/jest": "^23.0.2",
+    "jest": "^23.1.0",
+    "ts-jest": "^22.4.6",
+    "typescript": "^2.9.1"
   },
   "scripts": {
-    "test": "./node_modules/.bin/karma start --single-run --browsers PhantomJS"
+    "test": "jest",
+    "test:watch": "jest --watchAll"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   },
   "repository": {
     "type": "git",
