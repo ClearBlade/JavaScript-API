@@ -45,9 +45,14 @@ describe("ClearBlade user setup", function() {
     var expectedData = {
       method: "POST",
       endpoint: "api/v/1/user/reg",
-      useUser: false,
+      useUser: true,
+      user: {
+        email: null,
+        authToken: undefined
+      },
       systemKey: "fakeSystemKey",
       systemSecret: "fakeSystemSecret",
+      authToken: undefined,
       timeout: 30000,
       URI: "https://platform.clearblade.com",
       body: {
@@ -55,6 +60,7 @@ describe("ClearBlade user setup", function() {
         password: "testPass"
       }
     };
+    // expect(ClearBlade.request.calls.argsFor(callNum)[0]).toEqual(expectedData);
     expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
   });
 
