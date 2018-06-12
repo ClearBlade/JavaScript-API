@@ -47,7 +47,7 @@ describe("ClearBlade user setup", function() {
       endpoint: "api/v/1/user/reg",
       useUser: true,
       user: {
-        email: null,
+        email: "test@fake.com",
         authToken: undefined
       },
       systemKey: "fakeSystemKey",

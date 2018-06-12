@@ -2,7 +2,7 @@
  * JavaScript tests to test the user functionality
  */
 
-import { cb, platformUrl } from "./utils";
+import { cb, platformUrl, systemKey } from "./utils";
 
 describe("ClearBlade Users", function() {
   it("gets user info", function() {
@@ -29,6 +29,7 @@ describe("ClearBlade Users", function() {
       method: "PUT",
       endpoint: "api/v/1/user/info",
       URI: platformUrl,
+      systemKey: systemKey,
       body: {
         height: 70
       },
