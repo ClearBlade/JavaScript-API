@@ -27,6 +27,10 @@ if (!window.console) {
    *
    */
 
+  if (typeof exports != "undefined") {
+    // window = exports;
+  }
+
   ClearBlade = $cb = window.$cb = window.ClearBlade =
     window.ClearBlade || function() {};
 
@@ -44,7 +48,7 @@ if (!window.console) {
    * <p>{String} [systemSecret] This is the app secret that will be used in combination with the systemKey to authenticate your app</p>
    * <p>{String} [URI] This is the URI used to identify where the Platform is located. Default is https://platform.clearblade.com</p>
    * <p>{String} [messagingURI] This is the URI used to identify where the Messaging server is located. Default is platform.clearblade.com</p>
-n   * <p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904</p>
+   n   * <p>{Number} [messagingPort] This is the default port used when connecting to the messaging server. Default is 8904</p>
    * <p>{Boolean} [logging] This is the property that tells the API whether or not the API will log to the console. This should be left `false` in production. Default is false</p>
    * <p>{Number} [callTimeout] This is the amount of time that the API will use to determine a timeout. Default is 30 seconds</p>
    * <p>{Boolean} [mqttAuth] Setting this to true and providing an email and password will use mqtt websockets to authenticate, rather than http.</p>
@@ -184,7 +188,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
      */
     this.messagingAuthPort = options.messagingAuthPort || 8907;
 
-    this.user = null;
+    this.user = {};
 
     if (options.useUser) {
       _this.setUser(options.useUser.email, options.useUser.authToken);
@@ -240,10 +244,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
    * @param authToken {String} the authToken for the user
    */
   ClearBlade.prototype.setUser = function(email, authToken) {
-    this.user = {
-      email: email,
-      authToken: authToken
-    };
+    this.user.email = email;
+    this.user.authToken = authToken;
     ClearBlade.prototype.user = this.user;
   };
 
@@ -493,8 +495,8 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       var usrid = getString(body);
       body = body.substring(usrid.length + 2);
       var msgingHost = getString(body);
-      _this.setUser(email, tok.substring(2, tok.length) + "=="); // first 2 bytes are length
-      // _this.messagingURI = msgingHost; // We will add this back once the backend is fixed. Right now its always "messaging.clearblade.com"
+      _this.setUser(email, tok);
+      _this.messagingURI = msgingHost;
       success = true;
       client.disconnect();
       callback(false, _this.user);
@@ -761,7 +763,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
   };
 
   var _parseOperationQuery = function(_query) {
-    return encodeURIComponent(JSON.stringify(_query.FILTERS));
+    return encodeURIComponent(JSON.stringify(_query.FILTERS || []));
   };
 
   var _parseQuery = function(_query) {
@@ -798,6 +800,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     collection.URI = this.URI;
     collection.systemKey = this.systemKey;
     collection.systemSecret = this.systemSecret;
+
     /**
      * Reqests an item or a set of items from the collection.
      * @method ClearBlade.Collection.prototype.fetch
@@ -1010,7 +1013,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         if (_query === undefined || Object.keys(_query).length < 1) {
           query = "";
         } else {
-          query = "query=" + _parseOperationQuery(_query.query);
+          query = "query=" + _parseQuery(_query.query);
         }
         ClearBlade.request(
           {
@@ -1490,6 +1493,95 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     code.systemKey = this.systemKey;
     code.systemSecret = this.systemSecret;
     code.callTimeout = this._callTimeout;
+
+    /**
+     * Creates a ClearBlade Code Service
+     * @method  ClearBlade.Code.prototype.create
+     * @param  {String}   name name of the ClearBlade service you wish to create
+     * @param  {String}   body represents the function to be stored
+     * @param  {Function} callback
+     * @example
+     * cb.Code().create("ServiceName", "{"code":"function ServiceName (req, resp) { resp.success('hello!')}","parameters":[],"systemID":"<system_key>","name":"ServiceName","dependencies":"clearblade, log","run_user":""}", function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
+    code.create = function(name, body, callback) {
+      var reqOptions = {
+        method: "POST",
+        endpoint: "api/v/3/code/" + this.systemKey + "/service/" + name,
+        body: body,
+        user: this.user,
+        URI: this.URI
+      };
+      if (typeof callback === "function") {
+        ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    /**
+     * Updates a ClearBlade Code Service
+     * @method  ClearBlade.Code.prototype.update
+     * @param  {String}   name name of the ClearBlade service you wish to update
+     * @param  {String}   body represents the function to be stored
+     * @param  {Function} callback
+     * @example
+     * cb.Code().create("ServiceName", "{"code":"function ServiceName (req, resp) { resp.success('hello!!!!')}","parameters":[],"systemID":"<system_key>","name":"ServiceName","dependencies":"clearblade, log","run_user":""}", function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
+    code.update = function(name, body, callback) {
+      var reqOptions = {
+        method: "PUT",
+        endpoint: "api/v/3/code/" + this.systemKey + "/service/" + name,
+        body: body,
+        user: this.user,
+        URI: this.URI
+      };
+      if (typeof callback === "function") {
+        ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    /**
+     * Deletes a ClearBlade Code Service
+     * @method  ClearBlade.Code.prototype.delete
+     * @param  {String}   name name of the ClearBlade service you wish to delete
+     * @param  {Function} callback
+     * @example
+     * cb.Code().delete("ServiceName", function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
+    code.delete = function(name, callback) {
+      var reqOptions = {
+        method: "DELETE",
+        endpoint: "api/v/3/code/" + this.systemKey + "/service/" + name,
+        user: this.user,
+        URI: this.URI
+      };
+      if (typeof callback === "function") {
+        ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
     /**
      * Executes a ClearBlade Code Service
      * @method  ClearBlade.Code.prototype.execute
@@ -1566,6 +1658,29 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       ClearBlade.request(reqOptions, callback);
     };
 
+    /**
+     * Retrieves a list of services for a system
+     * @method  ClearBlade.Code.prototype.getAllServices
+     * @param  {Function} callback
+     * @example
+     * cb.Code().fetch(function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
+    code.getAllServices = function(callback) {
+      var reqOptions = {
+        method: "GET",
+        endpoint: "/api/v/3/code/" + this.systemKey,
+        user: this.user,
+        URI: this.URI
+      };
+      ClearBlade.request(reqOptions, callback);
+    };
+
     return code;
   };
   /**
@@ -1631,6 +1746,113 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       var reqOptions = {
         method: "PUT",
         endpoint: this.endpoint + "/info",
+        systemKey: this.systemKey,
+        body: data,
+        user: this.user,
+        URI: this.URI
+      };
+      if (typeof callback === "function") {
+        ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    /**
+     * Performs a post on the current users row
+     * @method ClearBlade.User.prototype.addUser
+     * @param {Object}   data Object containing the data to insert
+     * @param {Function} callback
+     * @example
+     * var newUserInfo = {
+     *    "email": "test@test.com",
+     *    "password": "thePassword"
+     *    "name": "newName",
+     *    "age": 76
+     * }
+     * var user = cb.User();
+     * user.addUser(newUserInfo, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * });
+     */
+    user.addUser = function(data, callback) {
+      var reqOptions = {
+        method: "POST",
+        endpoint: this.endpoint + "/info",
+        systemKey: this.systemKey,
+        body: data,
+        user: this.user,
+        URI: this.URI
+      };
+      if (typeof callback === "function") {
+        ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    /**
+     * Performs a put on the a users row
+     * @method ClearBlade.User.prototype.updateUser
+     * @param {Object}   data Object containing the data to update
+     * @param {Function} callback
+     * @example
+     * var newUserInfo = {
+     *    "name": "newName",
+     *    "age": 76
+     * }
+     * var user = cb.User();
+     * user.updateUser(newUserInfo, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * });
+     */
+    user.updateUser = function(data, callback) {
+      var reqOptions = {
+        method: "PUT",
+        endpoint: "api/v/2/user/info",
+        systemKey: this.systemKey,
+        body: data,
+        user: this.user,
+        URI: this.URI
+      };
+      if (typeof callback === "function") {
+        ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    /**
+     * Performs a delete on the current users row
+     * @method ClearBlade.User.prototype.deleteUser
+     * @param {Object}   data Object containing the user to delete
+     * @param {Function} callback
+     * @example
+     * var deleteUserInfo = {
+     *    "user_id": "theID"
+     * }
+     * var user = cb.User();
+     * user.deleteUser(deleteUserInfo, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * });
+     */
+    user.deleteUser = function(data, callback) {
+      var reqOptions = {
+        method: "DELETE",
+        endpoint: this.endpoint + "/info",
+        systemKey: this.systemKey,
         body: data,
         user: this.user,
         URI: this.URI
@@ -1717,10 +1939,30 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
         ClearBlade.request(
           {
             method: "GET",
+            systemKey: this.systemKey,
+            systemSecret: this.systemSecret,
             endpoint: this.endpoint + "/count",
             qs: query,
             user: this.user,
             URI: this.URI
+          },
+          callback
+        );
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    user.columns = function(callback) {
+      if (typeof callback === "function") {
+        ClearBlade.request(
+          {
+            method: "GET",
+            URI: this.URI,
+            endpoint: this.endpoint + "/columns",
+            systemKey: this.systemKey,
+            systemSecret: this.systemSecret,
+            user: this.user
           },
           callback
         );
@@ -1785,6 +2027,7 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     } else {
       messaging._qos = this.defaultQoS;
     }
+
     var clientID = Math.floor(Math.random() * 10e12).toString();
     messaging.client = new Paho.MQTT.Client(
       conf.hosts[0],
@@ -2210,18 +2453,200 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
    * @method ClearBlade.getEdges
    * @param {function} callback A function like `function (err, data) {}` to handle the response
    */
-  ClearBlade.prototype.getEdges = function(callback) {
-    if (!callback || typeof callback !== "function") {
-      throw new Error("Callback must be a function");
+  ClearBlade.prototype.getEdges = function(_query, callback) {
+    let query;
+    if (callback === undefined) {
+      callback = _query;
+      query = {
+        FILTERS: []
+      };
+      query = "query=" + _parseQuery(query);
+    } else {
+      if (Object.keys(_query) < 1) {
+        query = "";
+      } else {
+        query = "query=" + _parseQuery(_query.query);
+      }
     }
-    var endpoint = "api/v/2/edges/" + this.systemKey;
-    var reqOptions = {
+    const reqOptions = {
       method: "GET",
-      endpoint: endpoint,
       user: this.user,
+      endpoint: "api/v/2/edges/" + this.systemKey,
+      qs: query,
       URI: this.URI
     };
-    ClearBlade.request(reqOptions, callback);
+    if (typeof callback === "function") {
+      ClearBlade.request(reqOptions, callback);
+    } else {
+      logger("No callback was defined!");
+    }
+  };
+
+  ClearBlade.prototype.Edge = function() {
+    let edge = {};
+    edge.user = this.user;
+    edge.URI = this.URI;
+    edge.systemKey = this.systemKey;
+    edge.systemSecret = this.systemSecret;
+
+    /**
+     * Updates data for an edge
+     * @method ClearBlade.Edge.prototype.updateEdgeByName
+     * @param {String} name Specifies which edge to update
+     * @param {Object} object Supplies the data to update
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
+     * @return {Object} An object containing updated edge's data
+     * @example <caption>Updating edge data</caption>
+     * const callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     }
+     * };
+     *
+     * edge.updateEdgeByName(name, object, callback);
+     */
+    edge.updateEdgeByName = function(name, object, callback) {
+      if (typeof object != "object") {
+        throw new Error("Invalid object format");
+      }
+      if (typeof name === "object") {
+        name = name.query.FILTERS[0][0].EQ[0].edge_key.split(":")[1];
+      }
+      const reqOptions = {
+        method: "PUT",
+        user: this.user,
+        endpoint: "api/v/3/edges/" + this.systemKey + "/" + name,
+        URI: this.URI
+      };
+      reqOptions["body"] = object;
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    /**
+     * Deletes edge or edges
+     * @method ClearBlade.Edge.prototype.deleteEdgeByName
+     * @param {String} name Specifies name of which edge to delete or query object containing edge or edges to delete
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
+     * @example <caption>Deleting edge data</caption>
+     * const callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     }
+     * };
+     *
+     * edge.deleteEdgeByName(name, callback);
+     */
+    edge.deleteEdgeByName = function(name, callback) {
+      if (typeof name === "object") {
+        const edges = name.query.FILTERS;
+        for (let i = 0; i < edges.length; i++) {
+          const edgeName = edges[i][0].EQ[0].edge_key.split(":")[1];
+          const reqOptions = {
+            method: "DELETE",
+            user: this.user,
+            endpoint: "api/v/3/edges/" + this.systemKey + "/" + edgeName,
+            URI: this.URI
+          };
+          ClearBlade.request(reqOptions, callback);
+        }
+      } else {
+        const reqOptions = {
+          method: "DELETE",
+          user: this.user,
+          endpoint: "api/v/3/edges/" + this.systemKey + "/" + name,
+          URI: this.URI
+        };
+        ClearBlade.request(reqOptions, callback);
+      }
+    };
+
+    /**
+     * Creates a new edge and returns the created item to the callback
+     * @method ClearBlade.Edge.prototype.create
+     * @param {Object} newItem An object that represents the new edge, requiring the fields below.
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the edge list
+     * @example <caption>Creating a new edge</caption>
+     * var newEdge = {
+           token: '',
+           system_key: '',
+           system_secret: '',
+     * };
+     * var name = 'newName';
+     * var callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         console.log(data);
+     *     }
+     * };
+     * edge.create(newEdge, name, callback);
+     * //this inserts the the newEdge into the edge list
+     *
+     */
+    edge.create = function(newEdge, name, callback) {
+      var reqOptions = {
+        method: "POST",
+        endpoint: "api/v/3/edges/" + this.systemKey + "/" + name,
+        body: newEdge,
+        user: this.user,
+        URI: this.URI
+      };
+      if (typeof callback === "function") {
+        ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    edge.columns = function(callback) {
+      if (typeof callback === "function") {
+        ClearBlade.request(
+          {
+            method: "GET",
+            URI: this.URI,
+            endpoint: "api/v/3/edges/" + this.systemKey + "/columns",
+            systemKey: this.systemKey,
+            systemSecret: this.systemSecret,
+            user: this.user
+          },
+          callback
+        );
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    edge.count = function(_query, callback) {
+      let query;
+      if (callback === undefined) {
+        callback = _query;
+        query = {
+          FILTERS: []
+        };
+        query = "query=" + _parseQuery(query);
+      } else {
+        if (Object.keys(_query) < 1) {
+          query = "";
+        } else {
+          query = "query=" + _parseQuery(_query.query);
+        }
+      }
+      const reqOptions = {
+        method: "GET",
+        URI: this.URI,
+        qs: query,
+        endpoint: "api/v/3/edges/" + this.systemKey + "/count",
+        systemKey: this.systemKey,
+        systemSecret: this.systemSecret,
+        user: this.user
+      };
+      if (typeof callback === "function") {
+        ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+    return edge;
   };
 
   ClearBlade.prototype.Metrics = function() {
@@ -2304,16 +2729,42 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     return metrics;
   };
 
+  /**
+   * Creates a representation of devices
+   * @class ClearBlade.Device
+   * @classdesc It does not actually make a connection upon instantiation, but has all the methods necessary to do so.
+   * @example
+   * var device = cb.Device();
+   */
   ClearBlade.prototype.Device = function() {
-    var device = {};
+    let device = {};
 
     device.user = this.user;
     device.URI = this.URI;
     device.systemKey = this.systemKey;
     device.systemSecret = this.systemSecret;
 
+    /**
+     * Requests the named device
+     * @method ClearBlade.Device.prototype.getDeviceByName
+     * @param {String} name Used to indicate which device to get
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
+     * @return {Object} An object containing device's data
+     * @example <caption>Fetching data from device</caption>
+     * let returnedData = {};
+     * const callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         returnedData = data;
+     *     }
+     * };
+     *
+     * device.updateDeviceByName(name, callback);
+     * //this will give returnedData the value of what ever was returned from the server.
+     */
     device.getDeviceByName = function(name, callback) {
-      var reqOptions = {
+      const reqOptions = {
         method: "GET",
         user: this.user,
         endpoint: "api/v/2/devices/" + this.systemKey + "/" + name,
@@ -2322,12 +2773,29 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       ClearBlade.request(reqOptions, callback);
     };
 
-    device.updateDevice = function(name, object, trigger, callback) {
+    /**
+     * Updates data for a device
+     * @method ClearBlade.Device.prototype.updateDeviceByName
+     * @param {String} name Specifies which device to update
+     * @param {Object} object Supplies the data to update
+     * @param {Boolean} trigger Indicates whether or not should cause a trigger
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
+     * @return {Object} An object containing updated device's data
+     * @example <caption>Updating device data</caption>
+     * const callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     }
+     * };
+     *
+     * device.updateDevice(name, object, trigger, callback);
+     */
+    device.updateDeviceByName = function(name, object, trigger, callback) {
       if (typeof object != "object") {
         throw new Error("Invalid object format");
       }
       object["causeTrigger"] = trigger;
-      var reqOptions = {
+      const reqOptions = {
         method: "PUT",
         user: this.user,
         endpoint: "api/v/2/devices/" + this.systemKey + "/" + name,
@@ -2335,6 +2803,270 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
       };
       reqOptions["body"] = object;
       ClearBlade.request(reqOptions, callback);
+    };
+
+    /**
+     * Deletes the named device
+     * @method ClearBlade.Device.prototype.deleteDeviceByName
+     * @param {String} name Used to indicate which device to remove
+     * @param {function} callback Handles response from the server
+     * @example <caption>Removing device</caption>
+     * const callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         returnedData = data;
+     *     }
+     * };
+     *
+     * device.deleteDeviceByName(name, callback);
+     * //this will remove the indicated device.
+     */
+    device.deleteDeviceByName = function(name, callback) {
+      const reqOptions = {
+        method: "DELETE",
+        user: this.user,
+        endpoint: "api/v/2/devices/" + this.systemKey + "/" + name,
+        URI: this.URI
+      };
+
+      if (typeof callback === "function") {
+        ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    /**
+     * Requests a list of all devices, unless query specifies item or a set of items.
+     * @method ClearBlade.Device.prototype.fetch
+     * @param {Query} _query Used to request a specific item or subset of items from the devices on the server. Optional.
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
+     * @return {Object} An array of objects
+     * @example <caption>Fetching data from devices</caption>
+     * let returnedData = [];
+     * const callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         returnedData = data;
+     *     }
+     * };
+     *
+     * device.fetch(query, callback);
+     * //this will give returnedData the value of what ever was returned from the server.
+     */
+    device.fetch = function(_query, callback) {
+      let query;
+      /*
+         * The following logic may look funny, but it is intentional.
+         * I do this because it is typeical for the callback to be the last parameter.
+         * However, '_query' is an optional parameter, so I have to check if 'callback' is undefined
+         * in order to see weather or not _query is defined.
+         */
+      if (callback === undefined) {
+        callback = _query;
+        query = {
+          FILTERS: []
+        };
+        query = "query=" + _parseQuery(query);
+      } else {
+        if (Object.keys(_query) < 1) {
+          query = "";
+        } else {
+          query = "query=" + _parseQuery(_query.query);
+        }
+      }
+
+      const reqOptions = {
+        method: "GET",
+        user: this.user,
+        endpoint: "api/v/2/devices/" + this.systemKey,
+        qs: query,
+        URI: this.URI
+      };
+
+      if (typeof callback === "function") {
+        ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    /**
+     * Updates all devices, unless query specifies item or a set of items to update.
+     * @method ClearBlade.Device.prototype.update
+     * @param {Query} _query Used to request a specific item or subset of items from the devices on the server. Optional.
+     * @param {Object} object Supplies the data to update
+     * @param {Boolean} trigger Indicates whether or not should cause a trigger
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
+     * @return {Object} An object containing updated devices' data
+     * @example <caption>Updating devices' data</caption>
+     * const query = ClearBlade.query();
+     * query.equalTo('state', 'TX')
+     * const changes = {
+     *   state: 'CA'
+     * }
+     * const callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     }
+     * };
+     * device.update(query, changes, true, callback);
+     */
+    device.update = function(_query, object, trigger, callback) {
+      const filters = _query ? _query.query.FILTERS : [];
+
+      const reqOptions = {
+        method: "PUT",
+        user: this.user,
+        endpoint: "api/v/2/devices/" + this.systemKey,
+        URI: this.URI
+      };
+      reqOptions["causeTrigger"] = trigger;
+      reqOptions["body"] = { query: filters, $set: object };
+
+      if (typeof callback === "function") {
+        ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    /**
+     * Deletes device or a set of devices indicated by query.
+     * @method ClearBlade.Device.prototype.delete
+     * @param {Query} _query Used to request a specific item or subset of items from the devices on the server. Required.
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
+     * @example <caption>Removing devices from devices</caption>
+     * const query = ClearBlade.Query();
+     * query.equalTo('state', 'TX');
+     * var callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         console.log(data);
+     *     }
+     * };
+     *
+     * device.delete(query, callback);
+     * //removes every device whose 'state' attribute is equal to 'TX'
+     */
+    device.delete = function(_query, callback) {
+      let query;
+      if (_query === undefined) {
+        throw new Error("no query defined!");
+      } else {
+        query = "query=" + _parseOperationQuery(_query.query);
+      }
+
+      const reqOptions = {
+        method: "DELETE",
+        user: this.user,
+        endpoint: "api/v/2/devices/" + this.systemKey,
+        qs: query,
+        URI: this.URI
+      };
+
+      if (typeof callback === "function") {
+        ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    /**
+     * Creates a new device and returns the created item to the callback
+     * @method ClearBlade.Device.prototype.create
+     * @param {Object} newItem An object that represents the new device, requiring the fields below.
+     * @param {function} callback Supplies processing for what to do with the data that is returned from the device list
+     * @example <caption>Creating a new device</caption>
+     * var newDevice = {
+     *     active_key: "deviceKey",
+     *     allow_certificate_auth: true,
+     *     allow_key_auth: true,
+     *     certificate: '',
+     *     description: '',
+     *     enabled: true,
+     *     keys: '',
+     *     name: 'newDevice",
+     *     state: 'TX',
+     *     type: '',
+     * };
+     * var callback = function (err, data) {
+     *     if (err) {
+     *         throw new Error (data);
+     *     } else {
+     *         console.log(data);
+     *     }
+     * };
+     * device.create(newDevice, callback);
+     * //this inserts the the newDevice into the device list
+     *
+     */
+    device.create = function(newDevice, callback) {
+      var reqOptions = {
+        method: "POST",
+        endpoint: "api/v/2/devices/" + this.systemKey + "/" + newDevice.name,
+        body: newDevice,
+        user: this.user,
+        URI: this.URI
+      };
+      if (typeof callback === "function") {
+        ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    device.columns = function(callback) {
+      if (typeof callback === "function") {
+        ClearBlade.request(
+          {
+            method: "GET",
+            URI: this.URI,
+            endpoint: "api/v/3/devices/" + this.systemKey + "/columns",
+            systemKey: this.systemKey,
+            systemSecret: this.systemSecret,
+            user: this.user
+          },
+          callback
+        );
+      } else {
+        logger("No callback was defined!");
+      }
+    };
+
+    device.count = function(_query, callback) {
+      let query;
+      if (callback === undefined) {
+        callback = _query;
+        query = {
+          FILTERS: []
+        };
+        query = "query=" + _parseQuery(query);
+      } else {
+        if (Object.keys(_query) < 1) {
+          query = "";
+        } else {
+          query = "query=" + _parseQuery(_query.query);
+        }
+      }
+
+      const reqOptions = {
+        method: "GET",
+        URI: this.URI,
+        qs: query,
+        endpoint: "api/v/3/devices/" + this.systemKey + "/count",
+        systemKey: this.systemKey,
+        systemSecret: this.systemSecret,
+        user: this.user
+      };
+      if (typeof callback === "function") {
+        ClearBlade.request(reqOptions, callback);
+      } else {
+        logger("No callback was defined!");
+      }
     };
 
     return device;
@@ -2346,7 +3078,6 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
    */
   ClearBlade.prototype.Analytics = function() {
     var analytics = {};
-
     analytics.user = this.user;
     analytics.URI = this.URI;
     analytics.systemKey = this.systemKey;
@@ -2498,5 +3229,197 @@ n   * <p>{Number} [messagingPort] This is the default port used when connecting 
     };
 
     return analytics;
+  };
+
+  ClearBlade.prototype.Portal = function(name) {
+    var portal = {};
+
+    if (!name) {
+      throw new Error("Must supply a name for portal");
+    }
+
+    portal.name = name;
+    portal.user = this.user;
+    portal.URI = this.URI;
+    portal.systemKey = this.systemKey;
+    portal.systemSecret = this.systemSecret;
+
+    portal.fetch = function(callback) {
+      var reqOptions = {
+        method: "GET",
+        user: this.user,
+        endpoint: "api/v/2/portals/" + this.systemKey + "/" + this.name,
+        URI: this.URI
+      };
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    portal.update = function(data, callback) {
+      if (typeof data != "object") {
+        throw new Error("Invalid object format");
+      }
+      var reqOptions = {
+        method: "PUT",
+        user: this.user,
+        endpoint: "api/v/2/portals/" + this.systemKey + "/" + this.name,
+        URI: this.URI
+      };
+
+      reqOptions["body"] = data;
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    return portal;
+  };
+
+  ClearBlade.prototype.Triggers = function() {
+    var triggers = {};
+
+    triggers.user = this.user;
+    triggers.URI = this.URI;
+    triggers.systemKey = this.systemKey;
+    triggers.systemSecret = this.systemSecret;
+
+    triggers.fetchDefinitions = function(callback) {
+      var reqOptions = {
+        method: "GET",
+        user: this.user,
+        endpoint: "admin/triggers/definitions",
+        URI: this.URI
+      };
+
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    /**
+     * Creates a ClearBlade Trigger
+     * @method  ClearBlade.Triggers.prototype.create
+     * @param  {String}   name name of the ClearBlade trigger you wish to create
+     * @param  {Object}   def object that represents the trigger definition
+     * @param  {Function} callback
+     * @example
+     * cb.Triggers().create("myTrigger", {"system_key":"<system_key>","name":"myTrigger","def_module":"Messaging","def_name":"Subscribe","service_name":"<myServiceName>","key_value_pairs":{"topic":"mytopic"}}, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
+    triggers.create = function(name, def, callback) {
+      var reqOptions = {
+        method: "POST",
+        user: this.user,
+        body: def,
+        endpoint: "api/v/3/code/" + this.systemKey + "/trigger/" + name,
+        URI: this.URI
+      };
+
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    /**
+     * Updates a ClearBlade Trigger
+     * @method  ClearBlade.Triggers.prototype.update
+     * @param  {String}   name name of the ClearBlade trigger you wish to update
+     * @param  {Object}   def object that represents the trigger definition
+     * @param  {Function} callback
+     * @example
+     * cb.Triggers().update("myTrigger", {"system_key":"<system_key>","name":"myTrigger","def_module":"Messaging","def_name":"Publish","service_name":"<myServiceName>","key_value_pairs":{"topic":"mytopic"}}, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
+    triggers.update = function(name, def, callback) {
+      var reqOptions = {
+        method: "PUT",
+        user: this.user,
+        body: def,
+        endpoint: "api/v/3/code/" + this.systemKey + "/trigger/" + name,
+        URI: this.URI
+      };
+
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    /**
+     * Deletes a ClearBlade Trigger
+     * @method  ClearBlade.Triggers.prototype.delete
+     * @param  {String}   name name of the ClearBlade trigger you wish to delete
+     * @param  {Object}   def object that represents the trigger definition
+     * @param  {Function} callback
+     * @example
+     * cb.Triggers().delete("myTrigger", function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
+    triggers.delete = function(name, callback) {
+      var reqOptions = {
+        method: "DELETE",
+        user: this.user,
+        endpoint: "api/v/3/code/" + this.systemKey + "/trigger/" + name,
+        URI: this.URI
+      };
+
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    return triggers;
+  };
+
+  ClearBlade.prototype.Roles = function() {
+    var roles = {};
+
+    roles.user = this.user;
+    roles.URI = this.URI;
+    roles.systemKey = this.systemKey;
+    roles.systemSecret = this.systemSecret;
+
+    roles.update = function(id, changes, callback) {
+      var reqOptions = {
+        method: "PUT",
+        user: this.user,
+        body: {
+          id: id,
+          changes: changes
+        },
+        endpoint: "api/v/3/user/roles/" + this.systemKey,
+        URI: this.URI
+      };
+
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    return roles;
+  };
+
+  /**
+   * Retrieves a list of collections for a system
+   * @method  ClearBlade.Collection.prototype.getAllCollections
+   * @param  {Function} callback
+   * @example
+   * cb.getAllCollections(function(err, body) {
+   *    if(err) {
+   *        //handle error
+   *    } else {
+   *        console.log(body);
+   *    }
+   * })
+   */
+  ClearBlade.prototype.getAllCollections = function(callback) {
+    var reqOptions = {
+      method: "GET",
+      endpoint: "api/v/3/allcollections/" + this.systemKey,
+      user: this.user,
+      URI: this.URI
+    };
+    ClearBlade.request(reqOptions, callback);
   };
 })(window);
