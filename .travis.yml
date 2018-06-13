@@ -2,3 +2,7 @@ before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
 language: node_js
+node_js:
+  - "lts/*"
+before_install:
+  - npm i -g npm@6.0.1
