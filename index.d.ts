@@ -105,14 +105,14 @@ interface IClearBlade {
     callback: CbCallback<any>
   ): void;
   getEdges(callback: CbCallback<any>): void;
-  getEdges(query: Query, callback: CbCallback<any>): void;
+  getEdges(query: QueryObj, callback: CbCallback<any>): void;
   Edge(): Edge;
   Metrics(): Metrics;
   Device(): Device;
   Analytics(): Analytics;
   Portal(name: string): Portal;
   Triggers(): Triggers;
-
+  Roles(): Roles;
   getAllCollections(callback: CbCallback<any>): void;
 }
 interface CollectionOptionsWithName {
@@ -147,6 +147,7 @@ declare enum QuerySortDirections {
   QUERY_SORT_ASCENDING = "ASC",
   QUERY_SORT_DESCENDING = "DESC"
 }
+type ISortInfo = { [querySort in QuerySortDirections]: string };
 
 declare enum QueryConditions {
   QUERY_EQUAL = "EQ",
@@ -172,7 +173,7 @@ interface QueryOptionsWithID extends CollectionOptionsWithID, QueryOptions {}
 
 interface Query {
   SELECTCOLUMNS?: string[];
-  SORT?: QuerySortDirections;
+  SORT?: ISortInfo[];
   FILTERS?: QueryFilter[];
   PAGESIZE?: number;
   PAGENUM?: number;
@@ -208,18 +209,18 @@ interface QueryObj {
     key: string,
     value: QueryValue
   ): void;
-  ascending(field: string): void;
-  descending(field: string): void;
-  equalTo(field: string, value: QueryValue): void;
-  greaterThan(field: string, value: QueryValue): void;
-  greaterThanEqualTo(field: string, value: QueryValue): void;
-  lessThan(field: string, value: QueryValue): void;
-  lessThanEqualTo(field: string, value: QueryValue): void;
-  notEqualTo(field: string, value: QueryValue): void;
-  matches(field: string, pattern: RegExp): void;
-  or(query: QueryObj): void;
-  setPage(pageSize: number, pageNum: number): void;
-  getFieldValue(field: string): object;
+  ascending(field: string): QueryObj;
+  descending(field: string): QueryObj;
+  equalTo(field: string, value: QueryValue): QueryObj;
+  greaterThan(field: string, value: QueryValue): QueryObj;
+  greaterThanEqualTo(field: string, value: QueryValue): QueryObj;
+  lessThan(field: string, value: QueryValue): QueryObj;
+  lessThanEqualTo(field: string, value: QueryValue): QueryObj;
+  notEqualTo(field: string, value: QueryValue): QueryObj;
+  matches(field: string, pattern: RegExp | string): QueryObj;
+  or(query: QueryObj): QueryObj;
+  setPage(pageSize: number, pageNum: number): QueryObj;
+  getFieldValue(field: string): object | null;
   fetch(callback: CbCallback<any>): void;
   update(changes: object, callback: CbCallback<any>): void;
   columns(columnsArray: string[]): void;
@@ -262,13 +263,17 @@ interface AppUser {
 
   getUser(callback: CbCallback<any>): void;
   setUser(data: object, callback: CbCallback<any>): void;
-  allUsers(query: Query, callback: CbCallback<any>): void;
+  allUsers(query: QueryObj, callback: CbCallback<any>): void;
   setPassword(
     old_password: string,
     new_password: string,
     callback: CbCallback<any>
   ): void;
-  count(query: Query, callback: CbCallback<any>): void;
+  count(query: QueryObj, callback: CbCallback<any>): void;
+  addUser(data: object, callback: CbCallback<any>): void;
+  updateUser(data: object, callback: CbCallback<any>): void;
+  deleteUser(data: object, callback: CbCallback<any>): void;
+  columns(callback: CbCallback<any>): void;
 }
 
 interface Messaging {
@@ -372,7 +377,7 @@ interface Edge {
   deleteEdgeByName(name: string, callback: CbCallback<any>): void;
   create(newEdge: object, name: string, callback: CbCallback<any>): void;
   columns(callback: CbCallback<any>): void;
-  count(query: Query, callback: CbCallback<any>): void;
+  count(query: QueryObj, callback: CbCallback<any>): void;
 }
 
 interface Metrics {
@@ -401,17 +406,17 @@ interface Device {
     callback: CbCallback<any>
   ): void;
   deleteDeviceByName(name: string, callback: CbCallback<any>): void;
-  fetch(query: Query, callback: CbCallback<any>): void;
+  fetch(query: QueryObj, callback: CbCallback<any>): void;
   update(
-    query: Query,
+    query: QueryObj,
     object: object,
     trigger: boolean,
     callback: CbCallback<any>
   ): void;
-  delete(query: Query, callback: CbCallback<any>): void;
+  delete(query: QueryObj, callback: CbCallback<any>): void;
   create(newDevice: object, callback: CbCallback<any>): void;
   columns(callback: CbCallback<any>): void;
-  count(query: Query, callback: CbCallback<any>): void;
+  count(query: QueryObj, callback: CbCallback<any>): void;
 }
 
 interface Analytics {
@@ -448,6 +453,15 @@ interface Triggers {
   create(name: string, data: object, callback: CbCallback<any>): void;
   update(name: string, data: object, callback: CbCallback<any>): void;
   delete(name: string, callback: CbCallback<any>): void;
+}
+
+interface Roles {
+  user: APIUser;
+  URI: string;
+  systemKey: string;
+  systemSecret: string;
+
+  update(id: string, changes: object, callback: CbCallback<any>): void;
 }
 
 declare var ClearBlade: IClearBladeGlobal;
