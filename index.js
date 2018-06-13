@@ -1269,6 +1269,28 @@ if (!window.console) {
     };
 
     /**
+     * Get the field value for a particular column.
+     * @method ClearBlade.Query.prototype.getFieldValue
+     * @param {string} field Name of column to retrieve the value for
+     */
+    query.getFieldValue = function(field) {
+      var filters = this.query
+        .FILTERS; /* [[{"EQ":[{"user_id":"f094b5b10bf6ad86f7f7d4b8b9f201"}]}]] */
+      for (var i = 0, len = filters.length; i < len; i++) {
+        for (var j = 0, jLen = filters[i].length; j < jLen; j++) {
+          for (var key in filters[i][j]) {
+            for (var k = 0, kLen = filters[i][j][key].length; k < kLen; k++) {
+              if (filters[i][j][key][k][field]) {
+                return filters[i][j][key][k];
+              }
+            }
+          }
+        }
+      }
+      return null;
+    };
+
+    /**
      * Reqests an item or a set of items from the query. Requires that
      * the Query object was initialized with a collection.
      * @method ClearBlade.Query.prototype.fetch

@@ -219,6 +219,7 @@ interface QueryObj {
   matches(field: string, pattern: RegExp): void;
   or(query: QueryObj): void;
   setPage(pageSize: number, pageNum: number): void;
+  getFieldValue(field: string): object;
   fetch(callback: CbCallback<any>): void;
   update(changes: object, callback: CbCallback<any>): void;
   columns(columnsArray: string[]): void;

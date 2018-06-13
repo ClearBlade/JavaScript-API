@@ -99,6 +99,15 @@ describe("More complex queries", function() {
     ];
     expect(query1.query.FILTERS).toEqual(expectedQuery);
   });
+
+  it("fetch getFieldValue", () => {
+    const q = cb.Query();
+    const field = "user_id";
+    const val = "some_user_id";
+    q.equalTo(field, val);
+    const resp = q.getFieldValue(field);
+    expect(resp).toEqual({ [field]: val });
+  });
 });
 
 describe("query calls", function() {
