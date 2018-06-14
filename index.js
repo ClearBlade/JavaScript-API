@@ -2476,7 +2476,7 @@ if (!window.console) {
    * @param {function} callback A function like `function (err, data) {}` to handle the response
    */
   ClearBlade.prototype.getEdges = function(_query, callback) {
-    let query;
+    var query;
     if (callback === undefined) {
       callback = _query;
       query = {
@@ -2490,7 +2490,7 @@ if (!window.console) {
         query = "query=" + _parseQuery(_query.query);
       }
     }
-    const reqOptions = {
+    var reqOptions = {
       method: "GET",
       user: this.user,
       endpoint: "api/v/2/edges/" + this.systemKey,
@@ -2505,7 +2505,7 @@ if (!window.console) {
   };
 
   ClearBlade.prototype.Edge = function() {
-    let edge = {};
+    var edge = {};
     edge.user = this.user;
     edge.URI = this.URI;
     edge.systemKey = this.systemKey;
@@ -2519,7 +2519,7 @@ if (!window.console) {
      * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
      * @return {Object} An object containing updated edge's data
      * @example <caption>Updating edge data</caption>
-     * const callback = function (err, data) {
+     * var callback = function (err, data) {
      *     if (err) {
      *         throw new Error (data);
      *     }
@@ -2534,7 +2534,7 @@ if (!window.console) {
       if (typeof name === "object") {
         name = name.query.FILTERS[0][0].EQ[0].edge_key.split(":")[1];
       }
-      const reqOptions = {
+      var reqOptions = {
         method: "PUT",
         user: this.user,
         endpoint: "api/v/3/edges/" + this.systemKey + "/" + name,
@@ -2550,7 +2550,7 @@ if (!window.console) {
      * @param {String} name Specifies name of which edge to delete or query object containing edge or edges to delete
      * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
      * @example <caption>Deleting edge data</caption>
-     * const callback = function (err, data) {
+     * var callback = function (err, data) {
      *     if (err) {
      *         throw new Error (data);
      *     }
@@ -2560,10 +2560,10 @@ if (!window.console) {
      */
     edge.deleteEdgeByName = function(name, callback) {
       if (typeof name === "object") {
-        const edges = name.query.FILTERS;
-        for (let i = 0; i < edges.length; i++) {
-          const edgeName = edges[i][0].EQ[0].edge_key.split(":")[1];
-          const reqOptions = {
+        var edges = name.query.FILTERS;
+        for (var i = 0; i < edges.length; i++) {
+          var edgeName = edges[i][0].EQ[0].edge_key.split(":")[1];
+          var reqOptions = {
             method: "DELETE",
             user: this.user,
             endpoint: "api/v/3/edges/" + this.systemKey + "/" + edgeName,
@@ -2572,7 +2572,7 @@ if (!window.console) {
           ClearBlade.request(reqOptions, callback);
         }
       } else {
-        const reqOptions = {
+        var reqOptions = {
           method: "DELETE",
           user: this.user,
           endpoint: "api/v/3/edges/" + this.systemKey + "/" + name,
@@ -2639,7 +2639,7 @@ if (!window.console) {
     };
 
     edge.count = function(_query, callback) {
-      let query;
+      var query;
       if (callback === undefined) {
         callback = _query;
         query = {
@@ -2653,7 +2653,7 @@ if (!window.console) {
           query = "query=" + _parseQuery(_query.query);
         }
       }
-      const reqOptions = {
+      var reqOptions = {
         method: "GET",
         URI: this.URI,
         qs: query,
@@ -2759,7 +2759,7 @@ if (!window.console) {
    * var device = cb.Device();
    */
   ClearBlade.prototype.Device = function() {
-    let device = {};
+    var device = {};
 
     device.user = this.user;
     device.URI = this.URI;
@@ -2773,8 +2773,8 @@ if (!window.console) {
      * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
      * @return {Object} An object containing device's data
      * @example <caption>Fetching data from device</caption>
-     * let returnedData = {};
-     * const callback = function (err, data) {
+     * var returnedData = {};
+     * var callback = function (err, data) {
      *     if (err) {
      *         throw new Error (data);
      *     } else {
@@ -2786,7 +2786,7 @@ if (!window.console) {
      * //this will give returnedData the value of what ever was returned from the server.
      */
     device.getDeviceByName = function(name, callback) {
-      const reqOptions = {
+      var reqOptions = {
         method: "GET",
         user: this.user,
         endpoint: "api/v/2/devices/" + this.systemKey + "/" + name,
@@ -2804,7 +2804,7 @@ if (!window.console) {
      * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
      * @return {Object} An object containing updated device's data
      * @example <caption>Updating device data</caption>
-     * const callback = function (err, data) {
+     * var callback = function (err, data) {
      *     if (err) {
      *         throw new Error (data);
      *     }
@@ -2817,7 +2817,7 @@ if (!window.console) {
         throw new Error("Invalid object format");
       }
       object["causeTrigger"] = trigger;
-      const reqOptions = {
+      var reqOptions = {
         method: "PUT",
         user: this.user,
         endpoint: "api/v/2/devices/" + this.systemKey + "/" + name,
@@ -2833,7 +2833,7 @@ if (!window.console) {
      * @param {String} name Used to indicate which device to remove
      * @param {function} callback Handles response from the server
      * @example <caption>Removing device</caption>
-     * const callback = function (err, data) {
+     * var callback = function (err, data) {
      *     if (err) {
      *         throw new Error (data);
      *     } else {
@@ -2845,7 +2845,7 @@ if (!window.console) {
      * //this will remove the indicated device.
      */
     device.deleteDeviceByName = function(name, callback) {
-      const reqOptions = {
+      var reqOptions = {
         method: "DELETE",
         user: this.user,
         endpoint: "api/v/2/devices/" + this.systemKey + "/" + name,
@@ -2866,8 +2866,8 @@ if (!window.console) {
      * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
      * @return {Object} An array of objects
      * @example <caption>Fetching data from devices</caption>
-     * let returnedData = [];
-     * const callback = function (err, data) {
+     * var returnedData = [];
+     * var callback = function (err, data) {
      *     if (err) {
      *         throw new Error (data);
      *     } else {
@@ -2879,7 +2879,7 @@ if (!window.console) {
      * //this will give returnedData the value of what ever was returned from the server.
      */
     device.fetch = function(_query, callback) {
-      let query;
+      var query;
       /*
          * The following logic may look funny, but it is intentional.
          * I do this because it is typeical for the callback to be the last parameter.
@@ -2900,7 +2900,7 @@ if (!window.console) {
         }
       }
 
-      const reqOptions = {
+      var reqOptions = {
         method: "GET",
         user: this.user,
         endpoint: "api/v/2/devices/" + this.systemKey,
@@ -2924,12 +2924,12 @@ if (!window.console) {
      * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
      * @return {Object} An object containing updated devices' data
      * @example <caption>Updating devices' data</caption>
-     * const query = ClearBlade.query();
+     * var query = ClearBlade.query();
      * query.equalTo('state', 'TX')
-     * const changes = {
+     * var changes = {
      *   state: 'CA'
      * }
-     * const callback = function (err, data) {
+     * var callback = function (err, data) {
      *     if (err) {
      *         throw new Error (data);
      *     }
@@ -2937,9 +2937,9 @@ if (!window.console) {
      * device.update(query, changes, true, callback);
      */
     device.update = function(_query, object, trigger, callback) {
-      const filters = _query ? _query.query.FILTERS : [];
+      var filters = _query ? _query.query.FILTERS : [];
 
-      const reqOptions = {
+      var reqOptions = {
         method: "PUT",
         user: this.user,
         endpoint: "api/v/2/devices/" + this.systemKey,
@@ -2961,7 +2961,7 @@ if (!window.console) {
      * @param {Query} _query Used to request a specific item or subset of items from the devices on the server. Required.
      * @param {function} callback Supplies processing for what to do with the data that is returned from the devices
      * @example <caption>Removing devices from devices</caption>
-     * const query = ClearBlade.Query();
+     * var query = ClearBlade.Query();
      * query.equalTo('state', 'TX');
      * var callback = function (err, data) {
      *     if (err) {
@@ -2975,14 +2975,14 @@ if (!window.console) {
      * //removes every device whose 'state' attribute is equal to 'TX'
      */
     device.delete = function(_query, callback) {
-      let query;
+      var query;
       if (_query === undefined) {
         throw new Error("no query defined!");
       } else {
         query = "query=" + _parseOperationQuery(_query.query);
       }
 
-      const reqOptions = {
+      var reqOptions = {
         method: "DELETE",
         user: this.user,
         endpoint: "api/v/2/devices/" + this.systemKey,
@@ -3060,7 +3060,7 @@ if (!window.console) {
     };
 
     device.count = function(_query, callback) {
-      let query;
+      var query;
       if (callback === undefined) {
         callback = _query;
         query = {
@@ -3075,7 +3075,7 @@ if (!window.console) {
         }
       }
 
-      const reqOptions = {
+      var reqOptions = {
         method: "GET",
         URI: this.URI,
         qs: query,
