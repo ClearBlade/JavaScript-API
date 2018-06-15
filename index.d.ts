@@ -385,7 +385,7 @@ interface Metrics {
   URI: string;
   systemKey: string;
 
-  setQuery(query: Query): void;
+  setQuery(query: QueryObj): void;
   getStatistics(callback: CbCallback<any>): void;
   getStatisticsHistory(callback: CbCallback<any>): void;
   getDBConnections(callback: CbCallback<any>): void;
