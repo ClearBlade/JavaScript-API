@@ -2058,12 +2058,17 @@ if (!window.console) {
     ); //new Messaging.Client(conf.hosts[0],conf.ports[0],clientID);
 
     messaging.client.onConnectionLost = function(response) {
-      console.log(
-        "ClearBlade Messaging connection lost- attempting to reestablish"
-      );
-      delete conf.mqttVersionExplicit;
-      delete conf.uris;
-      messaging.client.connect(conf);
+      if (response.errorCode === 8) {
+        console.warn("Unable to connect via WebSocket - Invalid permissions");
+      } else {
+        console.log(
+          "ClearBlade Messaging connection lost- attempting to reestablish",
+          response
+        );
+        delete conf.mqttVersionExplicit;
+        delete conf.uris;
+        messaging.client.connect(conf);
+      }
     };
 
     messaging.client.onMessageArrived = function(message) {
