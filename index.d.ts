@@ -237,6 +237,12 @@ interface Item {
   destroy(callback: CbCallback<any>): void;
 }
 
+interface ServicePayload {
+  code: string;
+  parameters: string[];
+  name: string;
+  dependencies: string;
+}
 interface Code {
   user: APIUser;
   URI: string;
@@ -244,8 +250,8 @@ interface Code {
   systemSecret: string;
   callTimeout: number;
 
-  create(name: string, body: string, callback: CbCallback<any>): void;
-  update(name: string, body: string, callback: CbCallback<any>): void;
+  create(name: string, body: ServicePayload, callback: CbCallback<any>): void;
+  update(name: string, body: ServicePayload, callback: CbCallback<any>): void;
   delete(name: string, callback: CbCallback<any>): void;
   execute(name: string, params: object, callback: CbCallback<any>): void;
   getCompletedServices(callback: CbCallback<any>): void;
