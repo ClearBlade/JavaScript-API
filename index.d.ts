@@ -291,29 +291,6 @@ interface Messaging {
   callTimeout: number;
   client: Paho.MQTT.Client;
 
-  getMessageHistoryWithTimeFrame(
-    topic: string,
-    count: number,
-    last: number,
-    start: number,
-    stop: number,
-    callback: CbCallback<any>
-  ): void;
-  getMessageHistory(
-    topic: string,
-    last: number,
-    count: number,
-    callback: CbCallback<any>
-  ): void;
-  getAndDeleteMessageHistory(
-    topic: string,
-    count: number,
-    last: number,
-    start: number,
-    stop: number,
-    callback: CbCallback<any>
-  ): void;
-  currentTopics(callback: CbCallback<any>): void;
   publish(topic: string, payload: object): void;
   publishREST(topic: string, payload: object, callback: CbCallback<any>): void;
   subscribe(
@@ -358,7 +335,31 @@ interface MessagingStats {
   URI: string;
   endpoint: string;
   systemKey: string;
+  callTimeout?: number;
 
+  getMessageHistoryWithTimeFrame(
+    topic: string,
+    count: number,
+    last: number,
+    start: number,
+    stop: number,
+    callback: CbCallback<any>
+  ): void;
+  getMessageHistory(
+    topic: string,
+    last: number,
+    count: number,
+    callback: CbCallback<any>
+  ): void;
+  getAndDeleteMessageHistory(
+    topic: string,
+    count: number,
+    last: number,
+    start: number,
+    stop: number,
+    callback: CbCallback<any>
+  ): void;
+  currentTopics(callback: CbCallback<any>): void;
   getAveragePayloadSize(
     topic: string,
     start: number,

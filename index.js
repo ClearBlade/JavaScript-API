@@ -2093,131 +2093,6 @@ if (!window.console) {
     messaging.client.connect(conf);
 
     /**
-     * Gets the message history from a ClearBlade Messaging topic.
-     * @method ClearBlade.Messaging.getMessageHistoryWithTimeFrame
-     * @param {string} topic The topic from which to retrieve history
-     * @param {number} last Epoch timestamp in seconds that will retrieve 'count' number of messages before that timestamp. Set to -1 if not used
-     * @param {number} count Number that signifies how many messages to return; 0 returns all messages
-     * @param {number} start Epoch timestamp in seconds that will retrieve 'count' number of  messages within timeframe. Set to -1 if not used
-     * @param {number} stop Epoch timestamp in seconds that will retrieve 'count' number of  messages within timeframe. Set to -1 if not used
-     * @param {function} callback The function to be called upon execution of query -- called with a boolean error and the response
-     */
-    messaging.getMessageHistoryWithTimeFrame = function(
-      topic,
-      count,
-      last,
-      start,
-      stop,
-      callback
-    ) {
-      var reqOptions = {
-        method: "GET",
-        endpoint: this.endpoint + "/" + this.systemKey,
-        qs:
-          "topic=" +
-          topic +
-          "&count=" +
-          count +
-          "&last=" +
-          last +
-          "&start=" +
-          start +
-          "&stop=" +
-          stop,
-        authToken: this.user.authToken,
-        timeout: this.callTimeout,
-        URI: this.URI
-      };
-      ClearBlade.request(reqOptions, function(err, response) {
-        if (err) {
-          execute(true, response, callback);
-        } else {
-          execute(false, response, callback);
-        }
-      });
-    };
-
-    /**
-     * Gets the message history from a ClearBlade Messaging topic.
-     * @method ClearBlade.Messaging.getMessageHistory
-     * @param {string} topic The topic from which to retrieve history
-     * @param {number} last Epoch timestamp in seconds that will retrieve 'count' number of messages before that timestamp. Set to -1 if not used
-     * @param {number} count Number that signifies how many messages to return; 0 returns all messages
-     * @param {function} callback The function to be called upon execution of query -- called with a boolean error and the response
-     */
-    messaging.getMessageHistory = function(topic, last, count, callback) {
-      messaging.getMessageHistoryWithTimeFrame(
-        topic,
-        count,
-        last,
-        -1,
-        -1,
-        callback
-      );
-    };
-
-    /**
-     * Gets the message history from a ClearBlade Messaging topic.
-     * @method ClearBlade.Messaging.getAndDeleteMessageHistory
-     * @param {string} topic The topic from which to retrieve history
-     * @param {number} last Epoch timestamp in seconds that will retrieve and delete 'count' number of messages before that timestamp. Set to -1 if not used
-     * @param {number} count Number that signifies how many messages to return and delete; 0 returns and deletes all messages
-     * @param {number} start Epoch timestamp in seconds that will retrieve and delete 'count' number of messages within timeframe. Set to -1 if not used
-     * @param {number} stop Epoch timestamp in seconds that will retrieve and delete 'count' number of  messages within timeframe. Set to -1 if not used
-     * @param {function} callback The function to be called upon execution of query -- called with a boolean error and the response
-     */
-    messaging.getAndDeleteMessageHistory = function(
-      topic,
-      count,
-      last,
-      start,
-      stop,
-      callback
-    ) {
-      var reqOptions = {
-        method: "DELETE",
-        endpoint: this.endpoint + "/" + this.systemKey,
-        qs:
-          "topic=" +
-          topic +
-          "&count=" +
-          count +
-          "&last=" +
-          last +
-          "&start=" +
-          start +
-          "&stop=" +
-          stop,
-        authToken: this.user.authToken,
-        timeout: this.callTimeout,
-        URI: this.URI
-      };
-      ClearBlade.request(reqOptions, function(err, response) {
-        if (err) {
-          execute(true, response, callback);
-        } else {
-          execute(false, response, callback);
-        }
-      });
-    };
-
-    messaging.currentTopics = function(callback) {
-      if (typeof callback === "function") {
-        ClearBlade.request(
-          {
-            method: "GET",
-            endpoint: this.endpoint + "/" + this.systemKey + "/currentTopics",
-            user: this.user,
-            URI: this.URI
-          },
-          callback
-        );
-      } else {
-        logger("No callback was defined!");
-      }
-    };
-
-    /**
      * Publishes to a topic.
      * @method ClearBlade.Messaging.prototype.publish
      * @param {string} topic Is the topic path of the message to be published. This will be sent to all listeners on the topic. No default.
@@ -2348,6 +2223,137 @@ if (!window.console) {
     messagingStats.URI = this.URI;
     messagingStats.endpoint = "api/v/3/message";
     messagingStats.systemKey = this.systemKey;
+    messagingStats.callTimeout = this._callTimeout;
+
+    /**
+     * Gets the message history from a ClearBlade Messaging topic.
+     * @method ClearBlade.MessagingStats.getMessageHistoryWithTimeFrame
+     * @param {string} topic The topic from which to retrieve history
+     * @param {number} last Epoch timestamp in seconds that will retrieve 'count' number of messages before that timestamp. Set to -1 if not used
+     * @param {number} count Number that signifies how many messages to return; 0 returns all messages
+     * @param {number} start Epoch timestamp in seconds that will retrieve 'count' number of  messages within timeframe. Set to -1 if not used
+     * @param {number} stop Epoch timestamp in seconds that will retrieve 'count' number of  messages within timeframe. Set to -1 if not used
+     * @param {function} callback The function to be called upon execution of query -- called with a boolean error and the response
+     */
+    messagingStats.getMessageHistoryWithTimeFrame = function(
+      topic,
+      count,
+      last,
+      start,
+      stop,
+      callback
+    ) {
+      var reqOptions = {
+        method: "GET",
+        endpoint: this.endpoint + "/" + this.systemKey,
+        qs:
+          "topic=" +
+          topic +
+          "&count=" +
+          count +
+          "&last=" +
+          last +
+          "&start=" +
+          start +
+          "&stop=" +
+          stop,
+        authToken: this.user.authToken,
+        timeout: this.callTimeout,
+        URI: this.URI
+      };
+      ClearBlade.request(reqOptions, function(err, response) {
+        if (err) {
+          execute(true, response, callback);
+        } else {
+          execute(false, response, callback);
+        }
+      });
+    };
+
+    /**
+     * Gets the message history from a ClearBlade Messaging topic.
+     * @method ClearBlade.MessagingStats.getMessageHistory
+     * @param {string} topic The topic from which to retrieve history
+     * @param {number} last Epoch timestamp in seconds that will retrieve 'count' number of messages before that timestamp. Set to -1 if not used
+     * @param {number} count Number that signifies how many messages to return; 0 returns all messages
+     * @param {function} callback The function to be called upon execution of query -- called with a boolean error and the response
+     */
+    messagingStats.getMessageHistory = function(topic, last, count, callback) {
+      messagingStats.getMessageHistoryWithTimeFrame(
+        topic,
+        count,
+        last,
+        -1,
+        -1,
+        callback
+      );
+    };
+
+    /**
+     * Gets the message history from a ClearBlade Messaging topic.
+     * @method ClearBlade.MessagingStats.getAndDeleteMessageHistory
+     * @param {string} topic The topic from which to retrieve history
+     * @param {number} last Epoch timestamp in seconds that will retrieve and delete 'count' number of messages before that timestamp. Set to -1 if not used
+     * @param {number} count Number that signifies how many messages to return and delete; 0 returns and deletes all messages
+     * @param {number} start Epoch timestamp in seconds that will retrieve and delete 'count' number of messages within timeframe. Set to -1 if not used
+     * @param {number} stop Epoch timestamp in seconds that will retrieve and delete 'count' number of  messages within timeframe. Set to -1 if not used
+     * @param {function} callback The function to be called upon execution of query -- called with a boolean error and the response
+     */
+    messagingStats.getAndDeleteMessageHistory = function(
+      topic,
+      count,
+      last,
+      start,
+      stop,
+      callback
+    ) {
+      var reqOptions = {
+        method: "DELETE",
+        endpoint: this.endpoint + "/" + this.systemKey,
+        qs:
+          "topic=" +
+          topic +
+          "&count=" +
+          count +
+          "&last=" +
+          last +
+          "&start=" +
+          start +
+          "&stop=" +
+          stop,
+        authToken: this.user.authToken,
+        timeout: this.callTimeout,
+        URI: this.URI
+      };
+      ClearBlade.request(reqOptions, function(err, response) {
+        if (err) {
+          execute(true, response, callback);
+        } else {
+          execute(false, response, callback);
+        }
+      });
+    };
+
+    /**
+     * Gets the list of all available topics
+     * @method ClearBlade.MessagingStats.currentTopics
+     * @param {function} callback The function to be called upon execution of query -- called with a boolean error and the response
+     */
+    messagingStats.currentTopics = function(callback) {
+      if (typeof callback === "function") {
+        ClearBlade.request(
+          {
+            method: "GET",
+            endpoint: this.endpoint + "/" + this.systemKey + "/currentTopics",
+            user: this.user,
+            URI: this.URI
+          },
+          callback
+        );
+      } else {
+        logger("No callback was defined!");
+      }
+    };
 
     /**
      * Method to retrieve the average payload size for a topic
