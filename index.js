@@ -3331,7 +3331,15 @@ if (!window.console) {
      * @param  {Object}   def object that represents the trigger definition
      * @param  {Function} callback
      * @example
-     * cb.Triggers().create("myTrigger", {"system_key":"<system_key>","name":"myTrigger","def_module":"Messaging","def_name":"Subscribe","service_name":"<myServiceName>","key_value_pairs":{"topic":"mytopic"}}, function(err, body) {
+     * var newTrigger = {
+     *   system_key: "<system_key>",
+     *   name: "myTrigger",
+     *   def_module: "Messaging",
+     *   def_name: "Subscribe",
+     *   service_name: "<myServiceName>",
+     *   key_value_pairs: {"topic":"mytopic"}
+     * }
+     * cb.Triggers().create("myTrigger", newTrigger, function(err, body) {
      *    if(err) {
      *        //handle error
      *    } else {
@@ -3358,7 +3366,15 @@ if (!window.console) {
      * @param  {Object}   def object that represents the trigger definition
      * @param  {Function} callback
      * @example
-     * cb.Triggers().update("myTrigger", {"system_key":"<system_key>","name":"myTrigger","def_module":"Messaging","def_name":"Publish","service_name":"<myServiceName>","key_value_pairs":{"topic":"mytopic"}}, function(err, body) {
+     * var triggerUpdate = {
+     *   system_key: "<system_key>",
+     *   name: "myTrigger",
+     *   def_module: "Messaging",
+     *   def_name: "Publish",
+     *   service_name: "<myServiceName>",
+     *   key_value_pairs: {"topic":"mytopic"}
+     * }
+     * cb.Triggers().update("myTrigger", triggerUpdate, function(err, body) {
      *    if(err) {
      *        //handle error
      *    } else {
