@@ -175,4 +175,239 @@ describe("query calls", function() {
       expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
     });
   });
+
+  it("fetch with a simple greater than query", function() {
+    var query = cb.Query({ collectionID: "fakeCollectionID" });
+    query.greaterThan("num", 1);
+    var callNum = ClearBlade.request.mock.calls.length; // we get the call count so we can grab the right call later
+    var expectedData = {
+      method: "GET",
+      endpoint: "api/v/1/data/fakeCollectionID",
+      URI: platformUrl,
+      qs:
+        "query=%7B%22FILTERS%22%3A%5B%5B%7B%22GT%22%3A%5B%7B%22num%22%3A1%7D%5D%7D%5D%5D%7D",
+      user: {
+        email: "test@fake.com",
+        authToken: "testUserToken"
+      }
+    };
+    query.fetch(function(err, data) {
+      expect(err).toBeNull();
+      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+    });
+  });
+
+  it("update with a simple greater than query", function() {
+    var query = cb.Query({ collectionID: "fakeCollectionID" });
+    query.greaterThan("num", 1);
+    var callNum = ClearBlade.request.mock.calls.length; // we get the call count so we can grab the right call later
+    var expectedData = {
+      method: "PUT",
+      endpoint: "api/v/1/data/fakeCollectionID",
+      URI: platformUrl,
+      body: {
+        query: [[{ GT: [{ num: 1 }] }]],
+        $set: { num: 2 }
+      },
+      user: {
+        email: "test@fake.com",
+        authToken: "testUserToken"
+      }
+    };
+    query.update({ num: 2 }, function(err, data) {
+      expect(err).toBeNull();
+      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+    });
+  });
+
+  it("remove with a simple greater than query", function() {
+    var query = cb.Query({ collectionID: "fakeCollectionID" });
+    query.greaterThan("num", 1);
+    var callNum = ClearBlade.request.mock.calls.length; // we get the call count so we can grab the right call later
+    var expectedData = {
+      method: "DELETE",
+      endpoint: "api/v/1/data/fakeCollectionID",
+      URI: platformUrl,
+      qs:
+        "query=%7B%22FILTERS%22%3A%5B%5B%7B%22GT%22%3A%5B%7B%22num%22%3A1%7D%5D%7D%5D%5D%7D",
+      user: {
+        email: "test@fake.com",
+        authToken: "testUserToken"
+      }
+    };
+    query.remove(function(err, data) {
+      expect(err).toBeNull();
+      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+    });
+  });
+  
+  it("fetch with a simple less than query", function() {
+    var query = cb.Query({ collectionID: "fakeCollectionID" });
+    query.lessThan("num", 1);
+    var callNum = ClearBlade.request.mock.calls.length; // we get the call count so we can grab the right call later
+    var expectedData = {
+      method: "GET",
+      endpoint: "api/v/1/data/fakeCollectionID",
+      URI: platformUrl,
+      qs:
+        "query=%7B%22FILTERS%22%3A%5B%5B%7B%22LT%22%3A%5B%7B%22num%22%3A1%7D%5D%7D%5D%5D%7D",
+      user: {
+        email: "test@fake.com",
+        authToken: "testUserToken"
+      }
+    };
+    query.fetch(function(err, data) {
+      expect(err).toBeNull();
+      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+    });
+  });
+
+  it("update with a simple less than query", function() {
+    var query = cb.Query({ collectionID: "fakeCollectionID" });
+    query.lessThan("num", 1);
+    var callNum = ClearBlade.request.mock.calls.length; // we get the call count so we can grab the right call later
+    var expectedData = {
+      method: "PUT",
+      endpoint: "api/v/1/data/fakeCollectionID",
+      URI: platformUrl,
+      body: {
+        query: [[{ LT: [{ num: 1 }] }]],
+        $set: { num: 2 }
+      },
+      user: {
+        email: "test@fake.com",
+        authToken: "testUserToken"
+      }
+    };
+    query.update({ num: 2 }, function(err, data) {
+      expect(err).toBeNull();
+      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+    });
+  });
+
+  it("remove with a simple less than query", function() {
+    var query = cb.Query({ collectionID: "fakeCollectionID" });
+    query.lessThan("num", 1);
+    var callNum = ClearBlade.request.mock.calls.length; // we get the call count so we can grab the right call later
+    var expectedData = {
+      method: "DELETE",
+      endpoint: "api/v/1/data/fakeCollectionID",
+      URI: platformUrl,
+      qs:
+        "query=%7B%22FILTERS%22%3A%5B%5B%7B%22LT%22%3A%5B%7B%22num%22%3A1%7D%5D%7D%5D%5D%7D",
+      user: {
+        email: "test@fake.com",
+        authToken: "testUserToken"
+      }
+    };
+    query.remove(function(err, data) {
+      expect(err).toBeNull();
+      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+    });
+  });
+
+  it("fetch with a simple less than or equal to query", function() {
+    var query = cb.Query({ collectionID: "fakeCollectionID" });
+    query.lessThanEqualTo("num", 1);
+    var callNum = ClearBlade.request.mock.calls.length; // we get the call count so we can grab the right call later
+    var expectedData = {
+      method: "GET",
+      endpoint: "api/v/1/data/fakeCollectionID",
+      URI: platformUrl,
+      qs:
+        "query=%7B%22FILTERS%22%3A%5B%5B%7B%22LTE%22%3A%5B%7B%22num%22%3A1%7D%5D%7D%5D%5D%7D",
+      user: {
+        email: "test@fake.com",
+        authToken: "testUserToken"
+      }
+    };
+    query.fetch(function(err, data) {
+      expect(err).toBeNull();
+      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+    });
+  });
+
+  it("update with a simple less than query", function() {
+    var query = cb.Query({ collectionID: "fakeCollectionID" });
+    query.lessThanEqualTo("num", 1);
+    var callNum = ClearBlade.request.mock.calls.length; // we get the call count so we can grab the right call later
+    var expectedData = {
+      method: "PUT",
+      endpoint: "api/v/1/data/fakeCollectionID",
+      URI: platformUrl,
+      body: {
+        query: [[{ LTE: [{ num: 1 }] }]],
+        $set: { num: 2 }
+      },
+      user: {
+        email: "test@fake.com",
+        authToken: "testUserToken"
+      }
+    };
+    query.update({ num: 2 }, function(err, data) {
+      expect(err).toBeNull();
+      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+    });
+  });
+
+  it("remove with a simple less than query", function() {
+    var query = cb.Query({ collectionID: "fakeCollectionID" });
+    query.lessThanEqualTo("num", 1);
+    var callNum = ClearBlade.request.mock.calls.length; // we get the call count so we can grab the right call later
+    var expectedData = {
+      method: "DELETE",
+      endpoint: "api/v/1/data/fakeCollectionID",
+      URI: platformUrl,
+      qs:
+        "query=%7B%22FILTERS%22%3A%5B%5B%7B%22LTE%22%3A%5B%7B%22num%22%3A1%7D%5D%7D%5D%5D%7D",
+      user: {
+        email: "test@fake.com",
+        authToken: "testUserToken"
+      }
+    };
+    query.remove(function(err, data) {
+      expect(err).toBeNull();
+      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+    });
+  });
+
+  it("sorts in ascending order", function () {
+    var query = cb.Query({ collectionID: "fakeCollectionID" });
+    query.ascending("name");
+    var callNum = ClearBlade.request.mock.calls.length;
+    var expectedData = {
+      method: "GET",
+      endpoint: "api/v/1/data/fakeCollectionID",
+      URI: platformUrl,
+      qs: "query=%7B%22SORT%22%3A%5B%7B%22ASC%22%3A%22name%22%7D%5D%7D",
+      user: {
+        email: "test@fake.com",
+        authToken: "testUserToken",
+      }
+    }
+    query.fetch(function(err, data) {
+      expect(err).toBeNull();
+      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+    });
+  });
+
+  it("sorts in descending order", function () {
+    var query = cb.Query({ collectionID: "fakeCollectionID" });
+    query.descending("name");
+    var callNum = ClearBlade.request.mock.calls.length;
+    var expectedData = {
+      method: "GET",
+      endpoint: "api/v/1/data/fakeCollectionID",
+      URI: platformUrl,
+      qs: "query=%7B%22SORT%22%3A%5B%7B%22DESC%22%3A%22name%22%7D%5D%7D",
+      user: {
+        email: "test@fake.com",
+        authToken: "testUserToken",
+      }
+    }
+    query.fetch(function(err, data) {
+      expect(err).toBeNull();
+      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+    });
+  });
 });

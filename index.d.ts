@@ -47,9 +47,27 @@ interface RequestOptions {
 interface APIUser {
   email: string;
   authToken: string;
+  user_id?: string;
+}
+
+interface RegistrationCallbackInfo {
+  response: string;
+  userid: string;
 }
 
 type CbCallback<T> = (error: boolean, response: T) => void;
+
+type LoginUserCallbackInfo = APIUser | string;
+
+interface Column {
+  ColumnName: string;
+  ColumnType: string;
+  PK: boolean;
+}
+
+interface InvocationContext {
+  invocationContext: any;
+}
 
 interface IClearBladeGlobal {
   new (): IClearBlade;
@@ -76,18 +94,22 @@ interface IClearBlade {
   registerUser(
     email: string,
     password: string,
-    callback: CbCallback<any>
+    callback: CbCallback<RegistrationCallbackInfo>
   ): void;
-  isCurrentUserAuthenticated(callback: CbCallback<any>): void;
-  logoutUser(callback: CbCallback<any>): void;
-  loginAnon(callback: CbCallback<any>): void;
-  loginUser(email: string, password: string, callback: CbCallback<any>): void;
+  isCurrentUserAuthenticated(callback: CbCallback<boolean>): void;
+  logoutUser(callback: CbCallback<APIUser>): void;
+  loginAnon(callback: CbCallback<APIUser>): void;
+  loginUser(
+    email: string,
+    password: string,
+    callback: CbCallback<LoginUserCallbackInfo>
+  ): void;
   loginUserMqtt(
     email: string,
     password: string,
     callback: CbCallback<any>
   ): void;
-  registerMasterCallback(callback: CbCallback<any>): void;
+  registerMasterCallback(callback: CbCallback<InvocationContext>): void;
   Collection(
     options: string | CollectionOptionsWithName | CollectionOptionsWithID
   ): Collection;
@@ -96,7 +118,10 @@ interface IClearBlade {
   Item(data: object, collectionID: string | ItemOptions): Item;
   Code(): Code;
   User(): AppUser;
-  Messaging(options: MessagingOptions, callback: CbCallback<any>): Messaging;
+  Messaging(
+    options: MessagingOptions,
+    callback: CbCallback<InvocationContext>
+  ): Messaging;
   MessagingStats(): MessagingStats;
   sendPush(
     users: string[],
@@ -104,8 +129,8 @@ interface IClearBlade {
     appId: string,
     callback: CbCallback<any>
   ): void;
-  getEdges(callback: CbCallback<any>): void;
-  getEdges(query: QueryObj, callback: CbCallback<any>): void;
+  getEdges(callback: CbCallback<EdgeModel>): void;
+  getEdges(query: QueryObj, callback: CbCallback<EdgeModel>): void;
   Edge(): Edge;
   Metrics(): Metrics;
   Device(): Device;
@@ -113,7 +138,7 @@ interface IClearBlade {
   Portal(name: string): Portal;
   Triggers(): Triggers;
   Roles(): Roles;
-  getAllCollections(callback: CbCallback<any>): void;
+  getAllCollections(callback: CbCallback<CollectionData[]>): void;
 }
 interface CollectionOptionsWithName {
   collectionName: string;
@@ -121,6 +146,15 @@ interface CollectionOptionsWithName {
 
 interface CollectionOptionsWithID {
   collectionID: string;
+}
+
+interface CountCallbackInfo {
+  count: number;
+}
+
+interface CollectionData {
+  appID: string;
+  name: string;
 }
 
 interface Collection {
@@ -134,13 +168,13 @@ interface Collection {
 
   fetch(
     query: QueryObj | CbCallback<Item[]>,
-    callback?: CbCallback<Item[]>
+    callback?: CbCallback<CbCallback<QueryCallbackInfo>>
   ): void;
-  create(newItem: Item, callback: CbCallback<any>): void;
-  update(query: QueryObj, changes: object, callback: CbCallback<any>): void;
-  remove(query: QueryObj, callback: CbCallback<any>): void;
-  columns(callback: CbCallback<any>): void;
-  count(query: QueryObj, callback: CbCallback<any>): void;
+  create(newItem: Item, callback: CbCallback<Item[]>): void;
+  update(query: QueryObj, changes: object, callback: CbCallback<string>): void;
+  remove(query: QueryObj, callback: CbCallback<string>): void;
+  columns(callback: CbCallback<Column[]>): void;
+  count(query: QueryObj, callback: CbCallback<CountCallbackInfo>): void;
 }
 
 declare enum QuerySortDirections {
@@ -177,6 +211,14 @@ interface Query {
   FILTERS?: QueryFilter[];
   PAGESIZE?: number;
   PAGENUM?: number;
+}
+
+interface QueryCallbackInfo {
+  DATA: Object[];
+  CURRENTPAGE: number;
+  NEXTPAGEURL: number | null;
+  PREVPAGEURL: number | null;
+  TOTAL: number;
 }
 
 interface QueryFilter {
@@ -221,10 +263,10 @@ interface QueryObj {
   or(query: QueryObj): QueryObj;
   setPage(pageSize: number, pageNum: number): QueryObj;
   getFieldValue(field: string): object | null;
-  fetch(callback: CbCallback<any>): void;
-  update(changes: object, callback: CbCallback<any>): void;
+  fetch(callback: QueryCallbackInfo): void;
+  update(changes: object, callback: CbCallback<string>): void;
   columns(columnsArray: string[]): void;
-  remove(callback: CbCallback<any>): void;
+  remove(callback: CbCallback<string>): void;
 }
 
 interface ItemOptions extends CollectionOptionsWithID {}
@@ -243,6 +285,44 @@ interface ServicePayload {
   name: string;
   dependencies: string;
 }
+
+interface ServiceCallbackInfo {
+  logs?: string;
+  results: string;
+  success: boolean;
+}
+
+interface CodeCreationInfo {
+  created: boolean;
+  name: string;
+  uri: string;
+}
+
+interface CodeUpdateInfo {
+  uri: string;
+  version_number: number;
+}
+
+interface ServiceError {
+  status_code: number;
+  error: object;
+}
+
+interface ServiceInfo {
+  Service: string;
+  Args: any[];
+  Response: ServiceCallbackInfo;
+  Error: ServiceError;
+  UserId: string;
+  UserType: number;
+  Id: string;
+  Datetime: string;
+}
+
+interface AllServicesRequest {
+  code: string[];
+}
+
 interface Code {
   user: APIUser;
   URI: string;
@@ -250,13 +330,36 @@ interface Code {
   systemSecret: string;
   callTimeout: number;
 
-  create(name: string, body: ServicePayload, callback: CbCallback<any>): void;
-  update(name: string, body: ServicePayload, callback: CbCallback<any>): void;
+  create(
+    name: string,
+    body: ServicePayload,
+    callback: CbCallback<CodeCreationInfo>
+  ): void;
+  update(
+    name: string,
+    body: ServicePayload,
+    callback: CbCallback<CodeUpdateInfo>
+  ): void;
   delete(name: string, callback: CbCallback<any>): void;
-  execute(name: string, params: object, callback: CbCallback<any>): void;
-  getCompletedServices(callback: CbCallback<any>): void;
-  getFailedServices(callback: CbCallback<any>): void;
-  getAllServices(callback: CbCallback<any>): void;
+  execute(
+    name: string,
+    params: object,
+    callback: CbCallback<ServiceCallbackInfo> | string
+  ): void;
+  getCompletedServices(callback: CbCallback<ServiceInfo>): void;
+  getFailedServices(callback: CbCallback<ServiceInfo>): void;
+  getAllServices(callback: CbCallback<AllServicesRequest>): void;
+}
+
+interface AppUserData {
+  email: string;
+  user_id: string;
+  creation_date: string;
+}
+
+interface AppUserList {
+  Data: AppUserData[];
+  Total: number;
 }
 
 interface AppUser {
@@ -267,19 +370,19 @@ interface AppUser {
   systemSecret: string;
   callTimeout: number;
 
-  getUser(callback: CbCallback<any>): void;
-  setUser(data: object, callback: CbCallback<any>): void;
-  allUsers(query: QueryObj, callback: CbCallback<any>): void;
+  getUser(callback: CbCallback<AppUserData>): void;
+  setUser(data: object, callback: CbCallback<string>): void;
+  allUsers(query: QueryObj, callback: CbCallback<AppUserList>): void;
   setPassword(
     old_password: string,
     new_password: string,
-    callback: CbCallback<any>
+    callback: CbCallback<string>
   ): void;
-  count(query: QueryObj, callback: CbCallback<any>): void;
+  count(query: QueryObj, callback: CbCallback<CountCallbackInfo>): void;
   addUser(data: object, callback: CbCallback<any>): void;
   updateUser(data: object, callback: CbCallback<any>): void;
   deleteUser(data: object, callback: CbCallback<any>): void;
-  columns(callback: CbCallback<any>): void;
+  columns(callback: CbCallback<Column[]>): void;
 }
 
 interface Messaging {
@@ -291,29 +394,6 @@ interface Messaging {
   callTimeout: number;
   client: Paho.MQTT.Client;
 
-  getMessageHistoryWithTimeFrame(
-    topic: string,
-    count: number,
-    last: number,
-    start: number,
-    stop: number,
-    callback: CbCallback<any>
-  ): void;
-  getMessageHistory(
-    topic: string,
-    last: number,
-    count: number,
-    callback: CbCallback<any>
-  ): void;
-  getAndDeleteMessageHistory(
-    topic: string,
-    count: number,
-    last: number,
-    start: number,
-    stop: number,
-    callback: CbCallback<any>
-  ): void;
-  currentTopics(callback: CbCallback<any>): void;
   publish(topic: string, payload: object): void;
   publishREST(topic: string, payload: object, callback: CbCallback<any>): void;
   subscribe(
@@ -353,20 +433,107 @@ interface MessagingSubscribeOptions {
   timeout?: number;
 }
 
+interface TopicsList {
+  DATA: string[];
+}
+
+interface MessageInfo {
+  id: string;
+  message: string;
+  "send-date": number;
+  topicid: string;
+  "user-id": string;
+}
+
+type MessageCallbackInfo = MessageInfo[] | string;
+
+interface IPayloadSize {
+  payloadsize: number;
+}
+
+interface ISubcribers {
+  subscribers: number;
+}
+
+interface IConnections {
+  connections: number;
+}
+
 interface MessagingStats {
   user: APIUser;
   URI: string;
   endpoint: string;
   systemKey: string;
+  callTimeout?: number;
 
+  getMessageHistoryWithTimeFrame(
+    topic: string,
+    count: number,
+    last: number,
+    start: number,
+    stop: number,
+    callback: CbCallback<MessageCallbackInfo>
+  ): void;
+  getMessageHistory(
+    topic: string,
+    last: number,
+    count: number,
+    callback: CbCallback<MessageCallbackInfo>
+  ): void;
+  getAndDeleteMessageHistory(
+    topic: string,
+    count: number,
+    last: number,
+    start: number,
+    stop: number,
+    callback: CbCallback<MessageCallbackInfo>
+  ): void;
+  currentTopics(callback: CbCallback<TopicsList>): void;
   getAveragePayloadSize(
     topic: string,
     start: number,
     stop: number,
-    callback: CbCallback<any>
+    callback: CbCallback<IPayloadSize>
   ): void;
-  getOpenConnections(callback: CbCallback<any>): void;
-  getCurrentSubscribers(topic: string, callback: CbCallback<any>): void;
+  getOpenConnections(callback: CbCallback<IConnections>): void;
+  getCurrentSubscribers(topic: string, callback: CbCallback<ISubcribers>): void;
+}
+
+interface EdgeModel {
+  broker_auth_port: string;
+  broker_port: string;
+  broker_tls_port: string;
+  broker_ws_auth_port: string;
+  broker_ws_port: string;
+  broker_wss_port: string;
+  communication_style: string;
+  description: string;
+  edge_key: string;
+  first_talked: string;
+  isConnected: boolean;
+  last_seen_version: string;
+  last_talked: number;
+  local_addr: string;
+  local_port: string;
+  location: string;
+  mac_address: string;
+  name: string;
+  novi_system_key: string;
+  policy_name: string;
+  public_addr: string;
+  public_port: string;
+  resolver_func: string;
+  sync_edge_tables: string;
+  system_key: string;
+  system_secret: string;
+  token: string;
+}
+
+interface EdgeUpdateInfo {
+  description: string;
+  edge_key: string;
+  name: string;
+  novi_system_key: string;
 }
 
 interface Edge {
@@ -378,12 +545,16 @@ interface Edge {
   updateEdgeByName(
     name: string,
     object: object,
-    callback: CbCallback<any>
+    callback: CbCallback<EdgeUpdateInfo>
   ): void;
   deleteEdgeByName(name: string, callback: CbCallback<any>): void;
-  create(newEdge: object, name: string, callback: CbCallback<any>): void;
-  columns(callback: CbCallback<any>): void;
-  count(query: QueryObj, callback: CbCallback<any>): void;
+  create(
+    newEdge: object,
+    name: string,
+    callback: CbCallback<EdgeUpdateInfo>
+  ): void;
+  columns(callback: CbCallback<Column[]>): void;
+  count(query: QueryObj, callback: CbCallback<CountCallbackInfo>): void;
 }
 
 interface Metrics {
@@ -392,10 +563,30 @@ interface Metrics {
   systemKey: string;
 
   setQuery(query: QueryObj): void;
-  getStatistics(callback: CbCallback<any>): void;
-  getStatisticsHistory(callback: CbCallback<any>): void;
-  getDBConnections(callback: CbCallback<any>): void;
-  getLogs(callback: CbCallback<any>): void;
+  getStatistics(callback: CbCallback<QueryCallbackInfo>): void;
+  getStatisticsHistory(callback: CbCallback<QueryCallbackInfo>): void;
+  getDBConnections(callback: CbCallback<QueryCallbackInfo>): void;
+  getLogs(callback: CbCallback<QueryCallbackInfo>): void;
+}
+
+interface DeviceSuccessCallbackInfo {
+  success: boolean;
+}
+
+interface DeviceModel {
+  allow_certificate_auth: boolean;
+  allow_key_auth: boolean;
+  certificate: string;
+  created_date: number;
+  description: string;
+  device_key: string;
+  enabled: boolean;
+  last_active_date: number;
+  name: string;
+  state: string;
+  system_key: string;
+  type: string;
+  [other: string]: any;
 }
 
 interface Device {
@@ -404,25 +595,28 @@ interface Device {
   systemKey: string;
   systemSecret: string;
 
-  getDeviceByName(name: string, callback: CbCallback<any>): void;
+  getDeviceByName(name: string, callback: CbCallback<DeviceModel>): void;
   updateDeviceByName(
     name: string,
     object: object,
     trigger: boolean,
-    callback: CbCallback<any>
+    callback: CbCallback<DeviceModel>
   ): void;
   deleteDeviceByName(name: string, callback: CbCallback<any>): void;
-  fetch(query: QueryObj, callback: CbCallback<any>): void;
+  fetch(query: QueryObj, callback: CbCallback<DeviceModel[]>): void;
   update(
     query: QueryObj,
     object: object,
     trigger: boolean,
-    callback: CbCallback<any>
+    callback: CbCallback<DeviceSuccessCallbackInfo>
   ): void;
-  delete(query: QueryObj, callback: CbCallback<any>): void;
-  create(newDevice: object, callback: CbCallback<any>): void;
-  columns(callback: CbCallback<any>): void;
-  count(query: QueryObj, callback: CbCallback<any>): void;
+  delete(
+    query: QueryObj,
+    callback: CbCallback<DeviceSuccessCallbackInfo>
+  ): void;
+  create(newDevice: object, callback: CbCallback<DeviceModel>): void;
+  columns(callback: CbCallback<Column[]>): void;
+  count(query: QueryObj, callback: CbCallback<CountCallbackInfo>): void;
 }
 
 interface Analytics {
@@ -438,6 +632,15 @@ interface Analytics {
   getUserEvents(filter: QueryFilter, callback: CbCallback<any>): void;
 }
 
+interface PortalModel {
+  config: string;
+  description: string;
+  last_updated: string;
+  name: string;
+  system_key: string;
+  type: object;
+}
+
 interface Portal {
   name: string;
   user: APIUser;
@@ -445,8 +648,28 @@ interface Portal {
   systemKey: string;
   systemSecret: string;
 
-  fetch(callback: CbCallback<any>): void;
-  update(data: object, callback: CbCallback<any>): void;
+  fetch(callback: CbCallback<PortalModel>): void;
+  update(data: object, callback: CbCallback<PortalModel>): void;
+}
+
+interface TriggerDefinition {
+  def_module: string;
+  def_name: string;
+  def_keys: string[];
+}
+
+interface TriggerModel {
+  system_key: string;
+  system_secret: string;
+  name: string;
+  event_definition: {
+    def_module: string;
+    def_name: string;
+    def_keys: string[];
+    visibility: boolean;
+  };
+  key_value_pairs: object;
+  service_name: string;
 }
 
 interface Triggers {
@@ -455,9 +678,9 @@ interface Triggers {
   systemKey: string;
   systemSecret: string;
 
-  fetchDefinitions(callback: CbCallback<any>): void;
-  create(name: string, data: object, callback: CbCallback<any>): void;
-  update(name: string, data: object, callback: CbCallback<any>): void;
+  fetchDefinitions(callback: CbCallback<TriggerDefinition[]>): void;
+  create(name: string, data: object, callback: CbCallback<TriggerModel>): void;
+  update(name: string, data: object, callback: CbCallback<TriggerModel>): void;
   delete(name: string, callback: CbCallback<any>): void;
 }
 
