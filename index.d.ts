@@ -433,13 +433,12 @@ interface TopicsList {
   DATA: string[];
 }
 
-interface Message {
+interface MessageInfo {
   id: string;
   message: string;
   "send-date": number;
   topicid: string;
   "user-id": string;
-  [x: string]: string | number;
 }
 
 interface IPayloadSize {
@@ -467,13 +466,13 @@ interface MessagingStats {
     last: number,
     start: number,
     stop: number,
-    callback: CbCallback<Message[]>
+    callback: CbCallback<MessageInfo[]>
   ): void;
   getMessageHistory(
     topic: string,
     last: number,
     count: number,
-    callback: CbCallback<Message[]>
+    callback: CbCallback<MessageInfo[]>
   ): void;
   getAndDeleteMessageHistory(
     topic: string,
@@ -481,7 +480,7 @@ interface MessagingStats {
     last: number,
     start: number,
     stop: number,
-    callback: CbCallback<Message[]>
+    callback: CbCallback<MessageInfo[]>
   ): void;
   currentTopics(callback: CbCallback<TopicsList>): void;
   getAveragePayloadSize(
