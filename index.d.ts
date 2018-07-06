@@ -138,7 +138,7 @@ interface IClearBlade {
   Portal(name: string): Portal;
   Triggers(): Triggers;
   Roles(): Roles;
-  getAllCollections(callback: CbCallback<CollectionData>): void;
+  getAllCollections(callback: CbCallback<CollectionData[]>): void;
 }
 interface CollectionOptionsWithName {
   collectionName: string;
@@ -319,6 +319,10 @@ interface ServiceInfo {
   Datetime: string;
 }
 
+interface AllServicesRequest {
+  code: string[];
+}
+
 interface Code {
   user: APIUser;
   URI: string;
@@ -344,7 +348,7 @@ interface Code {
   ): void;
   getCompletedServices(callback: CbCallback<ServiceInfo>): void;
   getFailedServices(callback: CbCallback<ServiceInfo>): void;
-  getAllServices(callback: CbCallback<string[]>): void;
+  getAllServices(callback: CbCallback<AllServicesRequest>): void;
 }
 
 interface AppUserData {
@@ -441,6 +445,8 @@ interface MessageInfo {
   "user-id": string;
 }
 
+type MessageCallbackInfo = MessageInfo[] | string;
+
 interface IPayloadSize {
   payloadsize: number;
 }
@@ -466,13 +472,13 @@ interface MessagingStats {
     last: number,
     start: number,
     stop: number,
-    callback: CbCallback<MessageInfo[]>
+    callback: CbCallback<MessageCallbackInfo>
   ): void;
   getMessageHistory(
     topic: string,
     last: number,
     count: number,
-    callback: CbCallback<MessageInfo[]>
+    callback: CbCallback<MessageCallbackInfo>
   ): void;
   getAndDeleteMessageHistory(
     topic: string,
@@ -480,7 +486,7 @@ interface MessagingStats {
     last: number,
     start: number,
     stop: number,
-    callback: CbCallback<MessageInfo[]>
+    callback: CbCallback<MessageCallbackInfo>
   ): void;
   currentTopics(callback: CbCallback<TopicsList>): void;
   getAveragePayloadSize(
