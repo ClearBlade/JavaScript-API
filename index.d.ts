@@ -433,9 +433,7 @@ interface MessagingSubscribeOptions {
   timeout?: number;
 }
 
-interface TopicsList {
-  DATA: string[];
-}
+type TopicsList = string[];
 
 interface MessageInfo {
   id: string;
