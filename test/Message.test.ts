@@ -20,7 +20,7 @@ describe("get message history test", function() {
     msgSts.getMessageHistory("topic", 1000, 10, function() {});
     var expectedData = {
       method: "GET",
-      endpoint: "api/v/3/message/fakeSystemKey",
+      endpoint: "api/v/1/message/fakeSystemKey",
       qs: "topic=topic&count=10&last=1000&start=-1&stop=-1",
       authToken: "testUserToken",
       timeout: 30000,
@@ -41,7 +41,7 @@ describe("get message history test", function() {
     );
     var expectedData = {
       method: "GET",
-      endpoint: "api/v/3/message/fakeSystemKey",
+      endpoint: "api/v/1/message/fakeSystemKey",
       qs: "topic=topic&count=25&last=-1&start=12345&stop=123456",
       authToken: "testUserToken",
       timeout: 30000,
@@ -64,7 +64,7 @@ describe("delete message history test", function() {
     );
     var expectedData = {
       method: "DELETE",
-      endpoint: "api/v/3/message/fakeSystemKey",
+      endpoint: "api/v/1/message/fakeSystemKey",
       qs: "topic=topic&count=25&last=-1&start=12345&stop=123456",
       authToken: "testUserToken",
       timeout: 30000,
@@ -80,7 +80,7 @@ describe("get current topics test", function() {
     msgSts.currentTopics(function() {});
     var expectedData = {
       method: "GET",
-      endpoint: "api/v/3/message/fakeSystemKey/currentTopics",
+      endpoint: "api/v/1/message/fakeSystemKey/currentTopics",
       URI: platformUrl,
       user: {
         authToken: "testUserToken"

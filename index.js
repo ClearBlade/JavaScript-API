@@ -2222,6 +2222,7 @@ if (!window.console) {
     messagingStats.user = this.user;
     messagingStats.URI = this.URI;
     messagingStats.endpoint = "api/v/3/message";
+    messagingStats.endpointV1 = "api/v/1/message";
     messagingStats.systemKey = this.systemKey;
     messagingStats.callTimeout = this._callTimeout;
 
@@ -2245,7 +2246,7 @@ if (!window.console) {
     ) {
       var reqOptions = {
         method: "GET",
-        endpoint: this.endpoint + "/" + this.systemKey,
+        endpoint: this.endpointV1 + "/" + this.systemKey,
         qs:
           "topic=" +
           topic +
@@ -2309,7 +2310,7 @@ if (!window.console) {
     ) {
       var reqOptions = {
         method: "DELETE",
-        endpoint: this.endpoint + "/" + this.systemKey,
+        endpoint: this.endpointV1 + "/" + this.systemKey,
         qs:
           "topic=" +
           topic +
@@ -2344,7 +2345,7 @@ if (!window.console) {
         ClearBlade.request(
           {
             method: "GET",
-            endpoint: this.endpoint + "/" + this.systemKey + "/currentTopics",
+            endpoint: this.endpointV1 + "/" + this.systemKey + "/currentTopics",
             user: this.user,
             URI: this.URI
           },
