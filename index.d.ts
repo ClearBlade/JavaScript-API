@@ -88,6 +88,7 @@ interface IClearBlade {
   messagingPort: number;
   logging: boolean;
   defaultQoS: MessagingQOS;
+  user: APIUser;
 
   init(options: InitOptions): void;
   setUser(email: string, password: string): void;
