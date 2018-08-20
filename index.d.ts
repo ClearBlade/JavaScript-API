@@ -171,7 +171,7 @@ interface Collection {
     query: QueryObj | CbCallback<Item[]>,
     callback?: CbCallback<CbCallback<QueryCallbackInfo>>
   ): void;
-  create(newItem: Item, callback: CbCallback<Item[]>): void;
+  create(newItem: object, callback: CbCallback<Item[]>): void;
   update(query: QueryObj, changes: object, callback: CbCallback<string>): void;
   remove(query: QueryObj, callback: CbCallback<string>): void;
   columns(callback: CbCallback<Column[]>): void;
