@@ -2073,7 +2073,7 @@ if (!window.console) {
 
     messaging.client.onMessageArrived = function(message) {
       // messageCallback from Subscribe()
-      messaging.messageCallback(message.payloadString);
+      messaging.messageCallback(message.payloadString, message);
     };
     // the mqtt websocket library uses "onConnect," but our terminology uses
     // "onSuccess" and "onFailure"

@@ -1,3 +1,5 @@
+import { Message } from "paho-mqtt";
+
 // Type definitions for clearbladejs-client 1.0
 // Project: https://github.com/ClearBlade/JavaScript-API
 // Definitions by: Jim Bouquet <https://github.com/ClearBlade>
@@ -424,7 +426,7 @@ interface MessagingConfiguration extends CommonMessagingProperties {
   password: string;
 }
 
-type MessageCallback = (message: string) => void;
+type MessageCallback = (messagePayload: string, message: Message) => void;
 
 interface MessagingSubscribeOptions {
   qos?: MessagingQOS;
