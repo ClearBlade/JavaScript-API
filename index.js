@@ -2059,7 +2059,9 @@ if (!window.console) {
 
     messaging.client.onConnectionLost = function(response) {
       if (response.errorCode === 8) {
-        console.warn("Unable to connect via WebSocket - Invalid permissions");
+        var errMsg = "Unable to connect via WebSocket - Invalid permissions";
+        console.warn(errMsg);
+        callback(errMsg);
       } else {
         console.log(
           "ClearBlade Messaging connection lost- attempting to reestablish",
