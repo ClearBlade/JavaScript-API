@@ -417,6 +417,7 @@ interface CommonMessagingProperties {
 
 interface MessagingOptions extends CommonMessagingProperties {
   qos?: MessagingQOS;
+  maxConnectRetries?: number;
 }
 
 interface MessagingConfiguration extends CommonMessagingProperties {

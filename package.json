@@ -38,6 +38,9 @@
       "jsx",
       "json",
       "node"
+    ],
+    "setupFiles": [
+      "./testing/test-setup.js"
     ]
   },
   "repository": {

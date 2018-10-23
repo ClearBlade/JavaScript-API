@@ -2035,6 +2035,8 @@ if (!window.console) {
     messaging.systemKey = this.systemKey;
     messaging.systemSecret = this.systemSecret;
     messaging.callTimeout = this._callTimeout;
+    messaging.numOfConnectRetries = 0;
+    messaging.maxConnectRetries = options.maxConnectRetries || 3;
 
     //roll through the config
     var conf = {};
@@ -2058,7 +2060,10 @@ if (!window.console) {
     ); //new Messaging.Client(conf.hosts[0],conf.ports[0],clientID);
 
     messaging.client.onConnectionLost = function(response) {
-      if (response.errorCode === 8) {
+      if (
+        response.errorCode === 8 &&
+        messaging.numOfConnectRetries >= messaging.maxConnectRetries
+      ) {
         var errMsg = "Unable to connect via WebSocket - Invalid permissions";
         console.warn(errMsg);
         callback(errMsg);
@@ -2069,6 +2074,7 @@ if (!window.console) {
         );
         delete conf.mqttVersionExplicit;
         delete conf.uris;
+        messaging.numOfConnectRetries++;
         messaging.client.connect(conf);
       }
     };
@@ -2080,6 +2086,7 @@ if (!window.console) {
     // the mqtt websocket library uses "onConnect," but our terminology uses
     // "onSuccess" and "onFailure"
     var onSuccess = function(data) {
+      messaging.numOfConnectRetries = 0;
       callback(undefined, data);
     };
 

@@ -1,16 +1,9 @@
 import { cb, platformUrl } from "./utils";
 
-var msg: Messaging;
 var msgSts: MessagingStats;
 beforeEach(function() {
-  spyOn(Paho.MQTT, "Client").and.callFake(function() {
-    return {
-      connect: function() {}
-    };
-  });
   cb.user = {};
   cb.user.authToken = "testUserToken";
-  msg = cb.Messaging({}, function() {});
   msgSts = cb.MessagingStats();
 });
 
@@ -87,5 +80,69 @@ describe("get current topics test", function() {
       }
     };
     expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+  });
+});
+
+describe("handle socket close", () => {
+  let connectMock: jest.Mock;
+  beforeEach(() => {
+    connectMock = jest.fn();
+
+    global.Paho = {
+      MQTT: {
+        Client: jest.fn(() => ({
+          connect: connectMock
+        }))
+      }
+    };
+  });
+
+  it("should attempt to reconnect after losing connection", () => {
+    const closeSocket = (messagingObject: Messaging) => {
+      messagingObject.client.onConnectionLost({
+        errorCode: 8,
+        errorMessage: ""
+      });
+    };
+
+    const msgCallback = jest.fn();
+    const msg = cb.Messaging({}, msgCallback);
+    // fake a successful connection on startup
+    msg.client.onConnect("data");
+    // fake a socket close
+    closeSocket(msg);
+    // fake a successful reconnect
+    msg.client.onConnect("data");
+
+    expect(connectMock).toHaveBeenCalledTimes(2);
+    expect(msgCallback).toHaveBeenCalledTimes(2);
+    expect(msgCallback).toHaveBeenCalledWith(undefined, "data");
+  });
+
+  it("should attempt to reconnect after losing connection", () => {
+    const closeSocket = (messagingObject: Messaging) => {
+      messagingObject.client.onConnectionLost({
+        errorCode: 8,
+        errorMessage: ""
+      });
+    };
+
+    const msgCallback = jest.fn();
+    const msg = cb.Messaging({}, msgCallback);
+    // fake a successful connection on startup
+    msg.client.onConnect("data");
+    // fake a retry loop
+    closeSocket(msg);
+    closeSocket(msg);
+    closeSocket(msg);
+    closeSocket(msg);
+    closeSocket(msg);
+    closeSocket(msg);
+    closeSocket(msg);
+
+    expect(connectMock).toHaveBeenCalledTimes(4);
+    expect(msgCallback).toHaveBeenCalledWith(
+      "Unable to connect via WebSocket - Invalid permissions"
+    );
   });
 });
