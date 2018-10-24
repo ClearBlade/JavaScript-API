@@ -1,6 +1,6 @@
 {
   "name": "clearblade-js-client",
-  "version": "1.13.6",
+  "version": "1.14.0",
   "description": "ClearBlade JavaScript API =========================",
   "main": "index.js",
   "directories": {
