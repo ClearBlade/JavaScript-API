@@ -1696,7 +1696,7 @@ if (!window.console) {
     code.getAllServices = function(callback) {
       var reqOptions = {
         method: "GET",
-        endpoint: "/api/v/3/code/" + this.systemKey,
+        endpoint: "api/v/3/code/" + this.systemKey,
         user: this.user,
         URI: this.URI
       };
@@ -2902,11 +2902,11 @@ if (!window.console) {
     device.fetch = function(_query, callback) {
       var query;
       /*
-         * The following logic may look funny, but it is intentional.
-         * I do this because it is typeical for the callback to be the last parameter.
-         * However, '_query' is an optional parameter, so I have to check if 'callback' is undefined
-         * in order to see weather or not _query is defined.
-         */
+       * The following logic may look funny, but it is intentional.
+       * I do this because it is typeical for the callback to be the last parameter.
+       * However, '_query' is an optional parameter, so I have to check if 'callback' is undefined
+       * in order to see weather or not _query is defined.
+       */
       if (callback === undefined) {
         callback = _query;
         query = {
