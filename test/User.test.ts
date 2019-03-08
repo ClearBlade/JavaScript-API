@@ -10,6 +10,7 @@ describe("ClearBlade Users", function() {
     var expectedData = {
       method: "GET",
       endpoint: "api/v/1/user/info",
+      systemKey: "fakeSystemKey",
       URI: platformUrl,
       user: {
         email: "test@fake.com",
