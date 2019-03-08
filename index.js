@@ -1736,6 +1736,7 @@ if (!window.console) {
       var reqOptions = {
         method: "GET",
         endpoint: this.endpoint + "/info",
+        systemKey: this.systemKey,
         user: this.user,
         URI: this.URI
       };
