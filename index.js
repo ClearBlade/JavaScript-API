@@ -2160,9 +2160,12 @@ if (!window.console) {
      */
     messaging.subscribe = function(topic, options, messageCallback) {
       var conf = {
-        ...options,
-        qos: options.qos || this._qos || 0,
+        qos: this._qos || 0,
       };
+
+      for (var opt in options) {
+        conf[opt] = options[opt]
+      }
 
       this.client.subscribe(topic, conf);
 
