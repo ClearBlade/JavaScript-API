@@ -2159,23 +2159,15 @@ if (!window.console) {
      * cb.subscribe("ClearBlade/is awesome!",{});
      */
     messaging.subscribe = function(topic, options, messageCallback) {
-      var _this = this;
-
-      var onSuccess = function() {
-        var conf = {};
-        conf["qos"] = this._qos || 0;
-        conf["invocationContext"] = options["invocationContext"] || {};
-        conf["onSuccess"] = options["onSuccess"] || null;
-        conf["onFailure"] = options["onFailure"] || null;
-        conf["timeout"] = options["timeout"] || 60;
-        _this.client.subscribe(topic, conf);
+      var conf = {
+        qos: this._qos || 0,
       };
 
-      var onFailure = function() {
-        alert("failed to connect");
-      };
+      for (var opt in options) {
+        conf[opt] = options[opt]
+      }
 
-      this.client.subscribe(topic);
+      this.client.subscribe(topic, conf);
 
       this.messageCallback = messageCallback;
     };
