@@ -2061,13 +2061,16 @@ if (!window.console) {
     ); //new Messaging.Client(conf.hosts[0],conf.ports[0],clientID);
 
     messaging.client.onConnectionLost = function(response) {
-      if (
-        response.errorCode === 8 &&
-        messaging.numOfConnectRetries >= messaging.maxConnectRetries
-      ) {
-        var errMsg = "Unable to connect via WebSocket - Invalid permissions";
-        console.warn(errMsg);
-        callback(errMsg);
+      if (messaging.numOfConnectRetries >= messaging.maxConnectRetries) {
+        if (response.errorCode === 8) {
+          var errMsg = "Unable to connect via WebSocket - Invalid permissions";
+          console.warn(errMsg);
+          callback(errMsg);
+        } else {
+          var errMsg = "Disconnected via WebSocket. No longer attempting to reconnect";
+          console.warn(errMsg);
+          callback(errMsg);
+        }
       } else {
         console.log(
           "ClearBlade Messaging connection lost- attempting to reestablish",
