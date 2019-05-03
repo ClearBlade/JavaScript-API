@@ -2047,6 +2047,8 @@ if (!window.console) {
     conf.useSSL = options.useSSL || false; //up for debate. ole' perf vs sec argument
     conf.hosts = options.hosts || [this.messagingURI];
     conf.ports = options.ports || [this.messagingPort];
+    conf.keepAliveInterval = options.keepAliveInterval || 50;
+
     if (options.qos !== undefined && options.qos !== null) {
       messaging._qos = options.qos;
     } else {
