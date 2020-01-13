@@ -2069,7 +2069,8 @@ if (!window.console) {
           console.warn(errMsg);
           callback(errMsg);
         } else {
-          var errMsg = "Disconnected via WebSocket. No longer attempting to reconnect";
+          var errMsg =
+            "Disconnected via WebSocket. No longer attempting to reconnect";
           console.warn(errMsg);
           callback(errMsg);
         }
@@ -2162,11 +2163,11 @@ if (!window.console) {
      */
     messaging.subscribe = function(topic, options, messageCallback) {
       var conf = {
-        qos: this._qos || 0,
+        qos: this._qos || 0
       };
 
       for (var opt in options) {
-        conf[opt] = options[opt]
+        conf[opt] = options[opt];
       }
 
       this.client.subscribe(topic, conf);
@@ -3448,6 +3449,31 @@ if (!window.console) {
           changes: changes
         },
         endpoint: "api/v/3/user/roles/" + this.systemKey,
+        URI: this.URI
+      };
+
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    roles.fetch = function(options, callback) {
+      var qs = "";
+      if (callback === undefined) {
+        callback = options;
+        options = {};
+      }
+      var query = options.query || ClearBlade.prototype.Query();
+      qs = "query=" + _parseQuery(query.query);
+      if (options && options.user) {
+        qs += "&user=" + options.user;
+      } else if (options && options.device) {
+        qs += "&device=" + options.device;
+      }
+
+      var reqOptions = {
+        method: "GET",
+        user: this.user,
+        endpoint: "api/v/3/user/roles/" + this.systemKey,
+        qs: qs,
         URI: this.URI
       };
 

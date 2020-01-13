@@ -138,7 +138,7 @@ interface IClearBlade {
   Analytics(): Analytics;
   Portal(name: string): Portal;
   Triggers(): Triggers;
-  Roles(): Roles;
+  Roles(): RoleAPI;
   getAllCollections(callback: CbCallback<CollectionData[]>): void;
 }
 interface CollectionOptionsWithName {
@@ -687,13 +687,27 @@ interface Triggers {
   delete(name: string, callback: CbCallback<any>): void;
 }
 
-interface Roles {
+interface Role {
+  ID: string;
+  Name: string;
+  Description: string;
+}
+
+interface FetchRolesOptions {
+  user?: string;
+  device?: string;
+  query?: QueryObj;
+}
+
+interface RoleAPI {
   user: APIUser;
   URI: string;
   systemKey: string;
   systemSecret: string;
 
   update(id: string, changes: object, callback: CbCallback<any>): void;
+  fetch(options: FetchRolesOptions, callback: CbCallback<Role[]>): void;
+  fetch(callback: CbCallback<Role[]>): void;
 }
 
 declare var ClearBlade: IClearBladeGlobal;
