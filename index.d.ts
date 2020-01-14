@@ -138,7 +138,8 @@ interface IClearBlade {
   Analytics(): Analytics;
   Portal(name: string): Portal;
   Triggers(): Triggers;
-  Roles(): Roles;
+  Roles(): RoleAPI;
+  UserManagement(): UserManagementAPI;
   getAllCollections(callback: CbCallback<CollectionData[]>): void;
 }
 interface CollectionOptionsWithName {
@@ -687,13 +688,61 @@ interface Triggers {
   delete(name: string, callback: CbCallback<any>): void;
 }
 
-interface Roles {
+interface Role {
+  ID: string;
+  Name: string;
+  Description: string;
+}
+
+interface FetchRolesOptions {
+  user?: string;
+  device?: string;
+  query?: QueryObj;
+}
+
+interface CreateRolePayload {
+  name: string;
+  description: string;
+  collections: {}[];
+  topics: {}[];
+  services: {}[];
+  servicecaches: {}[];
+}
+
+interface RoleAPI {
   user: APIUser;
   URI: string;
   systemKey: string;
   systemSecret: string;
 
+  create(
+    role: CreateRolePayload,
+    callback: CbCallback<{ role_id: string }>
+  ): void;
   update(id: string, changes: object, callback: CbCallback<any>): void;
+  fetch(options: FetchRolesOptions, callback: CbCallback<Role[]>): void;
+  fetch(callback: CbCallback<Role[]>): void;
+  delete(roleId: string, callback: CbCallback<undefined>): void;
+}
+
+interface UpdateUserPayload {
+  user: string;
+  changes: {
+    password?: string;
+    roles?: {
+      add: string[];
+      delete: string[];
+    };
+  };
+}
+
+interface UserManagementAPI {
+  user: APIUser;
+  URI: string;
+  systemKey: string;
+  systemSecret: string;
+
+  update(body: UpdateUserPayload, callback: CbCallback<undefined>): void;
 }
 
 declare var ClearBlade: IClearBladeGlobal;

@@ -2069,7 +2069,8 @@ if (!window.console) {
           console.warn(errMsg);
           callback(errMsg);
         } else {
-          var errMsg = "Disconnected via WebSocket. No longer attempting to reconnect";
+          var errMsg =
+            "Disconnected via WebSocket. No longer attempting to reconnect";
           console.warn(errMsg);
           callback(errMsg);
         }
@@ -2162,11 +2163,11 @@ if (!window.console) {
      */
     messaging.subscribe = function(topic, options, messageCallback) {
       var conf = {
-        qos: this._qos || 0,
+        qos: this._qos || 0
       };
 
       for (var opt in options) {
-        conf[opt] = options[opt]
+        conf[opt] = options[opt];
       }
 
       this.client.subscribe(topic, conf);
@@ -3439,6 +3440,56 @@ if (!window.console) {
     roles.systemKey = this.systemKey;
     roles.systemSecret = this.systemSecret;
 
+    /**
+     * Create a ClearBlade Role
+     * @method  ClearBlade.Roles.prototype.create
+     * @param  {Object}   role object that represents the role definition
+     * @param  {Function} callback
+     * @example
+     * cb.Roles().create({
+        name: "newRole",
+        description: "description"
+        collections: [],
+        topics: [],
+        services: [],
+        servicecaches: []
+      }, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
+    roles.create = function(role, callback) {
+      var reqOptions = {
+        method: "POST",
+        user: this.user,
+        body: role,
+        endpoint: "api/v/3/user/roles/" + this.systemKey,
+        URI: this.URI
+      };
+
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    /**
+     * Update a ClearBlade Role
+     * @method  ClearBlade.Roles.prototype.update
+     * @param  {String}   id id of the ClearBlade role you wish to update
+     * @param  {Object}   role object that represents the role changes
+     * @param  {Function} callback
+     * @example
+     * cb.Roles().update("myRoleId", {
+        "changes": {"users": {"permissions": 1}}
+      }, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
     roles.update = function(id, changes, callback) {
       var reqOptions = {
         method: "PUT",
@@ -3454,7 +3505,158 @@ if (!window.console) {
       ClearBlade.request(reqOptions, callback);
     };
 
+    /**
+     * Fetch ClearBlade Roles
+     * @method  ClearBlade.Roles.prototype.fetch
+     * @param  {Object}   options object that contains either a query, user ID, or device ID
+     * @param  {Function} callback
+     * @example
+     *  // fetch first page of roles
+     * cb.Roles().fetch(function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     *
+     * // fetch second page of roles
+     * cb.Roles({query: cb.Query().setPage(25, 2)}).fetch(function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     *
+     * // fetch all roles for user where user ID = "myUserId"
+     * cb.Roles().fetch({user: "myUserId"}, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     *
+     * // fetch all roles for device where device name = "myDevice"
+     * cb.Roles().fetch({device: "myDevice"}, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     *
+     * // fetch all roles that match a query
+     * cb.Roles().fetch({query: cb.Query().equalTo("Name", "Authenticated")}, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
+    roles.fetch = function(options, callback) {
+      var qs = "";
+      if (callback === undefined) {
+        callback = options;
+        options = {};
+      }
+
+      if (options.query) {
+        qs = "query=" + _parseQuery(options.query.query);
+      } else if (options && options.user) {
+        qs += "user=" + options.user;
+      } else if (options && options.device) {
+        qs += "device=" + options.device;
+      }
+
+      var reqOptions = {
+        method: "GET",
+        user: this.user,
+        endpoint: "api/v/3/user/roles/" + this.systemKey,
+        qs: qs,
+        URI: this.URI
+      };
+
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    /**
+     * Delete a ClearBlade Role
+     * @method  ClearBlade.Roles.prototype.delete
+     * @param  {String}   roleId id of the ClearBlade role you wish to delete
+     * @param  {Function} callback
+     * @example
+     * cb.Roles().delete("myRoleId", function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
+    roles.delete = function(roleId, callback) {
+      var qs = "role=" + roleId;
+
+      var reqOptions = {
+        method: "DELETE",
+        user: this.user,
+        endpoint: "api/v/3/user/roles/" + this.systemKey,
+        qs: qs,
+        URI: this.URI
+      };
+
+      ClearBlade.request(reqOptions, callback);
+    };
+
     return roles;
+  };
+
+  ClearBlade.prototype.UserManagement = function() {
+    var userMgmt = {};
+
+    userMgmt.user = this.user;
+    userMgmt.URI = this.URI;
+    userMgmt.systemKey = this.systemKey;
+    userMgmt.systemSecret = this.systemSecret;
+
+    /**
+     * Update a users password and/or roles
+     * @method  ClearBlade.UserManagement.prototype.update
+     * @param  {Object}   payload object that represents the changes you want to make (user roles and/or password)
+     * @param  {Function} callback
+     * @example
+     * cb.UserManagement().update({
+     *  user: "userID",
+     *  changes: {
+     *    roles: {
+     *      add: ["roleIdToAdd"],
+     *      delete: ["roleIdToDelete"]
+     *    },
+     *    password: "newPassword"
+     *  }
+     * }, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
+    userMgmt.update = function(payload, callback) {
+      var reqOptions = {
+        method: "PUT",
+        user: this.user,
+        endpoint: "api/v/4/user/manage",
+        body: payload,
+        URI: this.URI
+      };
+
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    return userMgmt;
   };
 
   /**
