@@ -699,15 +699,29 @@ interface FetchRolesOptions {
   query?: QueryObj;
 }
 
+interface CreateRolePayload {
+  name: string;
+  description: string;
+  collections: {}[];
+  topics: {}[];
+  services: {}[];
+  servicecaches: {}[];
+}
+
 interface RoleAPI {
   user: APIUser;
   URI: string;
   systemKey: string;
   systemSecret: string;
 
+  create(
+    role: CreateRolePayload,
+    callback: CbCallback<{ role_id: string }>
+  ): void;
   update(id: string, changes: object, callback: CbCallback<any>): void;
   fetch(options: FetchRolesOptions, callback: CbCallback<Role[]>): void;
   fetch(callback: CbCallback<Role[]>): void;
+  delete(roleId: string, callback: CbCallback<undefined>): void;
 }
 
 declare var ClearBlade: IClearBladeGlobal;

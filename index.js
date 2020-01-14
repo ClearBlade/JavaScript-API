@@ -3440,6 +3440,18 @@ if (!window.console) {
     roles.systemKey = this.systemKey;
     roles.systemSecret = this.systemSecret;
 
+    roles.create = function(role, callback) {
+      var reqOptions = {
+        method: "POST",
+        user: this.user,
+        body: role,
+        endpoint: "api/v/3/user/roles/" + this.systemKey,
+        URI: this.URI
+      };
+
+      ClearBlade.request(reqOptions, callback);
+    };
+
     roles.update = function(id, changes, callback) {
       var reqOptions = {
         method: "PUT",
@@ -3461,16 +3473,31 @@ if (!window.console) {
         callback = options;
         options = {};
       }
-      var query = options.query || ClearBlade.prototype.Query();
-      qs = "query=" + _parseQuery(query.query);
-      if (options && options.user) {
-        qs += "&user=" + options.user;
+
+      if (options.query) {
+        qs = "query=" + _parseQuery(options.query.query);
+      } else if (options && options.user) {
+        qs += "user=" + options.user;
       } else if (options && options.device) {
-        qs += "&device=" + options.device;
+        qs += "device=" + options.device;
       }
 
       var reqOptions = {
         method: "GET",
+        user: this.user,
+        endpoint: "api/v/3/user/roles/" + this.systemKey,
+        qs: qs,
+        URI: this.URI
+      };
+
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    roles.delete = function(roleId, callback) {
+      var qs = "role=" + roleId;
+
+      var reqOptions = {
+        method: "DELETE",
         user: this.user,
         endpoint: "api/v/3/user/roles/" + this.systemKey,
         qs: qs,
