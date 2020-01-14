@@ -139,6 +139,7 @@ interface IClearBlade {
   Portal(name: string): Portal;
   Triggers(): Triggers;
   Roles(): RoleAPI;
+  UserManagement(): UserManagementAPI;
   getAllCollections(callback: CbCallback<CollectionData[]>): void;
 }
 interface CollectionOptionsWithName {
@@ -722,6 +723,26 @@ interface RoleAPI {
   fetch(options: FetchRolesOptions, callback: CbCallback<Role[]>): void;
   fetch(callback: CbCallback<Role[]>): void;
   delete(roleId: string, callback: CbCallback<undefined>): void;
+}
+
+interface UpdateUserPayload {
+  user: string;
+  changes: {
+    password?: string;
+    roles?: {
+      add: string[];
+      delete: string[];
+    };
+  };
+}
+
+interface UserManagementAPI {
+  user: APIUser;
+  URI: string;
+  systemKey: string;
+  systemSecret: string;
+
+  update(body: UpdateUserPayload, callback: CbCallback<undefined>): void;
 }
 
 declare var ClearBlade: IClearBladeGlobal;

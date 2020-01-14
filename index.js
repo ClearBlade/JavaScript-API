@@ -3613,6 +3613,52 @@ if (!window.console) {
     return roles;
   };
 
+  ClearBlade.prototype.UserManagement = function() {
+    var userMgmt = {};
+
+    userMgmt.user = this.user;
+    userMgmt.URI = this.URI;
+    userMgmt.systemKey = this.systemKey;
+    userMgmt.systemSecret = this.systemSecret;
+
+    /**
+     * Update a users password and/or roles
+     * @method  ClearBlade.UserManagement.prototype.update
+     * @param  {Object}   payload object that represents the changes you want to make (user roles and/or password)
+     * @param  {Function} callback
+     * @example
+     * cb.UserManagement().update({
+     *  user: "userID",
+     *  changes: {
+     *    roles: {
+     *      add: ["roleIdToAdd"],
+     *      delete: ["roleIdToDelete"]
+     *    },
+     *    password: "newPassword"
+     *  }
+     * }, function(err, body) {
+     *    if(err) {
+     *        //handle error
+     *    } else {
+     *        console.log(body);
+     *    }
+     * })
+     */
+    userMgmt.update = function(payload, callback) {
+      var reqOptions = {
+        method: "PUT",
+        user: this.user,
+        endpoint: "api/v/4/user/manage",
+        body: payload,
+        URI: this.URI
+      };
+
+      ClearBlade.request(reqOptions, callback);
+    };
+
+    return userMgmt;
+  };
+
   /**
    * Retrieves a list of collections for a system
    * @method  ClearBlade.Collection.prototype.getAllCollections
