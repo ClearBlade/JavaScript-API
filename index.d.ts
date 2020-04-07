@@ -116,7 +116,7 @@ interface IClearBlade {
   ): Collection;
   Query(): QueryObj;
   Query(options: string | QueryOptionsWithName | QueryOptionsWithID): QueryObj;
-  Item(data: object, collectionID: string | ItemOptions): Item;
+  Item<T extends object>(data: T, collectionID: string | ItemOptions): Item<T>;
   Code(): Code;
   User(): AppUser;
   Messaging(
@@ -168,11 +168,11 @@ interface Collection {
   systemKey: string;
   systemSecret: string;
 
-  fetch(
-    query: QueryObj | CbCallback<Item[]>,
-    callback?: CbCallback<CbCallback<QueryCallbackInfo>>
+  fetch<T extends object>(
+    query: QueryObj | CbCallback<Item<T>[]>,
+    callback?: CbCallback<Item<T>[]>
   ): void;
-  create(newItem: object, callback: CbCallback<Item[]>): void;
+  create<T extends object>(newItem: T, callback: CbCallback<Item<T>[]>): void;
   update(query: QueryObj, changes: object, callback: CbCallback<string>): void;
   remove(query: QueryObj, callback: CbCallback<string>): void;
   columns(callback: CbCallback<Column[]>): void;
@@ -273,8 +273,8 @@ interface QueryObj {
 
 interface ItemOptions extends CollectionOptionsWithID {}
 
-interface Item {
-  data: object;
+interface Item<T extends object> {
+  data: T;
 
   save(callback: CbCallback<any>): void;
   refresh(callback: CbCallback<any>): void;
@@ -288,7 +288,7 @@ interface ServicePayload {
   dependencies: string;
 }
 
-interface ServiceCallbackInfo {
+interface ServiceCallbackInfo<T> {
   logs?: string;
   results: string;
   success: boolean;
@@ -313,7 +313,7 @@ interface ServiceError {
 interface ServiceInfo {
   Service: string;
   Args: any[];
-  Response: ServiceCallbackInfo;
+  Response: ServiceCallbackInfo<unknown>;
   Error: ServiceError;
   UserId: string;
   UserType: number;
@@ -343,10 +343,10 @@ interface Code {
     callback: CbCallback<CodeUpdateInfo>
   ): void;
   delete(name: string, callback: CbCallback<any>): void;
-  execute(
+  execute<T>(
     name: string,
     params: object,
-    callback: CbCallback<ServiceCallbackInfo> | string
+    callback: CbCallback<ServiceCallbackInfo<T>>
   ): void;
   getCompletedServices(callback: CbCallback<ServiceInfo>): void;
   getFailedServices(callback: CbCallback<ServiceInfo>): void;
