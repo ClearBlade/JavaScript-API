@@ -11,7 +11,7 @@
 declare enum MessagingQOS {
   MESSAGING_QOS_AT_MOST_ONCE = 0,
   MESSAGING_QOS_AT_LEAST_ONCE = 1,
-  MESSAGING_QOS_EXACTLY_ONCE = 2
+  MESSAGING_QOS_EXACTLY_ONCE = 2,
 }
 
 interface InitOptions {
@@ -111,12 +111,12 @@ interface IClearBlade {
     callback: CbCallback<any>
   ): void;
   registerMasterCallback(callback: CbCallback<InvocationContext>): void;
-  Collection(
+  Collection<T extends object>(
     options: string | CollectionOptionsWithName | CollectionOptionsWithID
-  ): Collection;
+  ): Collection<T>;
   Query(): QueryObj;
   Query(options: string | QueryOptionsWithName | QueryOptionsWithID): QueryObj;
-  Item(data: object, collectionID: string | ItemOptions): Item;
+  Item<T extends object>(data: T, collectionID: string | ItemOptions): Item<T>;
   Code(): Code;
   User(): AppUser;
   Messaging(
@@ -159,7 +159,7 @@ interface CollectionData {
   name: string;
 }
 
-interface Collection {
+interface Collection<T extends object> {
   name: string;
   endpoint: string;
   isUsingCollectionName: boolean;
@@ -169,10 +169,14 @@ interface Collection {
   systemSecret: string;
 
   fetch(
-    query: QueryObj | CbCallback<Item[]>,
-    callback?: CbCallback<CbCallback<QueryCallbackInfo>>
+    query: QueryObj | CbCallback<Item<T>[]>,
+    callback: CbCallback<Item<T>[]>
   ): void;
-  create(newItem: object, callback: CbCallback<Item[]>): void;
+  fetch(callback: CbCallback<Item<T>[]>): void;
+  create(
+    newItem: Partial<T> | Array<Partial<T>>,
+    callback: CbCallback<Item<T>[]>
+  ): void;
   update(query: QueryObj, changes: object, callback: CbCallback<string>): void;
   remove(query: QueryObj, callback: CbCallback<string>): void;
   columns(callback: CbCallback<Column[]>): void;
@@ -181,7 +185,7 @@ interface Collection {
 
 declare enum QuerySortDirections {
   QUERY_SORT_ASCENDING = "ASC",
-  QUERY_SORT_DESCENDING = "DESC"
+  QUERY_SORT_DESCENDING = "DESC",
 }
 type ISortInfo = { [querySort in QuerySortDirections]: string };
 
@@ -192,7 +196,7 @@ declare enum QueryConditions {
   QUERY_GREATERTHAN_EQUAL = "GTE",
   QUERY_LESSTHAN = "LT",
   QUERY_LESSTHAN_EQUAL = "LTE",
-  QUERY_MATCHES = "RE"
+  QUERY_MATCHES = "RE",
 }
 
 type QueryValue = string | number | boolean;
@@ -273,8 +277,8 @@ interface QueryObj {
 
 interface ItemOptions extends CollectionOptionsWithID {}
 
-interface Item {
-  data: object;
+interface Item<T extends object> {
+  data: T;
 
   save(callback: CbCallback<any>): void;
   refresh(callback: CbCallback<any>): void;
@@ -288,7 +292,7 @@ interface ServicePayload {
   dependencies: string;
 }
 
-interface ServiceCallbackInfo {
+interface ServiceCallbackInfo<T> {
   logs?: string;
   results: string;
   success: boolean;
@@ -313,7 +317,7 @@ interface ServiceError {
 interface ServiceInfo {
   Service: string;
   Args: any[];
-  Response: ServiceCallbackInfo;
+  Response: ServiceCallbackInfo<unknown>;
   Error: ServiceError;
   UserId: string;
   UserType: number;
@@ -343,10 +347,10 @@ interface Code {
     callback: CbCallback<CodeUpdateInfo>
   ): void;
   delete(name: string, callback: CbCallback<any>): void;
-  execute(
+  execute<T>(
     name: string,
     params: object,
-    callback: CbCallback<ServiceCallbackInfo> | string
+    callback: CbCallback<ServiceCallbackInfo<T>>
   ): void;
   getCompletedServices(callback: CbCallback<ServiceInfo>): void;
   getFailedServices(callback: CbCallback<ServiceInfo>): void;
