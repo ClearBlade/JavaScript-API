@@ -11,7 +11,7 @@
 declare enum MessagingQOS {
   MESSAGING_QOS_AT_MOST_ONCE = 0,
   MESSAGING_QOS_AT_LEAST_ONCE = 1,
-  MESSAGING_QOS_EXACTLY_ONCE = 2
+  MESSAGING_QOS_EXACTLY_ONCE = 2,
 }
 
 interface InitOptions {
@@ -111,9 +111,9 @@ interface IClearBlade {
     callback: CbCallback<any>
   ): void;
   registerMasterCallback(callback: CbCallback<InvocationContext>): void;
-  Collection(
+  Collection<T extends object>(
     options: string | CollectionOptionsWithName | CollectionOptionsWithID
-  ): Collection;
+  ): Collection<T>;
   Query(): QueryObj;
   Query(options: string | QueryOptionsWithName | QueryOptionsWithID): QueryObj;
   Item<T extends object>(data: T, collectionID: string | ItemOptions): Item<T>;
@@ -159,7 +159,7 @@ interface CollectionData {
   name: string;
 }
 
-interface Collection {
+interface Collection<T extends object> {
   name: string;
   endpoint: string;
   isUsingCollectionName: boolean;
@@ -168,11 +168,15 @@ interface Collection {
   systemKey: string;
   systemSecret: string;
 
-  fetch<T extends object>(
+  fetch(
     query: QueryObj | CbCallback<Item<T>[]>,
-    callback?: CbCallback<Item<T>[]>
+    callback: CbCallback<Item<T>[]>
   ): void;
-  create<T extends object>(newItem: T, callback: CbCallback<Item<T>[]>): void;
+  fetch(callback: CbCallback<Item<T>[]>): void;
+  create(
+    newItem: Partial<T> | Array<Partial<T>>,
+    callback: CbCallback<Item<T>[]>
+  ): void;
   update(query: QueryObj, changes: object, callback: CbCallback<string>): void;
   remove(query: QueryObj, callback: CbCallback<string>): void;
   columns(callback: CbCallback<Column[]>): void;
@@ -181,7 +185,7 @@ interface Collection {
 
 declare enum QuerySortDirections {
   QUERY_SORT_ASCENDING = "ASC",
-  QUERY_SORT_DESCENDING = "DESC"
+  QUERY_SORT_DESCENDING = "DESC",
 }
 type ISortInfo = { [querySort in QuerySortDirections]: string };
 
@@ -192,7 +196,7 @@ declare enum QueryConditions {
   QUERY_GREATERTHAN_EQUAL = "GTE",
   QUERY_LESSTHAN = "LT",
   QUERY_LESSTHAN_EQUAL = "LTE",
-  QUERY_MATCHES = "RE"
+  QUERY_MATCHES = "RE",
 }
 
 type QueryValue = string | number | boolean;
