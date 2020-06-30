@@ -294,7 +294,7 @@ interface ServicePayload {
 
 interface ServiceCallbackInfo<T> {
   logs?: string;
-  results: string;
+  results: T;
   success: boolean;
 }
 
