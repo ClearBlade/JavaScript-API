@@ -22,7 +22,7 @@ describe('get message topic', function () {
     };
     const topic = getMessageTopic(destinationName, callbackDict);
 
-    expect(topic).toEqual('dbupdate/_monitor/_area/+/status');
+    expect(topic).toEqual('+/+/+/+/+');
   });
   it('match destination to topic that includes +', function () {
     const destinationName = 'dbupdate/_monitor/_area/123/status';
