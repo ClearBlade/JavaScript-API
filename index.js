@@ -10,11 +10,11 @@
 
 if (!window.console) {
   window.console = window.console || {};
-  window.console.log = window.console.log || function() {};
+  window.console.log = window.console.log || function () {};
 }
 
-(function(window, undefined) {
-  "use strict";
+(function (window, undefined) {
+  'use strict';
 
   var ClearBlade, $cb, currentUser;
   /**
@@ -27,12 +27,12 @@ if (!window.console) {
    *
    */
 
-  if (typeof exports != "undefined") {
+  if (typeof exports != 'undefined') {
     // window = exports;
   }
 
   ClearBlade = $cb = window.$cb = window.ClearBlade =
-    window.ClearBlade || function() {};
+    window.ClearBlade || function () {};
 
   ClearBlade.MESSAGING_QOS_AT_MOST_ONCE = 0;
   ClearBlade.MESSAGING_QOS_AT_LEAST_ONCE = 1;
@@ -55,34 +55,34 @@ if (!window.console) {
    * <p>{String} [messagingAuthPort] is the port that the messaging auth websocket server is listening on.</p>
    *</p>
    */
-  ClearBlade.prototype.init = function(options) {
+  ClearBlade.prototype.init = function (options) {
     var _this = this;
 
     //check for undefined/null then check if they are the correct types for required params
-    if (!options || typeof options !== "object")
-      throw new Error("Options must be an object or it is undefined");
+    if (!options || typeof options !== 'object')
+      throw new Error('Options must be an object or it is undefined');
 
-    if (!options.systemKey || typeof options.systemKey !== "string")
-      throw new Error("systemKey must be defined/a string");
+    if (!options.systemKey || typeof options.systemKey !== 'string')
+      throw new Error('systemKey must be defined/a string');
 
-    if (!options.systemSecret || typeof options.systemSecret !== "string")
-      throw new Error("systemSecret must be defined/a string");
+    if (!options.systemSecret || typeof options.systemSecret !== 'string')
+      throw new Error('systemSecret must be defined/a string');
 
     //check for optional params.
-    if (options.logging && typeof options.logging !== "boolean")
-      throw new Error("logging must be a true boolean if present");
+    if (options.logging && typeof options.logging !== 'boolean')
+      throw new Error('logging must be a true boolean if present');
 
-    if (options.callback && typeof options.callback !== "function") {
-      throw new Error("callback must be a function");
+    if (options.callback && typeof options.callback !== 'function') {
+      throw new Error('callback must be a function');
     }
-    if (options.email && typeof options.email !== "string") {
-      throw new Error("email must be a string");
+    if (options.email && typeof options.email !== 'string') {
+      throw new Error('email must be a string');
     }
-    if (options.password && typeof options.password !== "string") {
-      throw new Error("password must be a string");
+    if (options.password && typeof options.password !== 'string') {
+      throw new Error('password must be a string');
     }
-    if (options.registerUser && typeof options.registerUser !== "boolean") {
-      throw new Error("registerUser must be a true boolean if present");
+    if (options.registerUser && typeof options.registerUser !== 'boolean') {
+      throw new Error('registerUser must be a true boolean if present');
     }
 
     if (
@@ -90,21 +90,21 @@ if (!window.console) {
       (!options.useUser.email || !options.useUser.authToken)
     ) {
       throw new Error(
-        "useUser must contain both an email and an authToken " +
+        'useUser must contain both an email and an authToken ' +
           '{"email":email,"authToken":authToken}'
       );
     }
 
     if (options.email && !options.password) {
-      throw new Error("Must provide a password for email");
+      throw new Error('Must provide a password for email');
     }
 
     if (options.password && !options.email) {
-      throw new Error("Must provide a email for password");
+      throw new Error('Must provide a email for password');
     }
 
     if (options.registerUser && !options.email) {
-      throw new Error("Cannot register anonymous user. Must provide an email");
+      throw new Error('Cannot register anonymous user. Must provide an email');
     }
 
     if (
@@ -112,7 +112,7 @@ if (!window.console) {
       (options.email || options.password || options.registerUser)
     ) {
       throw new Error(
-        "Cannot authenticate or register a new user when useUser is set"
+        'Cannot authenticate or register a new user when useUser is set'
       );
     }
 
@@ -145,7 +145,7 @@ if (!window.console) {
      * @type String
      */
     ClearBlade.prototype.URI = options.URI;
-    this.URI = options.URI || "https://platform.clearblade.com";
+    this.URI = options.URI || 'https://platform.clearblade.com';
 
     /**
      * This is the URI used to identify where the Messaging server is located
@@ -153,7 +153,7 @@ if (!window.console) {
      * @type String
      */
     ClearBlade.prototype.messagingURI = options.messagingURI;
-    this.messagingURI = options.messagingURI || "platform.clearblade.com";
+    this.messagingURI = options.messagingURI || 'platform.clearblade.com';
 
     /**
      * This is the default port used when connecting to the messaging server
@@ -193,48 +193,51 @@ if (!window.console) {
     if (options.useUser) {
       _this.setUser(options.useUser.email, options.useUser.authToken);
     } else if (options.registerUser) {
-      this.registerUser(options.email, options.password, function(
+      this.registerUser(options.email, options.password, function (
         err,
         response
       ) {
         if (err) {
           execute(err, response, options.callback);
         } else {
-          _this.loginUser(options.email, options.password, function(err, user) {
+          _this.loginUser(options.email, options.password, function (
+            err,
+            user
+          ) {
             execute(err, user, options.callback);
           });
         }
       });
     } else if (options.email) {
       if (options.mqttAuth) {
-        this.loginUserMqtt(options.email, options.password, function(
+        this.loginUserMqtt(options.email, options.password, function (
           err,
           user
         ) {
           execute(err, user, options.callback);
         });
       } else {
-        this.loginUser(options.email, options.password, function(err, user) {
+        this.loginUser(options.email, options.password, function (err, user) {
           execute(err, user, options.callback);
         });
       }
     } else {
-      this.loginAnon(function(err, user) {
+      this.loginAnon(function (err, user) {
         execute(err, user, options.callback);
       });
     }
   };
 
-  var _validateEmailPassword = function(email, password) {
-    if (email == null || email == undefined || typeof email != "string") {
-      throw new Error("Email must be given and must be a string");
+  var _validateEmailPassword = function (email, password) {
+    if (email == null || email == undefined || typeof email != 'string') {
+      throw new Error('Email must be given and must be a string');
     }
     if (
       password == null ||
       password == undefined ||
-      typeof password != "string"
+      typeof password != 'string'
     ) {
-      throw new Error("Password must be given and must be a string");
+      throw new Error('Password must be given and must be a string');
     }
   };
   /**
@@ -243,7 +246,7 @@ if (!window.console) {
    * @param email {String} the email of the user
    * @param authToken {String} the authToken for the user
    */
-  ClearBlade.prototype.setUser = function(email, authToken) {
+  ClearBlade.prototype.setUser = function (email, authToken) {
     this.user.email = email;
     this.user.authToken = authToken;
     ClearBlade.prototype.user = this.user;
@@ -264,12 +267,12 @@ if (!window.console) {
    *     }
    *  });
    */
-  ClearBlade.prototype.registerUser = function(email, password, callback) {
+  ClearBlade.prototype.registerUser = function (email, password, callback) {
     _validateEmailPassword(email, password);
     ClearBlade.request(
       {
-        method: "POST",
-        endpoint: "api/v/1/user/reg",
+        method: 'POST',
+        endpoint: 'api/v/1/user/reg',
         useUser: true,
         user: this.user,
         body: { email: email, password: password },
@@ -277,9 +280,9 @@ if (!window.console) {
         systemKey: this.systemKey,
         systemSecret: this.systemSecret,
         timeout: this._callTimeout,
-        URI: this.URI
+        URI: this.URI,
       },
-      function(err, response) {
+      function (err, response) {
         if (err) {
           execute(true, response, callback);
         } else {
@@ -302,18 +305,18 @@ if (!window.console) {
    *    }
    * })
    */
-  ClearBlade.prototype.isCurrentUserAuthenticated = function(callback) {
+  ClearBlade.prototype.isCurrentUserAuthenticated = function (callback) {
     ClearBlade.request(
       {
-        method: "POST",
-        endpoint: "api/v/1/user/checkauth",
+        method: 'POST',
+        endpoint: 'api/v/1/user/checkauth',
         systemKey: this.systemKey,
         systemSecret: this.systemSecret,
         timeout: this._callTimeout,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       },
-      function(err, response) {
+      function (err, response) {
         if (err) {
           execute(true, response, callback);
         } else {
@@ -335,22 +338,22 @@ if (!window.console) {
    *    }
    * })
    */
-  ClearBlade.prototype.logoutUser = function(callback) {
+  ClearBlade.prototype.logoutUser = function (callback) {
     ClearBlade.request(
       {
-        method: "POST",
-        endpoint: "api/v/1/user/logout",
+        method: 'POST',
+        endpoint: 'api/v/1/user/logout',
         systemKey: this.systemKey,
         systemSecret: this.systemSecret,
         timeout: this._callTimeout,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       },
-      function(err, response) {
+      function (err, response) {
         if (err) {
           execute(true, response, callback);
         } else {
-          execute(false, "User Logged out", callback);
+          execute(false, 'User Logged out', callback);
         }
       }
     );
@@ -369,19 +372,19 @@ if (!window.console) {
    *    }
    * })
    */
-  ClearBlade.prototype.loginAnon = function(callback) {
+  ClearBlade.prototype.loginAnon = function (callback) {
     var _this = this;
     ClearBlade.request(
       {
-        method: "POST",
+        method: 'POST',
         useUser: false,
-        endpoint: "api/v/1/user/anon",
+        endpoint: 'api/v/1/user/anon',
         systemKey: this.systemKey,
         systemSecret: this.systemSecret,
         timeout: this._callTimeout,
-        URI: this.URI
+        URI: this.URI,
       },
-      function(err, response) {
+      function (err, response) {
         if (err) {
           execute(true, response, callback);
         } else {
@@ -406,21 +409,21 @@ if (!window.console) {
    *    }
    * })
    */
-  ClearBlade.prototype.loginUser = function(email, password, callback) {
+  ClearBlade.prototype.loginUser = function (email, password, callback) {
     var _this = this;
     _validateEmailPassword(email, password);
     ClearBlade.request(
       {
-        method: "POST",
+        method: 'POST',
         useUser: false,
-        endpoint: "api/v/1/user/auth",
+        endpoint: 'api/v/1/user/auth',
         systemKey: this.systemKey,
         systemSecret: this.systemSecret,
         URI: this.URI,
         timeout: this._callTimeout,
-        body: { email: email, password: password }
+        body: { email: email, password: password },
       },
-      function(err, response) {
+      function (err, response) {
         if (err) {
           execute(true, response, callback);
         } else {
@@ -446,22 +449,22 @@ if (!window.console) {
    *    }
    * })
    */
-  ClearBlade.prototype.loginUserMqtt = function(email, password, callback) {
+  ClearBlade.prototype.loginUserMqtt = function (email, password, callback) {
     var _this = this;
     _validateEmailPassword(email, password);
-    var clientid = email + ":" + password;
+    var clientid = email + ':' + password;
     var client = new Paho.MQTT.Client(
       _this.messagingURI,
       _this.messagingAuthPort,
-      "/mqtt_auth",
+      '/mqtt_auth',
       clientid
     );
-    var ourTopic = _this.systemKey + "/" + email;
+    var ourTopic = _this.systemKey + '/' + email;
     //helper
-    var getString = function(msg) {
+    var getString = function (msg) {
       //take two bytes
       if (msg.length < 2) {
-        var err = new Error("Bad Return Value from mqtt auth: bad length");
+        var err = new Error('Bad Return Value from mqtt auth: bad length');
         callback(err, null);
       }
       var b1 = msg[0];
@@ -470,20 +473,20 @@ if (!window.console) {
       var len = b1.charCodeAt(0) + b2.charCodeAt(0);
       if (msg.length < len + 2) {
         var err = new Error(
-          "Bad return value from mqtt auth: length longer than substring"
+          'Bad return value from mqtt auth: length longer than substring'
         );
         callback(err, null);
       }
       return msg.substring(0, len);
     };
 
-    var onConnect = function() {
+    var onConnect = function () {
       //subscribe to our topic
       client.subscribe(ourTopic, { qos: 0 });
     };
 
     var success = false;
-    var msgArrived = function(msg) {
+    var msgArrived = function (msg) {
       //we only anticipate receiving one message
       if (msg.destinationName != ourTopic) {
         return;
@@ -508,18 +511,18 @@ if (!window.console) {
       userName: _this.systemKey,
       password: _this.systemSecret,
       onSuccess: onConnect,
-      onFailure: function(msg) {
+      onFailure: function (msg) {
         if (!success) {
-          var err = new Error("failed to authenticate: " + JSON.stringify(msg));
+          var err = new Error('failed to authenticate: ' + JSON.stringify(msg));
           console.log(err);
           callback(err, null);
         }
-      }
+      },
     };
 
-    client.onConnectionLost = function(msg) {
+    client.onConnectionLost = function (msg) {
       if (!success) {
-        var err = new Error("connection lost " + JSON.stringify(msg));
+        var err = new Error('connection lost ' + JSON.stringify(msg));
         callback(err, null);
       }
     };
@@ -529,38 +532,38 @@ if (!window.console) {
 
   var masterCallback = null;
 
-  ClearBlade.prototype.registerMasterCallback = function(callback) {
-    if (typeof callback === "function") {
+  ClearBlade.prototype.registerMasterCallback = function (callback) {
+    if (typeof callback === 'function') {
       this.masterCallback = callback;
     } else {
-      logger("Did you forget to supply a valid Callback!");
+      logger('Did you forget to supply a valid Callback!');
     }
   };
   /*
    * Helper functions
    */
 
-  var execute = function(error, response, callback) {
-    if (typeof callback === "function") {
+  var execute = function (error, response, callback) {
+    if (typeof callback === 'function') {
       if (masterCallback !== null) {
         masterCallback(error, response);
       }
       callback(error, response);
     } else {
-      logger("Did you forget to supply a valid Callback!");
+      logger('Did you forget to supply a valid Callback!');
     }
   };
 
-  var logger = function(message) {
+  var logger = function (message) {
     if (ClearBlade.logging) {
       console.log(message);
     }
     return;
   };
 
-  var isObjectEmpty = function(object) {
+  var isObjectEmpty = function (object) {
     /*jshint forin:false */
-    if (typeof object !== "object") {
+    if (typeof object !== 'object') {
       return true;
     }
     for (var keys in object) {
@@ -574,9 +577,9 @@ if (!window.console) {
    *
    */
 
-  var _createItemList = function(err, data, options, callback) {
+  var _createItemList = function (err, data, options, callback) {
     if (data === undefined) {
-      callback(true, "There was some problem. Data is undefined");
+      callback(true, 'There was some problem. Data is undefined');
     } else {
       var itemArray = [];
       for (var i = 0; i < data.length; i++) {
@@ -586,12 +589,12 @@ if (!window.console) {
     }
   };
 
-  var _request = function(options, callback) {
-    var method = options.method || "GET";
-    var endpoint = options.endpoint || "";
+  var _request = function (options, callback) {
+    var method = options.method || 'GET';
+    var endpoint = options.endpoint || '';
     var body = options.body || {};
-    var qs = options.qs || "";
-    var url = options.URI || "https://platform.clearblade.com";
+    var qs = options.qs || '';
+    var url = options.URI || 'https://platform.clearblade.com';
     var useUser = options.useUser || true;
     var authToken = useUser && options.authToken;
     var callTimeout = options.timeout || 30000;
@@ -600,17 +603,17 @@ if (!window.console) {
     }
     var params = qs;
     if (endpoint) {
-      url += "/" + endpoint;
+      url += '/' + endpoint;
     }
 
     if (params) {
-      url += "?" + params;
+      url += '?' + params;
     }
 
     //begin XMLHttpRequest
     var httpRequest;
 
-    if (typeof window.XMLHttpRequest !== "undefined") {
+    if (typeof window.XMLHttpRequest !== 'undefined') {
       // Mozilla, Safari, IE 10 ..
 
       httpRequest = new XMLHttpRequest();
@@ -622,44 +625,44 @@ if (!window.console) {
       // throw new Error("CORS is not supported!");
       // }
       httpRequest.open(method, url, true);
-    } else if (typeof window.XDomainRequest !== "undefined") {
+    } else if (typeof window.XDomainRequest !== 'undefined') {
       // IE 8/9
       httpRequest = new XDomainRequest();
       httpRequest.open(method, url);
     } else {
       alert(
-        "Sorry it seems that CORS is not supported on your Browser. The RESTful api calls will not work!"
+        'Sorry it seems that CORS is not supported on your Browser. The RESTful api calls will not work!'
       );
       httpRequest = null;
-      throw new Error("CORS is not supported!");
+      throw new Error('CORS is not supported!');
     }
 
     // Set Credentials; Maybe some encryption later
     if (authToken) {
-      httpRequest.setRequestHeader("CLEARBLADE-USERTOKEN", authToken);
-      httpRequest.setRequestHeader("ClearBlade-SystemKey", options.systemKey);
+      httpRequest.setRequestHeader('CLEARBLADE-USERTOKEN', authToken);
+      httpRequest.setRequestHeader('ClearBlade-SystemKey', options.systemKey);
       httpRequest.setRequestHeader(
-        "ClearBlade-SystemSecret",
+        'ClearBlade-SystemSecret',
         options.systemSecret
       );
     } else {
-      httpRequest.setRequestHeader("ClearBlade-SystemKey", options.systemKey);
+      httpRequest.setRequestHeader('ClearBlade-SystemKey', options.systemKey);
       httpRequest.setRequestHeader(
-        "ClearBlade-SystemSecret",
+        'ClearBlade-SystemSecret',
         options.systemSecret
       );
     }
 
     if (!isObjectEmpty(body) || params) {
-      if (method === "POST" || method === "PUT") {
+      if (method === 'POST' || method === 'PUT') {
         // Content-Type is expected for POST and PUT; bad things can happen if you don't specify this.
-        httpRequest.setRequestHeader("Content-Type", "application/json");
+        httpRequest.setRequestHeader('Content-Type', 'application/json');
       }
 
-      httpRequest.setRequestHeader("Accept", "application/json");
+      httpRequest.setRequestHeader('Accept', 'application/json');
     }
 
-    httpRequest.onreadystatechange = function() {
+    httpRequest.onreadystatechange = function () {
       if (httpRequest.readyState === 4) {
         // Looks like we didn't time out!
         clearTimeout(xhrTimeout);
@@ -672,8 +675,8 @@ if (!window.console) {
           var flag = true;
           // try to parse response, it should be JSON
           if (
-            httpRequest.responseText == "[{}]" ||
-            httpRequest.responseText == "[]"
+            httpRequest.responseText == '[{}]' ||
+            httpRequest.responseText == '[]'
           ) {
             error = false;
             execute(error, [], callback);
@@ -685,20 +688,20 @@ if (!window.console) {
                 if (response[item] instanceof Object) {
                   for (var key in response[item]) {
                     if (response[item][key] instanceof Object) {
-                      if (response[item][key]["_key"]) {
-                        delete response[item][key]["_key"];
+                      if (response[item][key]['_key']) {
+                        delete response[item][key]['_key'];
                       }
-                      if (response[item][key]["collectionID"]) {
-                        delete response[item][key]["collectionID"];
+                      if (response[item][key]['collectionID']) {
+                        delete response[item][key]['collectionID'];
                       }
                       parsedResponse.push(response[item][key]);
                       continue;
                     } else {
-                      if (response[item]["_key"]) {
-                        delete response[item]["_key"];
+                      if (response[item]['_key']) {
+                        delete response[item]['_key'];
                       }
-                      if (response[item]["collectionID"]) {
-                        delete response[item]["collectionID"];
+                      if (response[item]['collectionID']) {
+                        delete response[item]['collectionID'];
                       }
                       parsedResponse.push(response[item]);
                       break;
@@ -714,7 +717,7 @@ if (!window.console) {
                 response = httpRequest.responseText;
                 // some other error occured; log message , execute callback
               } else {
-                logger("Error during JSON response parsing: " + e);
+                logger('Error during JSON response parsing: ' + e);
                 error = true;
                 execute(error, e, callback);
               }
@@ -738,15 +741,15 @@ if (!window.console) {
       }
     };
 
-    logger("calling: " + method + " " + url);
+    logger('calling: ' + method + ' ' + url);
 
     body = JSON.stringify(body);
 
     // set up our own TimeOut function, because XMLHttpRequest.onTimeOut is not implemented by all browsers yet.
     function callAbort() {
       httpRequest.abort();
-      logger("It seems the request has timed Out, please try again.");
-      execute(true, "API Request TimeOut", callback);
+      logger('It seems the request has timed Out, please try again.');
+      execute(true, 'API Request TimeOut', callback);
     }
 
     // set timeout and timeout function
@@ -754,19 +757,19 @@ if (!window.console) {
     httpRequest.send(body);
   };
 
-  ClearBlade.request = function(options, callback) {
-    if (!options || typeof options !== "object") {
-      throw new Error("Request: options is not an object or is empty");
+  ClearBlade.request = function (options, callback) {
+    if (!options || typeof options !== 'object') {
+      throw new Error('Request: options is not an object or is empty');
     }
 
     _request(options, callback);
   };
 
-  var _parseOperationQuery = function(_query) {
+  var _parseOperationQuery = function (_query) {
     return encodeURIComponent(JSON.stringify(_query.FILTERS || []));
   };
 
-  var _parseQuery = function(_query) {
+  var _parseQuery = function (_query) {
     var parsed = encodeURIComponent(JSON.stringify(_query));
     return parsed;
   };
@@ -779,21 +782,21 @@ if (!window.console) {
    * @example
    * var col = cb.Collection("12asd3049qwe834qe23asdf1234");
    */
-  ClearBlade.prototype.Collection = function(options) {
+  ClearBlade.prototype.Collection = function (options) {
     var collection = {};
-    if (typeof options === "string") {
-      collection.endpoint = "api/v/1/data/" + options;
+    if (typeof options === 'string') {
+      collection.endpoint = 'api/v/1/data/' + options;
       options = { collectionID: options };
-    } else if (options.collectionName && options.collectionName !== "") {
+    } else if (options.collectionName && options.collectionName !== '') {
       collection.isUsingCollectionName = true;
       collection.name = options.collectionName;
       collection.endpoint =
-        "api/v/1/collection/" + this.systemKey + "/" + options.collectionName;
-    } else if (options.collectionID && options.collectionID !== "") {
-      collection.endpoint = "api/v/1/data/" + options.collectionID;
+        'api/v/1/collection/' + this.systemKey + '/' + options.collectionName;
+    } else if (options.collectionID && options.collectionID !== '') {
+      collection.endpoint = 'api/v/1/data/' + options.collectionID;
     } else {
       throw new Error(
-        "Must supply a collectionID or collectionName key in options object"
+        'Must supply a collectionID or collectionName key in options object'
       );
     }
     collection.user = this.user;
@@ -820,7 +823,7 @@ if (!window.console) {
      * col.fetch(query, callback);
      * //this will give returnedData the value of what ever was returned from the server.
      */
-    collection.fetch = function(_query, callback) {
+    collection.fetch = function (_query, callback) {
       var query;
       /*
        * The following logic may look funny, but it is intentional.
@@ -831,36 +834,36 @@ if (!window.console) {
       if (callback === undefined) {
         callback = _query;
         query = {
-          FILTERS: []
+          FILTERS: [],
         };
-        query = "query=" + _parseQuery(query);
+        query = 'query=' + _parseQuery(query);
       } else {
         if (Object.keys(_query) < 1) {
-          query = "";
+          query = '';
         } else {
-          query = "query=" + _parseQuery(_query.query);
+          query = 'query=' + _parseQuery(_query.query);
         }
       }
 
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         endpoint: this.endpoint,
         qs: query,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
 
-      var callCallback = function(err, data) {
+      var callCallback = function (err, data) {
         if (err) {
           callback(err, data);
         } else {
           _createItemList(err, data.DATA, options, callback);
         }
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callCallback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -887,18 +890,18 @@ if (!window.console) {
      * //this inserts the the newPerson item into the collection that col represents
      *
      */
-    collection.create = function(newItem, callback) {
+    collection.create = function (newItem, callback) {
       var reqOptions = {
-        method: "POST",
+        method: 'POST',
         endpoint: this.endpoint,
         body: newItem,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -926,18 +929,18 @@ if (!window.console) {
      * col.update(query, changes, callback);
      * //sets John's age to 23
      */
-    collection.update = function(_query, changes, callback) {
+    collection.update = function (_query, changes, callback) {
       var reqOptions = {
-        method: "PUT",
+        method: 'PUT',
         endpoint: this.endpoint,
         body: { query: _query.query.FILTERS, $set: changes },
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -961,80 +964,80 @@ if (!window.console) {
      * col.remove(query, callback);
      * //removes every item whose 'name' attribute is equal to 'John'
      */
-    collection.remove = function(_query, callback) {
+    collection.remove = function (_query, callback) {
       var query;
       if (_query === undefined) {
-        throw new Error("no query defined!");
+        throw new Error('no query defined!');
       } else {
-        query = "query=" + _parseOperationQuery(_query.query);
+        query = 'query=' + _parseOperationQuery(_query.query);
       }
 
       var reqOptions = {
-        method: "DELETE",
+        method: 'DELETE',
         endpoint: this.endpoint,
         qs: query,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
-    collection.columns = function(callback) {
-      if (typeof callback === "function") {
+    collection.columns = function (callback) {
+      if (typeof callback === 'function') {
         ClearBlade.request(
           {
-            method: "GET",
+            method: 'GET',
             URI: this.URI,
             endpoint: this.isUsingCollectionName
-              ? "api/v/2/collection/" +
+              ? 'api/v/2/collection/' +
                 this.systemKey +
-                "/" +
+                '/' +
                 this.name +
-                "/columns"
-              : this.endpoint + "/columns",
+                '/columns'
+              : this.endpoint + '/columns',
             systemKey: this.systemKey,
             systemSecret: this.systemSecret,
-            user: this.user
+            user: this.user,
           },
           callback
         );
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
-    collection.count = function(_query, callback) {
-      if (typeof callback === "function") {
+    collection.count = function (_query, callback) {
+      if (typeof callback === 'function') {
         var query;
         if (_query === undefined || Object.keys(_query).length < 1) {
-          query = "";
+          query = '';
         } else {
-          query = "query=" + _parseQuery(_query.query);
+          query = 'query=' + _parseQuery(_query.query);
         }
         ClearBlade.request(
           {
-            method: "GET",
+            method: 'GET',
             URI: this.URI,
             qs: query,
             endpoint: this.isUsingCollectionName
-              ? "api/v/2/collection/" +
+              ? 'api/v/2/collection/' +
                 this.systemKey +
-                "/" +
+                '/' +
                 this.name +
-                "/count"
-              : this.endpoint + "/count",
+                '/count'
+              : this.endpoint + '/count',
             systemKey: this.systemKey,
             systemSecret: this.systemSecret,
-            user: this.user
+            user: this.user,
           },
           callback
         );
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -1047,20 +1050,20 @@ if (!window.console) {
    * @param {Object} options Object that has configuration values used when instantiating a Query object
    * @returns {Object} Clearblade.Query the created query
    */
-  ClearBlade.prototype.Query = function(options) {
+  ClearBlade.prototype.Query = function (options) {
     var _this = this;
     var query = {};
     if (!options) {
       options = {};
     }
-    if (typeof options === "string") {
-      query.endpoint = "api/v/1/data/" + options;
+    if (typeof options === 'string') {
+      query.endpoint = 'api/v/1/data/' + options;
       options = { collectionID: options };
-    } else if (options.collectionName && options.collectionName !== "") {
+    } else if (options.collectionName && options.collectionName !== '') {
       query.endpoint =
-        "api/v/1/collection/" + this.systemKey + "/" + options.collectionName;
-    } else if (options.collectionID && options.collectionID !== "") {
-      query.endpoint = "api/v/1/data/" + options.collectionID;
+        'api/v/1/collection/' + this.systemKey + '/' + options.collectionName;
+    } else if (options.collectionID && options.collectionID !== '') {
+      query.endpoint = 'api/v/1/data/' + options.collectionID;
     }
     query.user = this.user;
     query.URI = this.URI;
@@ -1073,8 +1076,8 @@ if (!window.console) {
     query.offset = options.offset || 0;
     query.limit = options.limit || 10;
 
-    query.addSortToQuery = function(queryObj, direction, column) {
-      if (typeof queryObj.query.SORT === "undefined") {
+    query.addSortToQuery = function (queryObj, direction, column) {
+      if (typeof queryObj.query.SORT === 'undefined') {
         queryObj.query.SORT = [];
       }
       var newSort = {};
@@ -1082,12 +1085,12 @@ if (!window.console) {
       queryObj.query.SORT.push(newSort);
     };
 
-    query.addFilterToQuery = function(queryObj, condition, key, value) {
+    query.addFilterToQuery = function (queryObj, condition, key, value) {
       var newObj = {};
       newObj[key] = value;
       var newFilter = {};
       newFilter[condition] = [newObj];
-      if (typeof queryObj.query.FILTERS === "undefined") {
+      if (typeof queryObj.query.FILTERS === 'undefined') {
         queryObj.query.FILTERS = [];
         queryObj.query.FILTERS.push([newFilter]);
         return;
@@ -1106,13 +1109,13 @@ if (!window.console) {
       }
     };
 
-    query.ascending = function(field) {
-      this.addSortToQuery(this, "ASC", field);
+    query.ascending = function (field) {
+      this.addSortToQuery(this, 'ASC', field);
       return this;
     };
 
-    query.descending = function(field) {
-      this.addSortToQuery(this, "DESC", field);
+    query.descending = function (field) {
+      this.addSortToQuery(this, 'DESC', field);
       return this;
     };
 
@@ -1126,8 +1129,8 @@ if (!window.console) {
      * query.equalTo('name', 'John');
      * //will only match if an item has an attribute 'name' that is equal to 'John'
      */
-    query.equalTo = function(field, value) {
-      this.addFilterToQuery(this, "EQ", field, value);
+    query.equalTo = function (field, value) {
+      this.addFilterToQuery(this, 'EQ', field, value);
       return this;
     };
 
@@ -1141,8 +1144,8 @@ if (!window.console) {
      * query.greaterThan('age', 21);
      * //will only match if an item has an attribute 'age' that is greater than 21
      */
-    query.greaterThan = function(field, value) {
-      this.addFilterToQuery(this, "GT", field, value);
+    query.greaterThan = function (field, value) {
+      this.addFilterToQuery(this, 'GT', field, value);
       return this;
     };
 
@@ -1156,8 +1159,8 @@ if (!window.console) {
      * query.greaterThanEqualTo('age', 21);
      * //will only match if an item has an attribute 'age' that is greater than or equal to 21
      */
-    query.greaterThanEqualTo = function(field, value) {
-      this.addFilterToQuery(this, "GTE", field, value);
+    query.greaterThanEqualTo = function (field, value) {
+      this.addFilterToQuery(this, 'GTE', field, value);
       return this;
     };
 
@@ -1171,8 +1174,8 @@ if (!window.console) {
      * query.lessThan('age', 50);
      * //will only match if an item has an attribute 'age' that is less than 50
      */
-    query.lessThan = function(field, value) {
-      this.addFilterToQuery(this, "LT", field, value);
+    query.lessThan = function (field, value) {
+      this.addFilterToQuery(this, 'LT', field, value);
       return this;
     };
 
@@ -1186,8 +1189,8 @@ if (!window.console) {
      * query.lessThanEqualTo('age', 50);
      * //will only match if an item has an attribute 'age' that is less than or equal to 50
      */
-    query.lessThanEqualTo = function(field, value) {
-      this.addFilterToQuery(this, "LTE", field, value);
+    query.lessThanEqualTo = function (field, value) {
+      this.addFilterToQuery(this, 'LTE', field, value);
       return this;
     };
 
@@ -1201,8 +1204,8 @@ if (!window.console) {
      * query.notEqualTo('name', 'Jim');
      * //will only match if an item has an attribute 'name' that is not equal to 'Jim'
      */
-    query.notEqualTo = function(field, value) {
-      this.addFilterToQuery(this, "NEQ", field, value);
+    query.notEqualTo = function (field, value) {
+      this.addFilterToQuery(this, 'NEQ', field, value);
       return this;
     };
 
@@ -1216,8 +1219,8 @@ if (!window.console) {
      * query.matches('name', 'Smith$');
      * //will only match if an item has an attribute 'name' that That ends in 'Smith'
      */
-    query.matches = function(field, pattern) {
-      this.addFilterToQuery(this, "RE", field, pattern);
+    query.matches = function (field, pattern) {
+      this.addFilterToQuery(this, 'RE', field, pattern);
       return this;
     };
 
@@ -1233,18 +1236,18 @@ if (!window.console) {
      * query1.or(query2);
      * //will match if an item has an attribute 'name' that is equal to 'John' or 'Jim'
      */
-    query.or = function(that) {
+    query.or = function (that) {
       if (
-        this.query.hasOwnProperty("FILTERS") &&
-        that.query.hasOwnProperty("FILTERS")
+        this.query.hasOwnProperty('FILTERS') &&
+        that.query.hasOwnProperty('FILTERS')
       ) {
         for (var i = 0; i < that.query.FILTERS.length; i++) {
           this.query.FILTERS.push(that.query.FILTERS[i]);
         }
         return this;
       } else if (
-        !this.query.hasOwnProperty("FILTERS") &&
-        that.query.hasOwnProperty("FILTERS")
+        !this.query.hasOwnProperty('FILTERS') &&
+        that.query.hasOwnProperty('FILTERS')
       ) {
         for (var j = 0; j < that.query.FILTERS.length; j++) {
           this.query.FILTERS = [];
@@ -1262,7 +1265,7 @@ if (!window.console) {
      * @param {int} pageNum  Page number, taking into account the page size. The
      * default is 1.
      */
-    query.setPage = function(pageSize, pageNum) {
+    query.setPage = function (pageSize, pageNum) {
       this.query.PAGESIZE = pageSize;
       this.query.PAGENUM = pageNum;
       return this;
@@ -1273,7 +1276,7 @@ if (!window.console) {
      * @method ClearBlade.Query.prototype.getFieldValue
      * @param {string} field Name of column to retrieve the value for
      */
-    query.getFieldValue = function(field) {
+    query.getFieldValue = function (field) {
       var filters = this.query
         .FILTERS; /* [[{"EQ":[{"user_id":"f094b5b10bf6ad86f7f7d4b8b9f201"}]}]] */
       for (var i = 0, len = filters.length; i < len; i++) {
@@ -1307,15 +1310,15 @@ if (!window.console) {
      * };
      * query.fetch(callback);
      */
-    query.fetch = function(callback) {
+    query.fetch = function (callback) {
       var reqOptions = {
-        method: "GET",
-        qs: "query=" + _parseQuery(this.query),
+        method: 'GET',
+        qs: 'query=' + _parseQuery(this.query),
         user: this.user,
         endpoint: this.endpoint,
-        URI: this.URI
+        URI: this.URI,
       };
-      var callCallback = function(err, data) {
+      var callCallback = function (err, data) {
         if (err) {
           callback(err, data);
         } else {
@@ -1323,10 +1326,10 @@ if (!window.console) {
         }
       };
 
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callCallback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -1354,19 +1357,19 @@ if (!window.console) {
      * query.update(changes, callback);
      * //sets John's age to 23
      */
-    query.update = function(changes, callback) {
+    query.update = function (changes, callback) {
       var reqOptions = {
-        method: "PUT",
+        method: 'PUT',
         body: { query: this.query.FILTERS, $set: changes },
         user: this.user,
         endpoint: this.endpoint,
-        URI: this.URI
+        URI: this.URI,
       };
 
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -1390,7 +1393,7 @@ if (!window.console) {
      * query.fetch(callback);
      * //gets values in columns name and age
      */
-    query.columns = function(columnsArray) {
+    query.columns = function (columnsArray) {
       this.query.SELECTCOLUMNS = columnsArray;
       return this;
     };
@@ -1414,19 +1417,19 @@ if (!window.console) {
      * query.remove(callback);
      * //removes every item whose 'name' attribute is equal to 'John'
      */
-    query.remove = function(callback) {
+    query.remove = function (callback) {
       var reqOptions = {
-        method: "DELETE",
-        qs: "query=" + _parseQuery(this.query),
+        method: 'DELETE',
+        qs: 'query=' + _parseQuery(this.query),
         user: this.user,
         endpoint: this.endpoint,
-        URI: this.URI
+        URI: this.URI,
       };
 
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -1438,25 +1441,25 @@ if (!window.console) {
    * @param {Object} data Object that contains necessary data for an item in a ClearBlade Collection
    * @param {String} collection Collection ID of the collection the item belongs to
    */
-  ClearBlade.prototype.Item = function(data, options) {
+  ClearBlade.prototype.Item = function (data, options) {
     var item = {};
     if (!(data instanceof Object)) {
-      throw new Error("data must be of type Object");
+      throw new Error('data must be of type Object');
     }
-    if (options === undefined || options === null || options === "") {
-      throw new Error("Must supply an options parameter");
+    if (options === undefined || options === null || options === '') {
+      throw new Error('Must supply an options parameter');
     }
-    if (typeof options === "string") {
+    if (typeof options === 'string') {
       options = { collectionID: options };
     }
     item.data = data;
 
-    item.save = function(callback) {
+    item.save = function (callback) {
       //do a put or a post to the database to save the item in the db
       var self = this;
       var query = ClearBlade.prototype.Query(options);
-      query.equalTo("item_id", this.data.item_id);
-      var callCallback = function(err, data) {
+      query.equalTo('item_id', this.data.item_id);
+      var callCallback = function (err, data) {
         if (err) {
           callback(err, data);
         } else {
@@ -1467,12 +1470,12 @@ if (!window.console) {
       query.update(this.data, callCallback);
     };
 
-    item.refresh = function(callback) {
+    item.refresh = function (callback) {
       //do a get to make the local item reflect the database
       var self = this;
       var query = ClearBlade.prototype.Query(options);
-      query.equalTo("item_id", this.data.item_id);
-      var callCallback = function(err, data) {
+      query.equalTo('item_id', this.data.item_id);
+      var callCallback = function (err, data) {
         if (err) {
           callback(err, data);
         } else {
@@ -1483,12 +1486,12 @@ if (!window.console) {
       query.fetch(callCallback);
     };
 
-    item.destroy = function(callback) {
+    item.destroy = function (callback) {
       //deletes the relative record in the DB then deletes the item locally
       var self = this;
       var query = ClearBlade.prototype.Query(options);
-      query.equalTo("item_id", this.data.item_id);
-      var callCallback = function(err, data) {
+      query.equalTo('item_id', this.data.item_id);
+      var callCallback = function (err, data) {
         if (err) {
           callback(err, data);
         } else {
@@ -1508,7 +1511,7 @@ if (!window.console) {
    * @class  ClearBlade.Code
    * @returns {Object} ClearBlade.Code
    */
-  ClearBlade.prototype.Code = function() {
+  ClearBlade.prototype.Code = function () {
     var code = {};
     code.user = this.user;
     code.URI = this.URI;
@@ -1531,18 +1534,18 @@ if (!window.console) {
      *    }
      * })
      */
-    code.create = function(name, body, callback) {
+    code.create = function (name, body, callback) {
       var reqOptions = {
-        method: "POST",
-        endpoint: "api/v/3/code/" + this.systemKey + "/service/" + name,
+        method: 'POST',
+        endpoint: 'api/v/3/code/' + this.systemKey + '/service/' + name,
         body: body,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -1561,18 +1564,18 @@ if (!window.console) {
      *    }
      * })
      */
-    code.update = function(name, body, callback) {
+    code.update = function (name, body, callback) {
       var reqOptions = {
-        method: "PUT",
-        endpoint: "api/v/3/code/" + this.systemKey + "/service/" + name,
+        method: 'PUT',
+        endpoint: 'api/v/3/code/' + this.systemKey + '/service/' + name,
         body: body,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -1590,17 +1593,17 @@ if (!window.console) {
      *    }
      * })
      */
-    code.delete = function(name, callback) {
+    code.delete = function (name, callback) {
       var reqOptions = {
-        method: "DELETE",
-        endpoint: "api/v/3/code/" + this.systemKey + "/service/" + name,
+        method: 'DELETE',
+        endpoint: 'api/v/3/code/' + this.systemKey + '/service/' + name,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -1619,18 +1622,18 @@ if (!window.console) {
      *    }
      * })
      */
-    code.execute = function(name, params, callback) {
+    code.execute = function (name, params, callback) {
       var reqOptions = {
-        method: "POST",
-        endpoint: "api/v/1/code/" + this.systemKey + "/" + name,
+        method: 'POST',
+        endpoint: 'api/v/1/code/' + this.systemKey + '/' + name,
         body: params,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -1647,12 +1650,12 @@ if (!window.console) {
      *    }
      * })
      */
-    code.getCompletedServices = function(callback) {
+    code.getCompletedServices = function (callback) {
       var reqOptions = {
-        method: "GET",
-        endpoint: "api/v/3/code/" + this.systemKey + "/completed",
+        method: 'GET',
+        endpoint: 'api/v/3/code/' + this.systemKey + '/completed',
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
       ClearBlade.request(reqOptions, callback);
     };
@@ -1670,12 +1673,12 @@ if (!window.console) {
      *    }
      * })
      */
-    code.getFailedServices = function(callback) {
+    code.getFailedServices = function (callback) {
       var reqOptions = {
-        method: "GET",
-        endpoint: "api/v/3/code/" + this.systemKey + "/failed",
+        method: 'GET',
+        endpoint: 'api/v/3/code/' + this.systemKey + '/failed',
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
       ClearBlade.request(reqOptions, callback);
     };
@@ -1693,12 +1696,12 @@ if (!window.console) {
      *    }
      * })
      */
-    code.getAllServices = function(callback) {
+    code.getAllServices = function (callback) {
       var reqOptions = {
-        method: "GET",
-        endpoint: "api/v/3/code/" + this.systemKey,
+        method: 'GET',
+        endpoint: 'api/v/3/code/' + this.systemKey,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
       ClearBlade.request(reqOptions, callback);
     };
@@ -1709,11 +1712,11 @@ if (!window.console) {
    * @class ClearBlade.User
    * @returns {Object} ClearBlade.User the created User object
    */
-  ClearBlade.prototype.User = function() {
+  ClearBlade.prototype.User = function () {
     var user = {};
     user.user = this.user;
     user.URI = this.URI;
-    user.endpoint = "api/v/1/user";
+    user.endpoint = 'api/v/1/user';
     user.systemKey = this.systemKey;
     user.systemSecret = this.systemSecret;
     user.callTimeout = this._callTimeout;
@@ -1732,18 +1735,18 @@ if (!window.console) {
      *    }
      * });
      */
-    user.getUser = function(callback) {
+    user.getUser = function (callback) {
       var reqOptions = {
-        method: "GET",
-        endpoint: this.endpoint + "/info",
+        method: 'GET',
+        endpoint: this.endpoint + '/info',
         systemKey: this.systemKey,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
     /**
@@ -1765,19 +1768,19 @@ if (!window.console) {
      *    }
      * });
      */
-    user.setUser = function(data, callback) {
+    user.setUser = function (data, callback) {
       var reqOptions = {
-        method: "PUT",
-        endpoint: this.endpoint + "/info",
+        method: 'PUT',
+        endpoint: this.endpoint + '/info',
         systemKey: this.systemKey,
         body: data,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -1802,19 +1805,19 @@ if (!window.console) {
      *    }
      * });
      */
-    user.addUser = function(data, callback) {
+    user.addUser = function (data, callback) {
       var reqOptions = {
-        method: "POST",
-        endpoint: this.endpoint + "/info",
+        method: 'POST',
+        endpoint: this.endpoint + '/info',
         systemKey: this.systemKey,
         body: data,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -1837,19 +1840,19 @@ if (!window.console) {
      *    }
      * });
      */
-    user.updateUser = function(data, callback) {
+    user.updateUser = function (data, callback) {
       var reqOptions = {
-        method: "PUT",
-        endpoint: "api/v/2/user/info",
+        method: 'PUT',
+        endpoint: 'api/v/2/user/info',
         systemKey: this.systemKey,
         body: data,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -1871,19 +1874,19 @@ if (!window.console) {
      *    }
      * });
      */
-    user.deleteUser = function(data, callback) {
+    user.deleteUser = function (data, callback) {
       var reqOptions = {
-        method: "DELETE",
-        endpoint: this.endpoint + "/info",
+        method: 'DELETE',
+        endpoint: this.endpoint + '/info',
         systemKey: this.systemKey,
         body: data,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -1906,91 +1909,91 @@ if (!window.console) {
      * });
      * //returns all the users with a name property equal to "John"
      */
-    user.allUsers = function(_query, callback) {
-      if (typeof callback === "function") {
+    user.allUsers = function (_query, callback) {
+      if (typeof callback === 'function') {
         var query;
         if (callback === undefined) {
           callback = _query;
-          query = "";
+          query = '';
         } else if (Object.keys(_query).length < 1) {
-          query = "";
+          query = '';
         } else {
-          query = "query=" + _parseQuery(_query.query);
+          query = 'query=' + _parseQuery(_query.query);
         }
         ClearBlade.request(
           {
-            method: "GET",
+            method: 'GET',
             systemKey: this.systemKey,
             systemSecret: this.systemSecret,
             endpoint: this.endpoint,
             qs: query,
             user: this.user,
-            URI: this.URI
+            URI: this.URI,
           },
           callback
         );
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
-    user.setPassword = function(oldPass, newPass, callback) {
-      if (typeof callback === "function") {
+    user.setPassword = function (oldPass, newPass, callback) {
+      if (typeof callback === 'function') {
         ClearBlade.request(
           {
-            method: "PUT",
-            endpoint: this.endpoint + "/pass",
+            method: 'PUT',
+            endpoint: this.endpoint + '/pass',
             body: { old_password: oldPass, new_password: newPass },
             user: this.user,
-            URI: this.URI
+            URI: this.URI,
           },
           callback
         );
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
-    user.count = function(_query, callback) {
-      if (typeof callback === "function") {
+    user.count = function (_query, callback) {
+      if (typeof callback === 'function') {
         var query;
         if (_query === undefined || Object.keys(_query).length < 1) {
-          query = "";
+          query = '';
         } else {
-          query = "query=" + _parseOperationQuery(_query.query);
+          query = 'query=' + _parseOperationQuery(_query.query);
         }
         ClearBlade.request(
           {
-            method: "GET",
+            method: 'GET',
             systemKey: this.systemKey,
             systemSecret: this.systemSecret,
-            endpoint: this.endpoint + "/count",
+            endpoint: this.endpoint + '/count',
             qs: query,
             user: this.user,
-            URI: this.URI
+            URI: this.URI,
           },
           callback
         );
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
-    user.columns = function(callback) {
-      if (typeof callback === "function") {
+    user.columns = function (callback) {
+      if (typeof callback === 'function') {
         ClearBlade.request(
           {
-            method: "GET",
+            method: 'GET',
             URI: this.URI,
-            endpoint: this.endpoint + "/columns",
+            endpoint: this.endpoint + '/columns',
             systemKey: this.systemKey,
             systemSecret: this.systemSecret,
-            user: this.user
+            user: this.user,
           },
           callback
         );
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -2023,16 +2026,16 @@ if (!window.console) {
    * //A connect with a nonstandard timeout
    * var cb = ClearBlade.Messaging({"timeout":15}, callback);
    */
-  ClearBlade.prototype.Messaging = function(options, callback) {
+  ClearBlade.prototype.Messaging = function (options, callback) {
     if (!window.Paho) {
-      throw new Error("Please include the mqttws31.js script on the page");
+      throw new Error('Please include the mqttws31.js script on the page');
     }
     var _this = this;
     var messaging = {};
 
     messaging.user = this.user;
     messaging.URI = this.URI;
-    messaging.endpoint = "api/v/1/message";
+    messaging.endpoint = 'api/v/1/message';
     messaging.systemKey = this.systemKey;
     messaging.systemSecret = this.systemSecret;
     messaging.callTimeout = this._callTimeout;
@@ -2062,21 +2065,21 @@ if (!window.console) {
       clientID
     ); //new Messaging.Client(conf.hosts[0],conf.ports[0],clientID);
 
-    messaging.client.onConnectionLost = function(response) {
+    messaging.client.onConnectionLost = function (response) {
       if (messaging.numOfConnectRetries >= messaging.maxConnectRetries) {
         if (response.errorCode === 8) {
-          var errMsg = "Unable to connect via WebSocket - Invalid permissions";
+          var errMsg = 'Unable to connect via WebSocket - Invalid permissions';
           console.warn(errMsg);
           callback(errMsg);
         } else {
           var errMsg =
-            "Disconnected via WebSocket. No longer attempting to reconnect";
+            'Disconnected via WebSocket. No longer attempting to reconnect';
           console.warn(errMsg);
           callback(errMsg);
         }
       } else {
         console.log(
-          "ClearBlade Messaging connection lost- attempting to reestablish",
+          'ClearBlade Messaging connection lost- attempting to reestablish',
           response
         );
         delete conf.mqttVersionExplicit;
@@ -2086,20 +2089,23 @@ if (!window.console) {
       }
     };
 
-    messaging.client.onMessageArrived = function(message) {
+    messaging.client.onMessageArrived = function (message) {
       // messageCallback from Subscribe()
-      messaging.messageCallback(message.payloadString, message);
+
+      messaging.messageCallback[
+        getMessageTopic(message.destinationName, messaging.messageCallback)
+      ](message.payloadString, message);
     };
     // the mqtt websocket library uses "onConnect," but our terminology uses
     // "onSuccess" and "onFailure"
-    var onSuccess = function(data) {
+    var onSuccess = function (data) {
       messaging.numOfConnectRetries = 0;
       callback(undefined, data);
     };
 
     messaging.client.onConnect = onSuccess;
-    var onFailure = function(err) {
-      console.log("ClearBlade Messaging failed to connect");
+    var onFailure = function (err) {
+      console.log('ClearBlade Messaging failed to connect');
       callback(err, undefined);
     };
 
@@ -2121,23 +2127,23 @@ if (!window.console) {
      * cb.publish("ClearBlade/is awesome!","Totally rules");
      * //Topics can include spaces and punctuation  except "/"
      */
-    messaging.publish = function(topic, payload) {
+    messaging.publish = function (topic, payload) {
       var msg = new Paho.MQTT.Message(payload);
       msg.destinationName = topic;
       msg.qos = this._qos;
       messaging.client.send(msg);
     };
 
-    messaging.publishREST = function(topic, payload, callback) {
+    messaging.publishREST = function (topic, payload, callback) {
       ClearBlade.request(
         {
-          method: "POST",
-          endpoint: this.endpoint + "/" + this.systemKey + "/publish",
+          method: 'POST',
+          endpoint: this.endpoint + '/' + this.systemKey + '/publish',
           body: { topic: topic, payload: payload },
           systemKey: this.systemKey,
           systemSecret: this.systemSecret,
           user: this.user,
-          URI: this.URI
+          URI: this.URI,
         },
         callback
       );
@@ -2161,9 +2167,9 @@ if (!window.console) {
      * var cb = ClearBlade.Messaging({}, callback);
      * cb.subscribe("ClearBlade/is awesome!",{});
      */
-    messaging.subscribe = function(topic, options, messageCallback) {
+    messaging.subscribe = function (topic, options, messageCallback) {
       var conf = {
-        qos: this._qos || 0
+        qos: this._qos || 0,
       };
 
       for (var opt in options) {
@@ -2172,7 +2178,9 @@ if (!window.console) {
 
       this.client.subscribe(topic, conf);
 
-      this.messageCallback = messageCallback;
+      this.messageCallback = this.messageCallback
+        ? { ...this.messageCallback, [topic]: messageCallback }
+        : { [topic]: messageCallback };
     };
 
     /**
@@ -2193,12 +2201,12 @@ if (!window.console) {
      * var cb = ClearBlade.Messaging({}, callback);
      * cb.unsubscribe("ClearBlade/is awesome!",{"onSuccess":function(){console.log("we unsubscribe");});
      */
-    messaging.unsubscribe = function(topic, options) {
+    messaging.unsubscribe = function (topic, options) {
       var conf = {};
-      conf["invocationContext"] = options["invocationContext"] || {};
-      conf["onSuccess"] = options["onSuccess"] || function() {}; //null;
-      conf["onFailure"] = options["onFailure"] || function() {}; //null;
-      conf["timeout"] = options["timeout"] || 60;
+      conf['invocationContext'] = options['invocationContext'] || {};
+      conf['onSuccess'] = options['onSuccess'] || function () {}; //null;
+      conf['onFailure'] = options['onFailure'] || function () {}; //null;
+      conf['timeout'] = options['timeout'] || 60;
       this.client.unsubscribe(topic, conf);
     };
 
@@ -2212,7 +2220,7 @@ if (!window.console) {
      * var cb = ClearBlade.Messaging({}, callback);
      * cb.disconnect()//why leave so soon :(
      */
-    messaging.disconnect = function() {
+    messaging.disconnect = function () {
       this.client.disconnect();
     };
 
@@ -2223,14 +2231,14 @@ if (!window.console) {
    * @class ClearBlade.MessagingStats
    * @returns {Object} ClearBlade.MessagingStats the created MessagingStats object
    */
-  ClearBlade.prototype.MessagingStats = function() {
+  ClearBlade.prototype.MessagingStats = function () {
     var _this = this;
     var messagingStats = {};
 
     messagingStats.user = this.user;
     messagingStats.URI = this.URI;
-    messagingStats.endpoint = "api/v/3/message";
-    messagingStats.endpointV1 = "api/v/1/message";
+    messagingStats.endpoint = 'api/v/3/message';
+    messagingStats.endpointV1 = 'api/v/1/message';
     messagingStats.systemKey = this.systemKey;
     messagingStats.callTimeout = this._callTimeout;
 
@@ -2244,7 +2252,7 @@ if (!window.console) {
      * @param {number} stop Epoch timestamp in seconds that will retrieve 'count' number of  messages within timeframe. Set to -1 if not used
      * @param {function} callback The function to be called upon execution of query -- called with a boolean error and the response
      */
-    messagingStats.getMessageHistoryWithTimeFrame = function(
+    messagingStats.getMessageHistoryWithTimeFrame = function (
       topic,
       count,
       last,
@@ -2253,24 +2261,24 @@ if (!window.console) {
       callback
     ) {
       var reqOptions = {
-        method: "GET",
-        endpoint: this.endpointV1 + "/" + this.systemKey,
+        method: 'GET',
+        endpoint: this.endpointV1 + '/' + this.systemKey,
         qs:
-          "topic=" +
+          'topic=' +
           topic +
-          "&count=" +
+          '&count=' +
           count +
-          "&last=" +
+          '&last=' +
           last +
-          "&start=" +
+          '&start=' +
           start +
-          "&stop=" +
+          '&stop=' +
           stop,
         authToken: this.user.authToken,
         timeout: this.callTimeout,
-        URI: this.URI
+        URI: this.URI,
       };
-      ClearBlade.request(reqOptions, function(err, response) {
+      ClearBlade.request(reqOptions, function (err, response) {
         if (err) {
           execute(true, response, callback);
         } else {
@@ -2287,7 +2295,7 @@ if (!window.console) {
      * @param {number} count Number that signifies how many messages to return; 0 returns all messages
      * @param {function} callback The function to be called upon execution of query -- called with a boolean error and the response
      */
-    messagingStats.getMessageHistory = function(topic, last, count, callback) {
+    messagingStats.getMessageHistory = function (topic, last, count, callback) {
       messagingStats.getMessageHistoryWithTimeFrame(
         topic,
         count,
@@ -2308,7 +2316,7 @@ if (!window.console) {
      * @param {number} stop Epoch timestamp in seconds that will retrieve and delete 'count' number of  messages within timeframe. Set to -1 if not used
      * @param {function} callback The function to be called upon execution of query -- called with a boolean error and the response
      */
-    messagingStats.getAndDeleteMessageHistory = function(
+    messagingStats.getAndDeleteMessageHistory = function (
       topic,
       count,
       last,
@@ -2317,24 +2325,24 @@ if (!window.console) {
       callback
     ) {
       var reqOptions = {
-        method: "DELETE",
-        endpoint: this.endpointV1 + "/" + this.systemKey,
+        method: 'DELETE',
+        endpoint: this.endpointV1 + '/' + this.systemKey,
         qs:
-          "topic=" +
+          'topic=' +
           topic +
-          "&count=" +
+          '&count=' +
           count +
-          "&last=" +
+          '&last=' +
           last +
-          "&start=" +
+          '&start=' +
           start +
-          "&stop=" +
+          '&stop=' +
           stop,
         authToken: this.user.authToken,
         timeout: this.callTimeout,
-        URI: this.URI
+        URI: this.URI,
       };
-      ClearBlade.request(reqOptions, function(err, response) {
+      ClearBlade.request(reqOptions, function (err, response) {
         if (err) {
           execute(true, response, callback);
         } else {
@@ -2348,19 +2356,19 @@ if (!window.console) {
      * @method ClearBlade.MessagingStats.currentTopics
      * @param {function} callback The function to be called upon execution of query -- called with a boolean error and the response
      */
-    messagingStats.currentTopics = function(callback) {
-      if (typeof callback === "function") {
+    messagingStats.currentTopics = function (callback) {
+      if (typeof callback === 'function') {
         ClearBlade.request(
           {
-            method: "GET",
-            endpoint: this.endpointV1 + "/" + this.systemKey + "/currentTopics",
+            method: 'GET',
+            endpoint: this.endpointV1 + '/' + this.systemKey + '/currentTopics',
             user: this.user,
-            URI: this.URI
+            URI: this.URI,
           },
           callback
         );
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -2381,18 +2389,18 @@ if (!window.console) {
      * });
      * //returns {"payloadsize":28}
      */
-    messagingStats.getAveragePayloadSize = function(
+    messagingStats.getAveragePayloadSize = function (
       topic,
       start,
       stop,
       callback
     ) {
       var reqOptions = {
-        method: "GET",
-        endpoint: this.endpoint + "/" + this.systemKey + "/averagePayload",
-        qs: "topic=" + topic + "&start=" + start + "&stop=" + stop,
+        method: 'GET',
+        endpoint: this.endpoint + '/' + this.systemKey + '/averagePayload',
+        qs: 'topic=' + topic + '&start=' + start + '&stop=' + stop,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
       ClearBlade.request(reqOptions, callback);
     };
@@ -2411,12 +2419,12 @@ if (!window.console) {
      * });
      * //returns {"connections":42}
      */
-    messagingStats.getOpenConnections = function(callback) {
+    messagingStats.getOpenConnections = function (callback) {
       var reqOptions = {
-        method: "GET",
-        endpoint: this.endpoint + "/" + this.systemKey + "/connections",
+        method: 'GET',
+        endpoint: this.endpoint + '/' + this.systemKey + '/connections',
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
       ClearBlade.request(reqOptions, callback);
     };
@@ -2436,13 +2444,13 @@ if (!window.console) {
      * });
      * //returns {"subscribers": 42}
      */
-    messagingStats.getCurrentSubscribers = function(topic, callback) {
+    messagingStats.getCurrentSubscribers = function (topic, callback) {
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         endpoint:
-          this.endpoint + "/" + this.systemKey + "/subscribers/" + topic,
+          this.endpoint + '/' + this.systemKey + '/subscribers/' + topic,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
       ClearBlade.request(reqOptions, callback);
     };
@@ -2459,17 +2467,17 @@ if (!window.console) {
    * @param {function} callback A function like `function (err, data) {}` to handle the response
    */
 
-  ClearBlade.prototype.sendPush = function(users, payload, appId, callback) {
-    if (!callback || typeof callback !== "function") {
-      throw new Error("Callback must be a function");
+  ClearBlade.prototype.sendPush = function (users, payload, appId, callback) {
+    if (!callback || typeof callback !== 'function') {
+      throw new Error('Callback must be a function');
     }
     if (!Array.isArray(users)) {
-      throw new Error("User list must be an array of user IDs");
+      throw new Error('User list must be an array of user IDs');
     }
     var formattedObject = {};
-    Object.getOwnPropertyNames(payload).forEach(function(key, element) {
-      if (key === "alert" || key === "badge" || key === "sound") {
-        if (!formattedObject.hasOwnProperty("aps")) {
+    Object.getOwnPropertyNames(payload).forEach(function (key, element) {
+      if (key === 'alert' || key === 'badge' || key === 'sound') {
+        if (!formattedObject.hasOwnProperty('aps')) {
           formattedObject.aps = {};
         }
         formattedObject.aps[key] = payload[key];
@@ -2477,15 +2485,15 @@ if (!window.console) {
     });
     var body = {
       cbids: users,
-      "apple-message": JSON.stringify(formattedObject),
-      appid: appId
+      'apple-message': JSON.stringify(formattedObject),
+      appid: appId,
     };
     var reqOptions = {
-      method: "POST",
-      endpoint: "api/v/1/push/" + this.systemKey,
+      method: 'POST',
+      endpoint: 'api/v/1/push/' + this.systemKey,
       body: body,
       user: this.user,
-      URI: this.URI
+      URI: this.URI,
     };
     ClearBlade.request(reqOptions, callback);
   };
@@ -2495,36 +2503,36 @@ if (!window.console) {
    * @method ClearBlade.getEdges
    * @param {function} callback A function like `function (err, data) {}` to handle the response
    */
-  ClearBlade.prototype.getEdges = function(_query, callback) {
+  ClearBlade.prototype.getEdges = function (_query, callback) {
     var query;
     if (callback === undefined) {
       callback = _query;
       query = {
-        FILTERS: []
+        FILTERS: [],
       };
-      query = "query=" + _parseQuery(query);
+      query = 'query=' + _parseQuery(query);
     } else {
       if (Object.keys(_query) < 1) {
-        query = "";
+        query = '';
       } else {
-        query = "query=" + _parseQuery(_query.query);
+        query = 'query=' + _parseQuery(_query.query);
       }
     }
     var reqOptions = {
-      method: "GET",
+      method: 'GET',
       user: this.user,
-      endpoint: "api/v/2/edges/" + this.systemKey,
+      endpoint: 'api/v/2/edges/' + this.systemKey,
       qs: query,
-      URI: this.URI
+      URI: this.URI,
     };
-    if (typeof callback === "function") {
+    if (typeof callback === 'function') {
       ClearBlade.request(reqOptions, callback);
     } else {
-      logger("No callback was defined!");
+      logger('No callback was defined!');
     }
   };
 
-  ClearBlade.prototype.Edge = function() {
+  ClearBlade.prototype.Edge = function () {
     var edge = {};
     edge.user = this.user;
     edge.URI = this.URI;
@@ -2547,20 +2555,20 @@ if (!window.console) {
      *
      * edge.updateEdgeByName(name, object, callback);
      */
-    edge.updateEdgeByName = function(name, object, callback) {
-      if (typeof object != "object") {
-        throw new Error("Invalid object format");
+    edge.updateEdgeByName = function (name, object, callback) {
+      if (typeof object != 'object') {
+        throw new Error('Invalid object format');
       }
-      if (typeof name === "object") {
-        name = name.query.FILTERS[0][0].EQ[0].edge_key.split(":")[1];
+      if (typeof name === 'object') {
+        name = name.query.FILTERS[0][0].EQ[0].edge_key.split(':')[1];
       }
       var reqOptions = {
-        method: "PUT",
+        method: 'PUT',
         user: this.user,
-        endpoint: "api/v/3/edges/" + this.systemKey + "/" + name,
-        URI: this.URI
+        endpoint: 'api/v/3/edges/' + this.systemKey + '/' + name,
+        URI: this.URI,
       };
-      reqOptions["body"] = object;
+      reqOptions['body'] = object;
       ClearBlade.request(reqOptions, callback);
     };
 
@@ -2578,25 +2586,25 @@ if (!window.console) {
      *
      * edge.deleteEdgeByName(name, callback);
      */
-    edge.deleteEdgeByName = function(name, callback) {
-      if (typeof name === "object") {
+    edge.deleteEdgeByName = function (name, callback) {
+      if (typeof name === 'object') {
         var edges = name.query.FILTERS;
         for (var i = 0; i < edges.length; i++) {
-          var edgeName = edges[i][0].EQ[0].edge_key.split(":")[1];
+          var edgeName = edges[i][0].EQ[0].edge_key.split(':')[1];
           var reqOptions = {
-            method: "DELETE",
+            method: 'DELETE',
             user: this.user,
-            endpoint: "api/v/3/edges/" + this.systemKey + "/" + edgeName,
-            URI: this.URI
+            endpoint: 'api/v/3/edges/' + this.systemKey + '/' + edgeName,
+            URI: this.URI,
           };
           ClearBlade.request(reqOptions, callback);
         }
       } else {
         var reqOptions = {
-          method: "DELETE",
+          method: 'DELETE',
           user: this.user,
-          endpoint: "api/v/3/edges/" + this.systemKey + "/" + name,
-          URI: this.URI
+          endpoint: 'api/v/3/edges/' + this.systemKey + '/' + name,
+          URI: this.URI,
         };
         ClearBlade.request(reqOptions, callback);
       }
@@ -2625,126 +2633,126 @@ if (!window.console) {
      * //this inserts the the newEdge into the edge list
      *
      */
-    edge.create = function(newEdge, name, callback) {
+    edge.create = function (newEdge, name, callback) {
       var reqOptions = {
-        method: "POST",
-        endpoint: "api/v/3/edges/" + this.systemKey + "/" + name,
+        method: 'POST',
+        endpoint: 'api/v/3/edges/' + this.systemKey + '/' + name,
         body: newEdge,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
-    edge.columns = function(callback) {
-      if (typeof callback === "function") {
+    edge.columns = function (callback) {
+      if (typeof callback === 'function') {
         ClearBlade.request(
           {
-            method: "GET",
+            method: 'GET',
             URI: this.URI,
-            endpoint: "api/v/3/edges/" + this.systemKey + "/columns",
+            endpoint: 'api/v/3/edges/' + this.systemKey + '/columns',
             systemKey: this.systemKey,
             systemSecret: this.systemSecret,
-            user: this.user
+            user: this.user,
           },
           callback
         );
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
-    edge.count = function(_query, callback) {
+    edge.count = function (_query, callback) {
       var query;
       if (callback === undefined) {
         callback = _query;
         query = {
-          FILTERS: []
+          FILTERS: [],
         };
-        query = "query=" + _parseQuery(query);
+        query = 'query=' + _parseQuery(query);
       } else {
         if (Object.keys(_query) < 1) {
-          query = "";
+          query = '';
         } else {
-          query = "query=" + _parseQuery(_query.query);
+          query = 'query=' + _parseQuery(_query.query);
         }
       }
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         URI: this.URI,
         qs: query,
-        endpoint: "api/v/3/edges/" + this.systemKey + "/count",
+        endpoint: 'api/v/3/edges/' + this.systemKey + '/count',
         systemKey: this.systemKey,
         systemSecret: this.systemSecret,
-        user: this.user
+        user: this.user,
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
     return edge;
   };
 
-  ClearBlade.prototype.Metrics = function() {
+  ClearBlade.prototype.Metrics = function () {
     var metrics = {};
     metrics.systemKey = this.systemKey;
     metrics.URI = this.URI;
     metrics.user = this.user;
 
-    metrics.setQuery = function(_query) {
+    metrics.setQuery = function (_query) {
       metrics.query = _query.query;
     };
 
-    metrics.getStatistics = function(callback) {
-      if (!callback || typeof callback !== "function") {
-        throw new Error("Callback must be a function");
+    metrics.getStatistics = function (callback) {
+      if (!callback || typeof callback !== 'function') {
+        throw new Error('Callback must be a function');
       }
-      var endpoint = "api/v/3/platform/statistics/" + this.systemKey;
-      var query = "query=" + _parseQuery(this.query);
+      var endpoint = 'api/v/3/platform/statistics/' + this.systemKey;
+      var query = 'query=' + _parseQuery(this.query);
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         user: this.user,
         endpoint: endpoint,
         URI: this.URI,
-        qs: query
+        qs: query,
       };
       ClearBlade.request(reqOptions, callback);
     };
 
-    metrics.getStatisticsHistory = function(callback) {
-      if (!callback || typeof callback !== "function") {
-        throw new Error("Callback must be a function");
+    metrics.getStatisticsHistory = function (callback) {
+      if (!callback || typeof callback !== 'function') {
+        throw new Error('Callback must be a function');
       }
       var endpoint =
-        "api/v/3/platform/statistics/" + this.systemKey + "/history";
-      var query = "query=" + _parseQuery(this.query);
+        'api/v/3/platform/statistics/' + this.systemKey + '/history';
+      var query = 'query=' + _parseQuery(this.query);
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         user: this.user,
         endpoint: endpoint,
         URI: this.URI,
-        qs: query
+        qs: query,
       };
       ClearBlade.request(reqOptions, callback);
     };
 
-    metrics.getDBConnections = function(callback) {
-      if (!callback || typeof callback !== "function") {
-        throw new Error("Callback must be a function");
+    metrics.getDBConnections = function (callback) {
+      if (!callback || typeof callback !== 'function') {
+        throw new Error('Callback must be a function');
       }
-      var endpoint = "api/v/3/platform/dbconnections/" + this.systemKey;
-      var query = "query=" + _parseQuery(this.query);
+      var endpoint = 'api/v/3/platform/dbconnections/' + this.systemKey;
+      var query = 'query=' + _parseQuery(this.query);
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         user: this.user,
         endpoint: endpoint,
-        URI: this.URI
+        URI: this.URI,
       };
       if (this.query) {
         reqOptions.qs = query;
@@ -2752,18 +2760,18 @@ if (!window.console) {
       ClearBlade.request(reqOptions, callback);
     };
 
-    metrics.getLogs = function(callback) {
-      if (!callback || typeof callback !== "function") {
-        throw new Error("Callback must be a function");
+    metrics.getLogs = function (callback) {
+      if (!callback || typeof callback !== 'function') {
+        throw new Error('Callback must be a function');
       }
-      var endpoint = "api/v/3/platform/logs/" + this.systemKey;
-      var query = "query=" + _parseQuery(this.query);
+      var endpoint = 'api/v/3/platform/logs/' + this.systemKey;
+      var query = 'query=' + _parseQuery(this.query);
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         user: this.user,
         endpoint: endpoint,
         URI: this.URI,
-        qs: query
+        qs: query,
       };
       ClearBlade.request(reqOptions, callback);
     };
@@ -2778,7 +2786,7 @@ if (!window.console) {
    * @example
    * var device = cb.Device();
    */
-  ClearBlade.prototype.Device = function() {
+  ClearBlade.prototype.Device = function () {
     var device = {};
 
     device.user = this.user;
@@ -2805,12 +2813,12 @@ if (!window.console) {
      * device.updateDeviceByName(name, callback);
      * //this will give returnedData the value of what ever was returned from the server.
      */
-    device.getDeviceByName = function(name, callback) {
+    device.getDeviceByName = function (name, callback) {
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         user: this.user,
-        endpoint: "api/v/2/devices/" + this.systemKey + "/" + name,
-        URI: this.URI
+        endpoint: 'api/v/2/devices/' + this.systemKey + '/' + name,
+        URI: this.URI,
       };
       ClearBlade.request(reqOptions, callback);
     };
@@ -2832,18 +2840,18 @@ if (!window.console) {
      *
      * device.updateDevice(name, object, trigger, callback);
      */
-    device.updateDeviceByName = function(name, object, trigger, callback) {
-      if (typeof object != "object") {
-        throw new Error("Invalid object format");
+    device.updateDeviceByName = function (name, object, trigger, callback) {
+      if (typeof object != 'object') {
+        throw new Error('Invalid object format');
       }
-      object["causeTrigger"] = trigger;
+      object['causeTrigger'] = trigger;
       var reqOptions = {
-        method: "PUT",
+        method: 'PUT',
         user: this.user,
-        endpoint: "api/v/2/devices/" + this.systemKey + "/" + name,
-        URI: this.URI
+        endpoint: 'api/v/2/devices/' + this.systemKey + '/' + name,
+        URI: this.URI,
       };
-      reqOptions["body"] = object;
+      reqOptions['body'] = object;
       ClearBlade.request(reqOptions, callback);
     };
 
@@ -2864,18 +2872,18 @@ if (!window.console) {
      * device.deleteDeviceByName(name, callback);
      * //this will remove the indicated device.
      */
-    device.deleteDeviceByName = function(name, callback) {
+    device.deleteDeviceByName = function (name, callback) {
       var reqOptions = {
-        method: "DELETE",
+        method: 'DELETE',
         user: this.user,
-        endpoint: "api/v/2/devices/" + this.systemKey + "/" + name,
-        URI: this.URI
+        endpoint: 'api/v/2/devices/' + this.systemKey + '/' + name,
+        URI: this.URI,
       };
 
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -2898,7 +2906,7 @@ if (!window.console) {
      * device.fetch(query, callback);
      * //this will give returnedData the value of what ever was returned from the server.
      */
-    device.fetch = function(_query, callback) {
+    device.fetch = function (_query, callback) {
       var query;
       /*
        * The following logic may look funny, but it is intentional.
@@ -2909,29 +2917,29 @@ if (!window.console) {
       if (callback === undefined) {
         callback = _query;
         query = {
-          FILTERS: []
+          FILTERS: [],
         };
-        query = "query=" + _parseQuery(query);
+        query = 'query=' + _parseQuery(query);
       } else {
         if (Object.keys(_query) < 1) {
-          query = "";
+          query = '';
         } else {
-          query = "query=" + _parseQuery(_query.query);
+          query = 'query=' + _parseQuery(_query.query);
         }
       }
 
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         user: this.user,
-        endpoint: "api/v/2/devices/" + this.systemKey,
+        endpoint: 'api/v/2/devices/' + this.systemKey,
         qs: query,
-        URI: this.URI
+        URI: this.URI,
       };
 
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -2956,22 +2964,22 @@ if (!window.console) {
      * };
      * device.update(query, changes, true, callback);
      */
-    device.update = function(_query, object, trigger, callback) {
+    device.update = function (_query, object, trigger, callback) {
       var filters = _query ? _query.query.FILTERS : [];
 
       var reqOptions = {
-        method: "PUT",
+        method: 'PUT',
         user: this.user,
-        endpoint: "api/v/2/devices/" + this.systemKey,
-        URI: this.URI
+        endpoint: 'api/v/2/devices/' + this.systemKey,
+        URI: this.URI,
       };
-      reqOptions["causeTrigger"] = trigger;
-      reqOptions["body"] = { query: filters, $set: object };
+      reqOptions['causeTrigger'] = trigger;
+      reqOptions['body'] = { query: filters, $set: object };
 
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -2994,26 +3002,26 @@ if (!window.console) {
      * device.delete(query, callback);
      * //removes every device whose 'state' attribute is equal to 'TX'
      */
-    device.delete = function(_query, callback) {
+    device.delete = function (_query, callback) {
       var query;
       if (_query === undefined) {
-        throw new Error("no query defined!");
+        throw new Error('no query defined!');
       } else {
-        query = "query=" + _parseOperationQuery(_query.query);
+        query = 'query=' + _parseOperationQuery(_query.query);
       }
 
       var reqOptions = {
-        method: "DELETE",
+        method: 'DELETE',
         user: this.user,
-        endpoint: "api/v/2/devices/" + this.systemKey,
+        endpoint: 'api/v/2/devices/' + this.systemKey,
         qs: query,
-        URI: this.URI
+        URI: this.URI,
       };
 
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -3046,68 +3054,68 @@ if (!window.console) {
      * //this inserts the the newDevice into the device list
      *
      */
-    device.create = function(newDevice, callback) {
+    device.create = function (newDevice, callback) {
       var reqOptions = {
-        method: "POST",
-        endpoint: "api/v/2/devices/" + this.systemKey + "/" + newDevice.name,
+        method: 'POST',
+        endpoint: 'api/v/2/devices/' + this.systemKey + '/' + newDevice.name,
         body: newDevice,
         user: this.user,
-        URI: this.URI
+        URI: this.URI,
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
-    device.columns = function(callback) {
-      if (typeof callback === "function") {
+    device.columns = function (callback) {
+      if (typeof callback === 'function') {
         ClearBlade.request(
           {
-            method: "GET",
+            method: 'GET',
             URI: this.URI,
-            endpoint: "api/v/3/devices/" + this.systemKey + "/columns",
+            endpoint: 'api/v/3/devices/' + this.systemKey + '/columns',
             systemKey: this.systemKey,
             systemSecret: this.systemSecret,
-            user: this.user
+            user: this.user,
           },
           callback
         );
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
-    device.count = function(_query, callback) {
+    device.count = function (_query, callback) {
       var query;
       if (callback === undefined) {
         callback = _query;
         query = {
-          FILTERS: []
+          FILTERS: [],
         };
-        query = "query=" + _parseQuery(query);
+        query = 'query=' + _parseQuery(query);
       } else {
         if (Object.keys(_query) < 1) {
-          query = "";
+          query = '';
         } else {
-          query = "query=" + _parseQuery(_query.query);
+          query = 'query=' + _parseQuery(_query.query);
         }
       }
 
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         URI: this.URI,
         qs: query,
-        endpoint: "api/v/3/devices/" + this.systemKey + "/count",
+        endpoint: 'api/v/3/devices/' + this.systemKey + '/count',
         systemKey: this.systemKey,
         systemSecret: this.systemSecret,
-        user: this.user
+        user: this.user,
       };
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {
-        logger("No callback was defined!");
+        logger('No callback was defined!');
       }
     };
 
@@ -3118,7 +3126,7 @@ if (!window.console) {
    * @class ClearBlade.Analytics
    * @returns {Object} ClearBlade.Analytics the created Analytics object
    */
-  ClearBlade.prototype.Analytics = function() {
+  ClearBlade.prototype.Analytics = function () {
     var analytics = {};
     analytics.user = this.user;
     analytics.URI = this.URI;
@@ -3141,14 +3149,14 @@ if (!window.console) {
      *    }
      * });
      */
-    analytics.getStorage = function(filter, callback) {
-      var query = "query=" + JSON.stringify(filter);
+    analytics.getStorage = function (filter, callback) {
+      var query = 'query=' + JSON.stringify(filter);
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         user: this.user,
-        endpoint: "api/v/2/analytics/storage",
+        endpoint: 'api/v/2/analytics/storage',
         qs: query,
-        URI: this.URI
+        URI: this.URI,
       };
 
       ClearBlade.request(reqOptions, callback);
@@ -3170,14 +3178,14 @@ if (!window.console) {
      *    }
      * });
      */
-    analytics.getCount = function(filter, callback) {
-      var query = "query=" + JSON.stringify(filter);
+    analytics.getCount = function (filter, callback) {
+      var query = 'query=' + JSON.stringify(filter);
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         user: this.user,
-        endpoint: "api/v/2/analytics/count",
+        endpoint: 'api/v/2/analytics/count',
         qs: query,
-        URI: this.URI
+        URI: this.URI,
       };
 
       ClearBlade.request(reqOptions, callback);
@@ -3199,14 +3207,14 @@ if (!window.console) {
      *    }
      * });
      */
-    analytics.getEventList = function(filter, callback) {
-      var query = "query=" + JSON.stringify(filter);
+    analytics.getEventList = function (filter, callback) {
+      var query = 'query=' + JSON.stringify(filter);
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         user: this.user,
-        endpoint: "api/v/2/analytics/eventlist",
+        endpoint: 'api/v/2/analytics/eventlist',
         qs: query,
-        URI: this.URI
+        URI: this.URI,
       };
 
       ClearBlade.request(reqOptions, callback);
@@ -3228,14 +3236,14 @@ if (!window.console) {
      *    }
      * });
      */
-    analytics.getEventTotals = function(filter, callback) {
-      var query = "query=" + JSON.stringify(filter);
+    analytics.getEventTotals = function (filter, callback) {
+      var query = 'query=' + JSON.stringify(filter);
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         user: this.user,
-        endpoint: "api/v/2/analytics/eventtotals",
+        endpoint: 'api/v/2/analytics/eventtotals',
         qs: query,
-        URI: this.URI
+        URI: this.URI,
       };
 
       ClearBlade.request(reqOptions, callback);
@@ -3257,14 +3265,14 @@ if (!window.console) {
      *    }
      * });
      */
-    analytics.getUserEvents = function(filter, callback) {
-      var query = "query=" + JSON.stringify(filter);
+    analytics.getUserEvents = function (filter, callback) {
+      var query = 'query=' + JSON.stringify(filter);
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         user: this.user,
-        endpoint: "api/v/2/analytics/userevents",
+        endpoint: 'api/v/2/analytics/userevents',
         qs: query,
-        URI: this.URI
+        URI: this.URI,
       };
 
       ClearBlade.request(reqOptions, callback);
@@ -3273,11 +3281,11 @@ if (!window.console) {
     return analytics;
   };
 
-  ClearBlade.prototype.Portal = function(name) {
+  ClearBlade.prototype.Portal = function (name) {
     var portal = {};
 
     if (!name) {
-      throw new Error("Must supply a name for portal");
+      throw new Error('Must supply a name for portal');
     }
 
     portal.name = name;
@@ -3286,35 +3294,35 @@ if (!window.console) {
     portal.systemKey = this.systemKey;
     portal.systemSecret = this.systemSecret;
 
-    portal.fetch = function(callback) {
+    portal.fetch = function (callback) {
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         user: this.user,
-        endpoint: "api/v/2/portals/" + this.systemKey + "/" + this.name,
-        URI: this.URI
+        endpoint: 'api/v/2/portals/' + this.systemKey + '/' + this.name,
+        URI: this.URI,
       };
       ClearBlade.request(reqOptions, callback);
     };
 
-    portal.update = function(data, callback) {
-      if (typeof data != "object") {
-        throw new Error("Invalid object format");
+    portal.update = function (data, callback) {
+      if (typeof data != 'object') {
+        throw new Error('Invalid object format');
       }
       var reqOptions = {
-        method: "PUT",
+        method: 'PUT',
         user: this.user,
-        endpoint: "api/v/2/portals/" + this.systemKey + "/" + this.name,
-        URI: this.URI
+        endpoint: 'api/v/2/portals/' + this.systemKey + '/' + this.name,
+        URI: this.URI,
       };
 
-      reqOptions["body"] = data;
+      reqOptions['body'] = data;
       ClearBlade.request(reqOptions, callback);
     };
 
     return portal;
   };
 
-  ClearBlade.prototype.Triggers = function() {
+  ClearBlade.prototype.Triggers = function () {
     var triggers = {};
 
     triggers.user = this.user;
@@ -3322,12 +3330,12 @@ if (!window.console) {
     triggers.systemKey = this.systemKey;
     triggers.systemSecret = this.systemSecret;
 
-    triggers.fetchDefinitions = function(callback) {
+    triggers.fetchDefinitions = function (callback) {
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         user: this.user,
-        endpoint: "admin/triggers/definitions",
-        URI: this.URI
+        endpoint: 'admin/triggers/definitions',
+        URI: this.URI,
       };
 
       ClearBlade.request(reqOptions, callback);
@@ -3356,13 +3364,13 @@ if (!window.console) {
      *    }
      * })
      */
-    triggers.create = function(name, def, callback) {
+    triggers.create = function (name, def, callback) {
       var reqOptions = {
-        method: "POST",
+        method: 'POST',
         user: this.user,
         body: def,
-        endpoint: "api/v/3/code/" + this.systemKey + "/trigger/" + name,
-        URI: this.URI
+        endpoint: 'api/v/3/code/' + this.systemKey + '/trigger/' + name,
+        URI: this.URI,
       };
 
       ClearBlade.request(reqOptions, callback);
@@ -3391,13 +3399,13 @@ if (!window.console) {
      *    }
      * })
      */
-    triggers.update = function(name, def, callback) {
+    triggers.update = function (name, def, callback) {
       var reqOptions = {
-        method: "PUT",
+        method: 'PUT',
         user: this.user,
         body: def,
-        endpoint: "api/v/3/code/" + this.systemKey + "/trigger/" + name,
-        URI: this.URI
+        endpoint: 'api/v/3/code/' + this.systemKey + '/trigger/' + name,
+        URI: this.URI,
       };
 
       ClearBlade.request(reqOptions, callback);
@@ -3418,12 +3426,12 @@ if (!window.console) {
      *    }
      * })
      */
-    triggers.delete = function(name, callback) {
+    triggers.delete = function (name, callback) {
       var reqOptions = {
-        method: "DELETE",
+        method: 'DELETE',
         user: this.user,
-        endpoint: "api/v/3/code/" + this.systemKey + "/trigger/" + name,
-        URI: this.URI
+        endpoint: 'api/v/3/code/' + this.systemKey + '/trigger/' + name,
+        URI: this.URI,
       };
 
       ClearBlade.request(reqOptions, callback);
@@ -3432,7 +3440,7 @@ if (!window.console) {
     return triggers;
   };
 
-  ClearBlade.prototype.Roles = function() {
+  ClearBlade.prototype.Roles = function () {
     var roles = {};
 
     roles.user = this.user;
@@ -3461,13 +3469,13 @@ if (!window.console) {
      *    }
      * })
      */
-    roles.create = function(role, callback) {
+    roles.create = function (role, callback) {
       var reqOptions = {
-        method: "POST",
+        method: 'POST',
         user: this.user,
         body: role,
-        endpoint: "api/v/3/user/roles/" + this.systemKey,
-        URI: this.URI
+        endpoint: 'api/v/3/user/roles/' + this.systemKey,
+        URI: this.URI,
       };
 
       ClearBlade.request(reqOptions, callback);
@@ -3490,16 +3498,16 @@ if (!window.console) {
      *    }
      * })
      */
-    roles.update = function(id, changes, callback) {
+    roles.update = function (id, changes, callback) {
       var reqOptions = {
-        method: "PUT",
+        method: 'PUT',
         user: this.user,
         body: {
           id: id,
-          changes: changes
+          changes: changes,
         },
-        endpoint: "api/v/3/user/roles/" + this.systemKey,
-        URI: this.URI
+        endpoint: 'api/v/3/user/roles/' + this.systemKey,
+        URI: this.URI,
       };
 
       ClearBlade.request(reqOptions, callback);
@@ -3556,27 +3564,27 @@ if (!window.console) {
      *    }
      * })
      */
-    roles.fetch = function(options, callback) {
-      var qs = "";
+    roles.fetch = function (options, callback) {
+      var qs = '';
       if (callback === undefined) {
         callback = options;
         options = {};
       }
 
       if (options.query) {
-        qs = "query=" + _parseQuery(options.query.query);
+        qs = 'query=' + _parseQuery(options.query.query);
       } else if (options && options.user) {
-        qs += "user=" + options.user;
+        qs += 'user=' + options.user;
       } else if (options && options.device) {
-        qs += "device=" + options.device;
+        qs += 'device=' + options.device;
       }
 
       var reqOptions = {
-        method: "GET",
+        method: 'GET',
         user: this.user,
-        endpoint: "api/v/3/user/roles/" + this.systemKey,
+        endpoint: 'api/v/3/user/roles/' + this.systemKey,
         qs: qs,
-        URI: this.URI
+        URI: this.URI,
       };
 
       ClearBlade.request(reqOptions, callback);
@@ -3596,15 +3604,15 @@ if (!window.console) {
      *    }
      * })
      */
-    roles.delete = function(roleId, callback) {
-      var qs = "role=" + roleId;
+    roles.delete = function (roleId, callback) {
+      var qs = 'role=' + roleId;
 
       var reqOptions = {
-        method: "DELETE",
+        method: 'DELETE',
         user: this.user,
-        endpoint: "api/v/3/user/roles/" + this.systemKey,
+        endpoint: 'api/v/3/user/roles/' + this.systemKey,
         qs: qs,
-        URI: this.URI
+        URI: this.URI,
       };
 
       ClearBlade.request(reqOptions, callback);
@@ -3613,7 +3621,7 @@ if (!window.console) {
     return roles;
   };
 
-  ClearBlade.prototype.UserManagement = function() {
+  ClearBlade.prototype.UserManagement = function () {
     var userMgmt = {};
 
     userMgmt.user = this.user;
@@ -3644,13 +3652,13 @@ if (!window.console) {
      *    }
      * })
      */
-    userMgmt.update = function(payload, callback) {
+    userMgmt.update = function (payload, callback) {
       var reqOptions = {
-        method: "PUT",
+        method: 'PUT',
         user: this.user,
-        endpoint: "api/v/4/user/manage",
+        endpoint: 'api/v/4/user/manage',
         body: payload,
-        URI: this.URI
+        URI: this.URI,
       };
 
       ClearBlade.request(reqOptions, callback);
@@ -3672,12 +3680,12 @@ if (!window.console) {
    *    }
    * })
    */
-  ClearBlade.prototype.getAllCollections = function(callback) {
+  ClearBlade.prototype.getAllCollections = function (callback) {
     var reqOptions = {
-      method: "GET",
-      endpoint: "api/v/3/allcollections/" + this.systemKey,
+      method: 'GET',
+      endpoint: 'api/v/3/allcollections/' + this.systemKey,
       user: this.user,
-      URI: this.URI
+      URI: this.URI,
     };
     ClearBlade.request(reqOptions, callback);
   };
