@@ -1,4 +1,4 @@
-import { getMessageTopic } from './utils';
+import '../index';
 
 describe('get message topic', function () {
   it('match identical destination and topic', function () {
@@ -8,7 +8,8 @@ describe('get message topic', function () {
       'placeholder/+': () => {},
       'dbupdate/placeholder/_monitor/two': () => {},
     };
-    const topic = getMessageTopic(destinationName, callbackDict);
+
+    const topic = ClearBlade.getMessageTopic(destinationName, callbackDict);
 
     expect(topic).toEqual('dbupdate/_monitor/_area/123/status');
   });
@@ -20,7 +21,7 @@ describe('get message topic', function () {
       'dbupdate/placeholder/_monitor/two': () => {},
       '+/+/+/+/+': () => {},
     };
-    const topic = getMessageTopic(destinationName, callbackDict);
+    const topic = ClearBlade.getMessageTopic(destinationName, callbackDict);
 
     expect(topic).toEqual('+/+/+/+/+');
   });
@@ -31,7 +32,7 @@ describe('get message topic', function () {
       'placeholder/+': () => {},
       'dbupdate/placeholder/_monitor/two': () => {},
     };
-    const topic = getMessageTopic(destinationName, callbackDict);
+    const topic = ClearBlade.getMessageTopic(destinationName, callbackDict);
 
     expect(topic).toEqual('dbupdate/_monitor/_area/+/status');
   });
@@ -43,7 +44,7 @@ describe('get message topic', function () {
       'dbupdate/placeholder/_monitor/two': () => {},
       '#': () => {},
     };
-    const topic = getMessageTopic(destinationName, callbackDict);
+    const topic = ClearBlade.getMessageTopic(destinationName, callbackDict);
 
     expect(topic).toEqual('#');
   });
@@ -55,7 +56,7 @@ describe('get message topic', function () {
       'dbupdate/placeholder/_monitor/two': () => {},
       'dbupdate/_monitor/_area/#': () => {},
     };
-    const topic = getMessageTopic(destinationName, callbackDict);
+    const topic = ClearBlade.getMessageTopic(destinationName, callbackDict);
 
     expect(topic).toEqual('dbupdate/_monitor/_area/#');
   });

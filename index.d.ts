@@ -69,6 +69,7 @@ interface InvocationContext {
   invocationContext: any;
 }
 
+type CbDictionary<K extends string, T> = { [P in K]?: T };
 interface IClearBladeGlobal {
   new (): IClearBlade;
 
@@ -77,6 +78,10 @@ interface IClearBladeGlobal {
   MESSAGING_QOS_EXACTLY_ONCE: MessagingQOS.MESSAGING_QOS_EXACTLY_ONCE;
 
   request(options: RequestOptions, callback: CbCallback<any>): void;
+  getMessageTopic(
+    destinationName: string,
+    callbackDict: CbDictionary<string, Function>
+  ): string;
 }
 
 interface IClearBlade {
@@ -184,19 +189,19 @@ interface Collection<T extends object> {
 }
 
 declare enum QuerySortDirections {
-  QUERY_SORT_ASCENDING = "ASC",
-  QUERY_SORT_DESCENDING = "DESC",
+  QUERY_SORT_ASCENDING = 'ASC',
+  QUERY_SORT_DESCENDING = 'DESC',
 }
 type ISortInfo = { [querySort in QuerySortDirections]: string };
 
 declare enum QueryConditions {
-  QUERY_EQUAL = "EQ",
-  QUERY_NOTEQUAL = "NEQ",
-  QUERY_GREATERTHAN = "GT",
-  QUERY_GREATERTHAN_EQUAL = "GTE",
-  QUERY_LESSTHAN = "LT",
-  QUERY_LESSTHAN_EQUAL = "LTE",
-  QUERY_MATCHES = "RE",
+  QUERY_EQUAL = 'EQ',
+  QUERY_NOTEQUAL = 'NEQ',
+  QUERY_GREATERTHAN = 'GT',
+  QUERY_GREATERTHAN_EQUAL = 'GTE',
+  QUERY_LESSTHAN = 'LT',
+  QUERY_LESSTHAN_EQUAL = 'LTE',
+  QUERY_MATCHES = 'RE',
 }
 
 type QueryValue = string | number | boolean;
@@ -448,9 +453,9 @@ type TopicsList = string[];
 interface MessageInfo {
   id: string;
   message: string;
-  "send-date": number;
+  'send-date': number;
   topicid: string;
-  "user-id": string;
+  'user-id': string;
 }
 
 type MessageCallbackInfo = MessageInfo[] | string;

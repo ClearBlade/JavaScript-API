@@ -757,6 +757,24 @@ if (!window.console) {
     httpRequest.send(body);
   };
 
+  ClearBlade.getMessageTopic = function (destinationName, callbackDict) {
+    const destArr = destinationName.split('/');
+    for (const topic in callbackDict) {
+      const topicArr = topic.split('/');
+      for (let i = 0; i < destArr.length; i++) {
+        if (topicArr[i] === '#') {
+          return topic;
+        }
+        if (destArr[i] !== topicArr[i] && topicArr[i] !== '+') {
+          break;
+        }
+        if (i === destArr.length - 1) {
+          return topic;
+        }
+      }
+    }
+  };
+
   ClearBlade.request = function (options, callback) {
     if (!options || typeof options !== 'object') {
       throw new Error('Request: options is not an object or is empty');
@@ -2093,7 +2111,10 @@ if (!window.console) {
       // messageCallback from Subscribe()
 
       messaging.messageCallback[
-        getMessageTopic(message.destinationName, messaging.messageCallback)
+        ClearBlade.getMessageTopic(
+          message.destinationName,
+          messaging.messageCallback
+        )
       ](message.payloadString, message);
     };
     // the mqtt websocket library uses "onConnect," but our terminology uses
