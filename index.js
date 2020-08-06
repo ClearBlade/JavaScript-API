@@ -14,7 +14,7 @@ if (!window.console) {
 }
 
 (function (window, undefined) {
-  'use strict';
+  // 'use strict';
   var ClearBlade, $cb, currentUser;
   /**
    * This is the base module for the ClearBlade Platform API
@@ -2114,7 +2114,7 @@ if (!window.console) {
       messageCallbacks[
         ClearBlade.getMessageTopic(
           message.destinationName,
-          messaging.messageCallback
+          messageCallbacks
         )
       ](message.payloadString, message);
     };
