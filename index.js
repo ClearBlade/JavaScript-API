@@ -2198,10 +2198,11 @@ if (!window.console) {
       }
 
       this.client.subscribe(topic, conf);
-
-      this.messageCallback = this.messageCallback
-        ? { ...this.messageCallback, [topic]: messageCallback }
-        : { [topic]: messageCallback };
+      if (this.messageCallback) {
+        this.messageCallback[topic] = messageCallback;
+      } else {
+        this.messageCallback = { [topic]: messageCallback };
+      }
     };
 
     /**
