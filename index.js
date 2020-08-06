@@ -2197,8 +2197,12 @@ if (!window.console) {
       }
 
       this.client.subscribe(topic, conf);
-
+      console.log('subscribe topic', topic);
+      console.log('subscribe callback', messageCallback);
+      
       messaging.messageCallback[topic] = messageCallback;
+
+      console.log('subscribe dictionary', messaging.messageCallback);
     };
 
     /**
