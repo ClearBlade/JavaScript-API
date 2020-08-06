@@ -14,8 +14,6 @@ if (!window.console) {
 }
 
 (function (window, undefined) {
-  'use strict';
-
   var ClearBlade, $cb, currentUser;
   /**
    * This is the base module for the ClearBlade Platform API
@@ -2051,6 +2049,7 @@ if (!window.console) {
     var _this = this;
     var messaging = {};
 
+    messaging.messageCallback = {};
     messaging.user = this.user;
     messaging.URI = this.URI;
     messaging.endpoint = 'api/v/1/message';
@@ -2198,11 +2197,8 @@ if (!window.console) {
       }
 
       this.client.subscribe(topic, conf);
-      if (this.messageCallback) {
-        this.messageCallback[topic] = messageCallback;
-      } else {
-        this.messageCallback = { [topic]: messageCallback };
-      }
+
+      messaging.messageCallback[topic] = messageCallback;
     };
 
     /**
