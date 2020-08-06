@@ -14,6 +14,7 @@ if (!window.console) {
 }
 
 (function (window, undefined) {
+  'use strict';
   var ClearBlade, $cb, currentUser;
   /**
    * This is the base module for the ClearBlade Platform API
@@ -2042,6 +2043,8 @@ if (!window.console) {
    * //A connect with a nonstandard timeout
    * var cb = ClearBlade.Messaging({"timeout":15}, callback);
    */
+  var messageCallbacks = {};
+
   ClearBlade.prototype.Messaging = function (options, callback) {
     if (!window.Paho) {
       throw new Error('Please include the mqttws31.js script on the page');
@@ -2049,7 +2052,6 @@ if (!window.console) {
     var _this = this;
     var messaging = {};
 
-    messaging.messageCallback = {};
     messaging.user = this.user;
     messaging.URI = this.URI;
     messaging.endpoint = 'api/v/1/message';
@@ -2109,7 +2111,7 @@ if (!window.console) {
     messaging.client.onMessageArrived = function (message) {
       // messageCallback from Subscribe()
 
-      messaging.messageCallback[
+      messageCallbacks[
         ClearBlade.getMessageTopic(
           message.destinationName,
           messaging.messageCallback
@@ -2197,12 +2199,8 @@ if (!window.console) {
       }
 
       this.client.subscribe(topic, conf);
-      console.log('subscribe topic', topic);
-      console.log('subscribe callback', messageCallback);
-      
-      messaging.messageCallback[topic] = messageCallback;
 
-      console.log('subscribe dictionary', messaging.messageCallback);
+      messageCallbacks[topic] = messageCallback;
     };
 
     /**
