@@ -2043,7 +2043,6 @@ if (!window.console) {
    * //A connect with a nonstandard timeout
    * var cb = ClearBlade.Messaging({"timeout":15}, callback);
    */
-  var messageCallbacks = {};
 
   ClearBlade.prototype.Messaging = function (options, callback) {
     if (!window.Paho) {
@@ -2051,6 +2050,7 @@ if (!window.console) {
     }
     var _this = this;
     var messaging = {};
+    var messageCallbacks = {};
 
     messaging.user = this.user;
     messaging.URI = this.URI;
