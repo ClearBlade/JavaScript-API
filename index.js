@@ -2112,10 +2112,7 @@ if (!window.console) {
       // messageCallback from Subscribe()
 
       messageCallbacks[
-        ClearBlade.getMessageTopic(
-          message.destinationName,
-          messageCallbacks
-        )
+        ClearBlade.getMessageTopic(message.destinationName, messageCallbacks)
       ](message.payloadString, message);
     };
     // the mqtt websocket library uses "onConnect," but our terminology uses
@@ -2227,6 +2224,8 @@ if (!window.console) {
       conf['onSuccess'] = options['onSuccess'] || function () {}; //null;
       conf['onFailure'] = options['onFailure'] || function () {}; //null;
       conf['timeout'] = options['timeout'] || 60;
+
+      delete messageCallbacks[topic];
       this.client.unsubscribe(topic, conf);
     };
 
@@ -2241,6 +2240,7 @@ if (!window.console) {
      * cb.disconnect()//why leave so soon :(
      */
     messaging.disconnect = function () {
+      messageCallbacks = {};
       this.client.disconnect();
     };
 
