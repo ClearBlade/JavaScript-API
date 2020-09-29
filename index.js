@@ -2208,14 +2208,15 @@ if (!window.console) {
 
       this.client.subscribe(topic, conf);
 
-      messageCallbacks[topic] = messageCallbacks[topic]
-        ? {
-            ...messageCallbacks[topic],
-            [callbackId ?? DEFAULT_CALLBACK_ID]: messageCallback,
-          }
-        : {
-            [callbackId ?? DEFAULT_CALLBACK_ID]: messageCallback,
-          };
+      if (messageCallbacks[topic]) {
+        messageCallbacks[topic] = Object.assign(messageCallbacks[topic], {
+          [callbackId || DEFAULT_CALLBACK_ID]: messageCallback,
+        });
+      } else {
+        messageCallbacks[topic] = {
+          [callbackId || DEFAULT_CALLBACK_ID]: messageCallback,
+        };
+      }
     };
 
     /**
@@ -2243,7 +2244,7 @@ if (!window.console) {
       conf['onFailure'] = options['onFailure'] || function () {}; //null;
       conf['timeout'] = options['timeout'] || 60;
 
-      delete messageCallbacks[topic][callbackId ?? DEFAULT_CALLBACK_ID];
+      delete messageCallbacks[topic][callbackId || DEFAULT_CALLBACK_ID];
       if (Object.keys(messageCallbacks[topic]).length === 0) {
         this.client.unsubscribe(topic, conf);
       }
