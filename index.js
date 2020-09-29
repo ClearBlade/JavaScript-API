@@ -2208,14 +2208,14 @@ if (!window.console) {
 
       this.client.subscribe(topic, conf);
 
-      messageCallbacks[topic]
-        ? (messageCallbacks[topic] = {
+      messageCallbacks[topic] = messageCallbacks[topic]
+        ? {
             ...messageCallbacks[topic],
             [callbackId ?? DEFAULT_CALLBACK_ID]: messageCallback,
-          })
-        : (messageCallbacks[topic] = {
+          }
+        : {
             [callbackId ?? DEFAULT_CALLBACK_ID]: messageCallback,
-          });
+          };
     };
 
     /**
