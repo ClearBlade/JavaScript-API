@@ -410,9 +410,14 @@ interface Messaging {
   subscribe(
     topic: string,
     options: MessagingSubscribeOptions,
-    messageCallback: MessageCallback
+    messageCallback: MessageCallback,
+    callbackId?: string
   ): void;
-  unsubscribe(topic: string, options: MessagingSubscribeOptions): void;
+  unsubscribe(
+    topic: string,
+    options: MessagingSubscribeOptions,
+    callbackId?: string
+  ): void;
   disconnect(): void;
 }
 
