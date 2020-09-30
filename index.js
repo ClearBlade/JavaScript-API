@@ -2112,8 +2112,6 @@ if (!window.console) {
 
     messaging.client.onMessageArrived = function (message) {
       // messageCallbacks from Subscribe() may contain multiple callbacks per topic
-      console.log('message arrive happening');
-      console.log('message', message);
       const callbacks = Object.values(
         messageCallbacks[
           ClearBlade.getMessageTopic(message.destinationName, messageCallbacks)
@@ -2209,11 +2207,6 @@ if (!window.console) {
       }
 
       this.client.subscribe(topic, conf);
-
-      console.log('subscribe happening');
-      console.log('topic', topic);
-      console.log('callback id', callbackId);
-      console.log('callbacks', messageCallbacks);
 
       if (messageCallbacks[topic]) {
         messageCallbacks[topic] = Object.assign(messageCallbacks[topic], {
