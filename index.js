@@ -2017,6 +2017,8 @@ if (!window.console) {
     return user;
   };
 
+  const DEFAULT_CALLBACK_ID = '__default_callback_id__';
+
   /**
    * Initializes the ClearBlade messaging object and connects to a server.
    * @class ClearBlade.Messaging
@@ -2109,11 +2111,15 @@ if (!window.console) {
     };
 
     messaging.client.onMessageArrived = function (message) {
-      // messageCallback from Subscribe()
-
-      messageCallbacks[
-        ClearBlade.getMessageTopic(message.destinationName, messageCallbacks)
-      ](message.payloadString, message);
+      // messageCallbacks from Subscribe() may contain multiple callbacks per topic
+      const callbacks = Object.values(
+        messageCallbacks[
+          ClearBlade.getMessageTopic(message.destinationName, messageCallbacks)
+        ]
+      );
+      for (callback of callbacks) {
+        callback(message.payloadString, message);
+      }
     };
     // the mqtt websocket library uses "onConnect," but our terminology uses
     // "onSuccess" and "onFailure"
@@ -2186,7 +2192,12 @@ if (!window.console) {
      * var cb = ClearBlade.Messaging({}, callback);
      * cb.subscribe("ClearBlade/is awesome!",{});
      */
-    messaging.subscribe = function (topic, options, messageCallback) {
+    messaging.subscribe = function (
+      topic,
+      options,
+      messageCallback,
+      callbackId
+    ) {
       var conf = {
         qos: this._qos || 0,
       };
@@ -2197,7 +2208,15 @@ if (!window.console) {
 
       this.client.subscribe(topic, conf);
 
-      messageCallbacks[topic] = messageCallback;
+      if (messageCallbacks[topic]) {
+        messageCallbacks[topic] = Object.assign(messageCallbacks[topic], {
+          [callbackId || DEFAULT_CALLBACK_ID]: messageCallback,
+        });
+      } else {
+        messageCallbacks[topic] = {
+          [callbackId || DEFAULT_CALLBACK_ID]: messageCallback,
+        };
+      }
     };
 
     /**
@@ -2218,15 +2237,17 @@ if (!window.console) {
      * var cb = ClearBlade.Messaging({}, callback);
      * cb.unsubscribe("ClearBlade/is awesome!",{"onSuccess":function(){console.log("we unsubscribe");});
      */
-    messaging.unsubscribe = function (topic, options) {
+    messaging.unsubscribe = function (topic, options, callbackId) {
       var conf = {};
       conf['invocationContext'] = options['invocationContext'] || {};
       conf['onSuccess'] = options['onSuccess'] || function () {}; //null;
       conf['onFailure'] = options['onFailure'] || function () {}; //null;
       conf['timeout'] = options['timeout'] || 60;
 
-      delete messageCallbacks[topic];
-      this.client.unsubscribe(topic, conf);
+      delete messageCallbacks[topic][callbackId || DEFAULT_CALLBACK_ID];
+      if (Object.keys(messageCallbacks[topic]).length === 0) {
+        this.client.unsubscribe(topic, conf);
+      }
     };
 
     /**
