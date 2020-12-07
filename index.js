@@ -13,9 +13,9 @@ if (!window.console) {
   window.console.log = window.console.log || function () {};
 }
 
-(function (window, undefined) {
+function createClearBladeInstance (window, undefined) {
   // 'use strict';
-  var ClearBlade, $cb, currentUser;
+  var ClearBlade;
   /**
    * This is the base module for the ClearBlade Platform API
    * @namespace ClearBlade
@@ -30,8 +30,7 @@ if (!window.console) {
     // window = exports;
   }
 
-  ClearBlade = $cb = window.$cb = window.ClearBlade =
-    window.ClearBlade || function () {};
+  ClearBlade = function () {};
 
   ClearBlade.MESSAGING_QOS_AT_MOST_ONCE = 0;
   ClearBlade.MESSAGING_QOS_AT_LEAST_ONCE = 1;
@@ -123,6 +122,7 @@ if (!window.console) {
      */
     ClearBlade.prototype.systemKey = options.systemKey;
     this.systemKey = options.systemKey;
+
     /**
      * This is the app secret that will be used in combination with the systemKey to authenticate your app
      * @property systemSecret
@@ -3730,4 +3730,13 @@ if (!window.console) {
     };
     ClearBlade.request(reqOptions, callback);
   };
-})(window);
+
+  return ClearBlade;
+}
+
+module.exports = { 
+  ClearBlade: function() { 
+    const cb = createClearBladeInstance(window);  
+    return new cb();
+  } 
+};

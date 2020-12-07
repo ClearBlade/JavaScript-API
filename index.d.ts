@@ -758,5 +758,3 @@ interface UserManagementAPI {
 
   update(body: UpdateUserPayload, callback: CbCallback<undefined>): void;
 }
-
-declare var ClearBlade: IClearBladeGlobal;
