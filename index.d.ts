@@ -8,14 +8,14 @@
 
 // TODO: change all the occurences where we use CbCallback<any> to supply the actual type that is returned
 
-declare module 'clearblade-js-client' {
+declare module "clearblade-js-client" {
   export interface ClearBlade {
     new (): IClearBlade;
-  
+
     MESSAGING_QOS_AT_MOST_ONCE: MessagingQOS.MESSAGING_QOS_AT_MOST_ONCE;
     MESSAGING_QOS_AT_LEAST_ONCE: MessagingQOS.MESSAGING_QOS_AT_LEAST_ONCE;
     MESSAGING_QOS_EXACTLY_ONCE: MessagingQOS.MESSAGING_QOS_EXACTLY_ONCE;
-  
+
     request(options: RequestOptions, callback: CbCallback<any>): void;
     getMessageTopic(
       destinationName: string,
@@ -192,19 +192,19 @@ interface Collection<T extends object> {
 }
 
 declare enum QuerySortDirections {
-  QUERY_SORT_ASCENDING = 'ASC',
-  QUERY_SORT_DESCENDING = 'DESC',
+  QUERY_SORT_ASCENDING = "ASC",
+  QUERY_SORT_DESCENDING = "DESC",
 }
 type ISortInfo = { [querySort in QuerySortDirections]: string };
 
 declare enum QueryConditions {
-  QUERY_EQUAL = 'EQ',
-  QUERY_NOTEQUAL = 'NEQ',
-  QUERY_GREATERTHAN = 'GT',
-  QUERY_GREATERTHAN_EQUAL = 'GTE',
-  QUERY_LESSTHAN = 'LT',
-  QUERY_LESSTHAN_EQUAL = 'LTE',
-  QUERY_MATCHES = 'RE',
+  QUERY_EQUAL = "EQ",
+  QUERY_NOTEQUAL = "NEQ",
+  QUERY_GREATERTHAN = "GT",
+  QUERY_GREATERTHAN_EQUAL = "GTE",
+  QUERY_LESSTHAN = "LT",
+  QUERY_LESSTHAN_EQUAL = "LTE",
+  QUERY_MATCHES = "RE",
 }
 
 type QueryValue = string | number | boolean;
@@ -408,7 +408,7 @@ interface Messaging {
   callTimeout: number;
   client: Paho.MQTT.Client;
 
-  publish(topic: string, payload: object): void;
+  publish(topic: string, payload: string): void;
   publishREST(topic: string, payload: object, callback: CbCallback<any>): void;
   subscribe(
     topic: string,
@@ -461,9 +461,9 @@ type TopicsList = string[];
 interface MessageInfo {
   id: string;
   message: string;
-  'send-date': number;
+  "send-date": number;
   topicid: string;
-  'user-id': string;
+  "user-id": string;
 }
 
 type MessageCallbackInfo = MessageInfo[] | string;
