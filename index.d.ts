@@ -9,7 +9,7 @@
 // TODO: change all the occurences where we use CbCallback<any> to supply the actual type that is returned
 
 declare module "clearblade-js-client" {
-  export interface ClearBlade {
+  interface ClearBlade {
     new (): IClearBlade;
 
     MESSAGING_QOS_AT_MOST_ONCE: MessagingQOS.MESSAGING_QOS_AT_MOST_ONCE;
@@ -22,6 +22,7 @@ declare module "clearblade-js-client" {
       callbackDict: CbDictionary<string, Function>
     ): string;
   }
+  export var ClearBlade: ClearBlade;
 }
 
 declare enum MessagingQOS {
