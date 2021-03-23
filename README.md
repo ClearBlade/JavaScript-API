@@ -25,7 +25,7 @@ Calling ClearBlade.init(configObject) will initialize ClearBlade settings and fu
 ```javascript
 
 ClearBlade.init({
-	URI: 'platform address',  // e.g., 'https://platform.clearblade.com/'
+	URI: 'platform address',  // e.g., 'https://platform.clearblade.com'
 	systemKey: 'theSystemKey',
 	systemSecret: 'theSystemSecret',
 	email: "userEmail",  // use registerEmail instead if you wish to create a new user
