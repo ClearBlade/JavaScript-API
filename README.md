@@ -7,7 +7,7 @@
 
 ```javascript
 import 'clearblade-js-client/lib/mqttws31'; 
-import 'clearblade-js-client';
+import { ClearBlade } from 'clearblade-js-client';
 
 const cb = new ClearBlade();
 ```
