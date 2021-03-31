@@ -1,3 +1,70 @@
+# QuickStart
+
+## Installation
+
+### With modern build process
+```npm i --save clearblade-js-client```
+
+```javascript
+import 'clearblade-js-client/lib/mqttws31'; 
+import { ClearBlade } from 'clearblade-js-client';
+```
+
+### With script tag
+
+
+Download and place https://raw.githubusercontent.com/ClearBlade/JavaScript-API/master/index.js as well as https://raw.githubusercontent.com/ClearBlade/JavaScript-API/master/lib/mqttws31.js inside your project directory and include them in your HTML file's header
+
+## Usage
+The ClearBlade object attaches to window after being included.
+
+Calling ClearBlade.init(configObject) will initialize ClearBlade settings and functions and pass it as an argument to a callback.
+
+```javascript
+const cb = new ClearBlade();
+
+cb.init({
+	URI: 'platform address',  // e.g., 'https://platform.clearblade.com'
+	systemKey: 'theSystemKey',
+	systemSecret: 'theSystemSecret',
+	email: "userEmail",  // use registerEmail instead if you wish to create a new user
+	password: "userPassword",
+	callback: initCallback,
+});
+
+function initCallback(err, authInfo) {  // err is a boolean, authInfo is an object containing email and authToken
+	if (err) {
+	  throw new Error(cb);
+	} else {
+	  console.log("successfully inited ClearBlade");
+	}
+}
+
+function fetchData() {
+	var collection = cb.Collection();
+	collection.fetch(someQuery, collectionFetchCallback(err, rows) {
+	  if (err) {
+	    throw new Error(rows);
+	  } else {
+	    // do something with the collection rows
+	  }
+	});
+}
+
+function subscribeMessaging() {
+	var messaging = cb.Messaging();
+	messaging.subscribe('someTopic', {timeout: 120}, subscribeCallback(err, message) {
+	  if (err) {
+	    throw new Error(message);
+	  } else {
+	    // do something with response
+	  }
+  	});
+}
+
+```
+
+
 # API Reference
 
 ## Setup
@@ -326,52 +393,3 @@ Example filter object:
 
 The Javadoc for the JavaScript API can be found at https://docs.clearblade.com/v/3/static/jsapi/index.html
 
-# QuickStart
-
-## Installation
-Download and place https://raw.githubusercontent.com/ClearBlade/JavaScript-API/master/ClearBlade.js inside your project directory and include it in your HTML file's header
-
-## Usage
-The ClearBlade object attaches to window after being included.
-
-Calling ClearBlade.init(configObject) will initialize ClearBlade settings and functions and pass it as an argument to a callback.
-
-```javascript
-
-ClearBlade.init({
-	URI: 'platform address',  // e.g., 'https://platform.clearblade.com/'
-	systemKey: 'theSystemKey',
-	systemSecret: 'theSystemSecret',
-	email: "userEmail",  // use registerEmail instead if you wish to create a new user
-	password: "userPassword",
-	callback: initCallback,
-});
-
-function initCallback(err, cb) {  // err is a boolean, cb has APIs and constructors attached
-	if (err) {
-	  throw new Error(cb);
-	} else {
-	  var collection = cb.collection();
-	  collection.fetch(someQuery, collectionFetchCallback(err, rows) {
-	  	if (err) {
-		  	throw new Error(rows);
-		} else {
-			// do something with the collection rows
-		}
-	  });
-
-	  var messaging = cb.messaging();
-	  messaging.subscribe('someTopic', {timeout: 120}, subscribeCallback(err, message) {
-	  	if (err) {
-	  		throw new Error(message);
-	  	} else {
-	  		// do something with response
-	  	}
-  	});
-
-	}
-}
-
-```
-
-See SDK Reference for a full list of APIs

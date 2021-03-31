@@ -8,10 +8,27 @@
 
 // TODO: change all the occurences where we use CbCallback<any> to supply the actual type that is returned
 
+declare module "clearblade-js-client" {
+  interface ClearBlade {
+    new (): IClearBlade;
+
+    MESSAGING_QOS_AT_MOST_ONCE: MessagingQOS.MESSAGING_QOS_AT_MOST_ONCE;
+    MESSAGING_QOS_AT_LEAST_ONCE: MessagingQOS.MESSAGING_QOS_AT_LEAST_ONCE;
+    MESSAGING_QOS_EXACTLY_ONCE: MessagingQOS.MESSAGING_QOS_EXACTLY_ONCE;
+
+    request(options: RequestOptions, callback: CbCallback<any>): void;
+    getMessageTopic(
+      destinationName: string,
+      callbackDict: CbDictionary<string, Function>
+    ): string;
+  }
+  export var ClearBlade: ClearBlade;
+}
+
 declare enum MessagingQOS {
   MESSAGING_QOS_AT_MOST_ONCE = 0,
   MESSAGING_QOS_AT_LEAST_ONCE = 1,
-  MESSAGING_QOS_EXACTLY_ONCE = 2
+  MESSAGING_QOS_EXACTLY_ONCE = 2,
 }
 
 interface InitOptions {
@@ -69,15 +86,7 @@ interface InvocationContext {
   invocationContext: any;
 }
 
-interface IClearBladeGlobal {
-  new (): IClearBlade;
-
-  MESSAGING_QOS_AT_MOST_ONCE: MessagingQOS.MESSAGING_QOS_AT_MOST_ONCE;
-  MESSAGING_QOS_AT_LEAST_ONCE: MessagingQOS.MESSAGING_QOS_AT_LEAST_ONCE;
-  MESSAGING_QOS_EXACTLY_ONCE: MessagingQOS.MESSAGING_QOS_EXACTLY_ONCE;
-
-  request(options: RequestOptions, callback: CbCallback<any>): void;
-}
+type CbDictionary<K extends string, T> = { [P in K]?: T };
 
 interface IClearBlade {
   systemKey: string;
@@ -111,12 +120,12 @@ interface IClearBlade {
     callback: CbCallback<any>
   ): void;
   registerMasterCallback(callback: CbCallback<InvocationContext>): void;
-  Collection(
+  Collection<T extends object>(
     options: string | CollectionOptionsWithName | CollectionOptionsWithID
-  ): Collection;
+  ): Collection<T>;
   Query(): QueryObj;
   Query(options: string | QueryOptionsWithName | QueryOptionsWithID): QueryObj;
-  Item(data: object, collectionID: string | ItemOptions): Item;
+  Item<T extends object>(data: T, collectionID: string | ItemOptions): Item<T>;
   Code(): Code;
   User(): AppUser;
   Messaging(
@@ -138,7 +147,8 @@ interface IClearBlade {
   Analytics(): Analytics;
   Portal(name: string): Portal;
   Triggers(): Triggers;
-  Roles(): Roles;
+  Roles(): RoleAPI;
+  UserManagement(): UserManagementAPI;
   getAllCollections(callback: CbCallback<CollectionData[]>): void;
 }
 interface CollectionOptionsWithName {
@@ -158,7 +168,7 @@ interface CollectionData {
   name: string;
 }
 
-interface Collection {
+interface Collection<T extends object> {
   name: string;
   endpoint: string;
   isUsingCollectionName: boolean;
@@ -168,10 +178,14 @@ interface Collection {
   systemSecret: string;
 
   fetch(
-    query: QueryObj | CbCallback<Item[]>,
-    callback?: CbCallback<CbCallback<QueryCallbackInfo>>
+    query: QueryObj | CbCallback<Item<T>[]>,
+    callback: CbCallback<Item<T>[]>
   ): void;
-  create(newItem: object, callback: CbCallback<Item[]>): void;
+  fetch(callback: CbCallback<Item<T>[]>): void;
+  create(
+    newItem: Partial<T> | Array<Partial<T>>,
+    callback: CbCallback<Item<T>[]>
+  ): void;
   update(query: QueryObj, changes: object, callback: CbCallback<string>): void;
   remove(query: QueryObj, callback: CbCallback<string>): void;
   columns(callback: CbCallback<Column[]>): void;
@@ -180,7 +194,7 @@ interface Collection {
 
 declare enum QuerySortDirections {
   QUERY_SORT_ASCENDING = "ASC",
-  QUERY_SORT_DESCENDING = "DESC"
+  QUERY_SORT_DESCENDING = "DESC",
 }
 type ISortInfo = { [querySort in QuerySortDirections]: string };
 
@@ -191,7 +205,7 @@ declare enum QueryConditions {
   QUERY_GREATERTHAN_EQUAL = "GTE",
   QUERY_LESSTHAN = "LT",
   QUERY_LESSTHAN_EQUAL = "LTE",
-  QUERY_MATCHES = "RE"
+  QUERY_MATCHES = "RE",
 }
 
 type QueryValue = string | number | boolean;
@@ -272,8 +286,8 @@ interface QueryObj {
 
 interface ItemOptions extends CollectionOptionsWithID {}
 
-interface Item {
-  data: object;
+interface Item<T extends object> {
+  data: T;
 
   save(callback: CbCallback<any>): void;
   refresh(callback: CbCallback<any>): void;
@@ -287,9 +301,9 @@ interface ServicePayload {
   dependencies: string;
 }
 
-interface ServiceCallbackInfo {
+interface ServiceCallbackInfo<T> {
   logs?: string;
-  results: string;
+  results: T;
   success: boolean;
 }
 
@@ -312,7 +326,7 @@ interface ServiceError {
 interface ServiceInfo {
   Service: string;
   Args: any[];
-  Response: ServiceCallbackInfo;
+  Response: ServiceCallbackInfo<unknown>;
   Error: ServiceError;
   UserId: string;
   UserType: number;
@@ -342,10 +356,10 @@ interface Code {
     callback: CbCallback<CodeUpdateInfo>
   ): void;
   delete(name: string, callback: CbCallback<any>): void;
-  execute(
+  execute<T>(
     name: string,
     params: object,
-    callback: CbCallback<ServiceCallbackInfo> | string
+    callback: CbCallback<ServiceCallbackInfo<T>>
   ): void;
   getCompletedServices(callback: CbCallback<ServiceInfo>): void;
   getFailedServices(callback: CbCallback<ServiceInfo>): void;
@@ -395,14 +409,19 @@ interface Messaging {
   callTimeout: number;
   client: Paho.MQTT.Client;
 
-  publish(topic: string, payload: object): void;
+  publish(topic: string, payload: string): void;
   publishREST(topic: string, payload: object, callback: CbCallback<any>): void;
   subscribe(
     topic: string,
     options: MessagingSubscribeOptions,
-    messageCallback: MessageCallback
+    messageCallback: MessageCallback,
+    callbackId?: string
   ): void;
-  unsubscribe(topic: string, options: MessagingSubscribeOptions): void;
+  unsubscribe(
+    topic: string,
+    options: MessagingSubscribeOptions,
+    callbackId?: string
+  ): void;
   disconnect(): void;
 }
 
@@ -687,13 +706,59 @@ interface Triggers {
   delete(name: string, callback: CbCallback<any>): void;
 }
 
-interface Roles {
+interface Role {
+  ID: string;
+  Name: string;
+  Description: string;
+}
+
+interface FetchRolesOptions {
+  user?: string;
+  device?: string;
+  query?: QueryObj;
+}
+
+interface CreateRolePayload {
+  name: string;
+  description: string;
+  collections: {}[];
+  topics: {}[];
+  services: {}[];
+  servicecaches: {}[];
+}
+
+interface RoleAPI {
   user: APIUser;
   URI: string;
   systemKey: string;
   systemSecret: string;
 
+  create(
+    role: CreateRolePayload,
+    callback: CbCallback<{ role_id: string }>
+  ): void;
   update(id: string, changes: object, callback: CbCallback<any>): void;
+  fetch(options: FetchRolesOptions, callback: CbCallback<Role[]>): void;
+  fetch(callback: CbCallback<Role[]>): void;
+  delete(roleId: string, callback: CbCallback<undefined>): void;
 }
 
-declare var ClearBlade: IClearBladeGlobal;
+interface UpdateUserPayload {
+  user: string;
+  changes: {
+    password?: string;
+    roles?: {
+      add: string[];
+      delete: string[];
+    };
+  };
+}
+
+interface UserManagementAPI {
+  user: APIUser;
+  URI: string;
+  systemKey: string;
+  systemSecret: string;
+
+  update(body: UpdateUserPayload, callback: CbCallback<undefined>): void;
+}
