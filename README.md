@@ -37,7 +37,7 @@ function initCallback(err, cb) {  // err is a boolean, cb has APIs and construct
 	if (err) {
 	  throw new Error(cb);
 	} else {
-	  var collection = cb.collection();
+	  var collection = cb.Collection();
 	  collection.fetch(someQuery, collectionFetchCallback(err, rows) {
 	  	if (err) {
 		  	throw new Error(rows);
@@ -46,7 +46,7 @@ function initCallback(err, cb) {  // err is a boolean, cb has APIs and construct
 		}
 	  });
 
-	  var messaging = cb.messaging();
+	  var messaging = cb.Messaging();
 	  messaging.subscribe('someTopic', {timeout: 120}, subscribeCallback(err, message) {
 	  	if (err) {
 	  		throw new Error(message);
