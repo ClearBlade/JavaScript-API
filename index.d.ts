@@ -36,7 +36,7 @@ interface InitOptions {
   systemSecret: string;
   masterSecret?: string;
   logging?: boolean;
-  callback?: CbCallback<any>;
+  callback?: CbCallback<APIUser>;
   email?: string;
   password?: string;
   registerUser?: boolean;
