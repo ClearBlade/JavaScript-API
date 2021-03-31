@@ -32,7 +32,7 @@ cb.init({
 	callback: initCallback,
 });
 
-function initCallback(err, authInfo) {  // err is a boolean, authInfo has is an object containing email and authToken
+function initCallback(err, authInfo) {  // err is a boolean, authInfo is an object containing email and authToken
 	if (err) {
 	  throw new Error(cb);
 	} else {
