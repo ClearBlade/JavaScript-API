@@ -8,8 +8,6 @@
 ```javascript
 import 'clearblade-js-client/lib/mqttws31'; 
 import { ClearBlade } from 'clearblade-js-client';
-
-const cb = new ClearBlade();
 ```
 
 ### With script tag
@@ -23,8 +21,9 @@ The ClearBlade object attaches to window after being included.
 Calling ClearBlade.init(configObject) will initialize ClearBlade settings and functions and pass it as an argument to a callback.
 
 ```javascript
+const cb = new ClearBlade();
 
-ClearBlade.init({
+cb.init({
 	URI: 'platform address',  // e.g., 'https://platform.clearblade.com'
 	systemKey: 'theSystemKey',
 	systemSecret: 'theSystemSecret',
@@ -33,29 +32,34 @@ ClearBlade.init({
 	callback: initCallback,
 });
 
-function initCallback(err, cb) {  // err is a boolean, cb has APIs and constructors attached
+function initCallback(err, authInfo) {  // err is a boolean, authInfo has is an object containing email and authToken
 	if (err) {
 	  throw new Error(cb);
 	} else {
-	  var collection = cb.Collection();
-	  collection.fetch(someQuery, collectionFetchCallback(err, rows) {
-	  	if (err) {
-		  	throw new Error(rows);
-		} else {
-			// do something with the collection rows
-		}
-	  });
-
-	  var messaging = cb.Messaging();
-	  messaging.subscribe('someTopic', {timeout: 120}, subscribeCallback(err, message) {
-	  	if (err) {
-	  		throw new Error(message);
-	  	} else {
-	  		// do something with response
-	  	}
-  	});
-
+	  console.log("successfully inited ClearBlade");
 	}
+}
+
+function fetchData() {
+	var collection = cb.Collection();
+	collection.fetch(someQuery, collectionFetchCallback(err, rows) {
+	  if (err) {
+	    throw new Error(rows);
+	  } else {
+	    // do something with the collection rows
+	  }
+	});
+}
+
+function subscribeMessaging() {
+	var messaging = cb.Messaging();
+	messaging.subscribe('someTopic', {timeout: 120}, subscribeCallback(err, message) {
+	  if (err) {
+	    throw new Error(message);
+	  } else {
+	    // do something with response
+	  }
+  	});
 }
 
 ```
