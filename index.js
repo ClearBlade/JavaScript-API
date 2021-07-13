@@ -1646,6 +1646,7 @@ function createClearBladeInstance (window, undefined) {
         body: params,
         user: this.user,
         URI: this.URI,
+        timeout: this.callTimeout,
       };
       if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
