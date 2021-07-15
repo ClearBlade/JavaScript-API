@@ -186,7 +186,11 @@ interface Collection<T extends object> {
     newItem: Partial<T> | Array<Partial<T>>,
     callback: CbCallback<Item<T>[]>
   ): void;
-  update(query: QueryObj, changes: object, callback: CbCallback<string>): void;
+  update(
+    query: QueryObj,
+    changes: Partial<T>,
+    callback: CbCallback<string>
+  ): void;
   remove(query: QueryObj, callback: CbCallback<string>): void;
   columns(callback: CbCallback<Column[]>): void;
   count(query: QueryObj, callback: CbCallback<CountCallbackInfo>): void;
