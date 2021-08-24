@@ -18,7 +18,7 @@ interface ClearBlade {
   request(options: RequestOptions, callback: CbCallback<any>): void;
   getMessageTopic(
     destinationName: string,
-    callbackDict: CbDictionary<string, Function>
+    callbackDict: { string?: Function }
   ): string;
 }
 export var ClearBlade: ClearBlade;
@@ -83,8 +83,6 @@ interface Column {
 interface InvocationContext {
   invocationContext: any;
 }
-
-type CbDictionary<K extends string, T> = { [P in K]?: T };
 
 export interface IClearBlade {
   systemKey: string;
