@@ -8,22 +8,20 @@
 
 // TODO: change all the occurences where we use CbCallback<any> to supply the actual type that is returned
 
-declare module "clearblade-js-client" {
-  interface ClearBlade {
-    new (): IClearBlade;
+interface ClearBlade {
+  new (): IClearBlade;
 
-    MESSAGING_QOS_AT_MOST_ONCE: MessagingQOS.MESSAGING_QOS_AT_MOST_ONCE;
-    MESSAGING_QOS_AT_LEAST_ONCE: MessagingQOS.MESSAGING_QOS_AT_LEAST_ONCE;
-    MESSAGING_QOS_EXACTLY_ONCE: MessagingQOS.MESSAGING_QOS_EXACTLY_ONCE;
+  MESSAGING_QOS_AT_MOST_ONCE: MessagingQOS.MESSAGING_QOS_AT_MOST_ONCE;
+  MESSAGING_QOS_AT_LEAST_ONCE: MessagingQOS.MESSAGING_QOS_AT_LEAST_ONCE;
+  MESSAGING_QOS_EXACTLY_ONCE: MessagingQOS.MESSAGING_QOS_EXACTLY_ONCE;
 
-    request(options: RequestOptions, callback: CbCallback<any>): void;
-    getMessageTopic(
-      destinationName: string,
-      callbackDict: CbDictionary<string, Function>
-    ): string;
-  }
-  export var ClearBlade: ClearBlade;
+  request(options: RequestOptions, callback: CbCallback<any>): void;
+  getMessageTopic(
+    destinationName: string,
+    callbackDict: CbDictionary<string, Function>
+  ): string;
 }
+export var ClearBlade: ClearBlade;
 
 declare enum MessagingQOS {
   MESSAGING_QOS_AT_MOST_ONCE = 0,
@@ -88,7 +86,7 @@ interface InvocationContext {
 
 type CbDictionary<K extends string, T> = { [P in K]?: T };
 
-interface IClearBlade {
+export interface IClearBlade {
   systemKey: string;
   systemSecret: string;
   masterSecret: string;
