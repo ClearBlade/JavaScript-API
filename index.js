@@ -2118,8 +2118,8 @@ function createClearBladeInstance (window, undefined) {
           ClearBlade.getMessageTopic(message.destinationName, messageCallbacks)
         ]
       );
-      for (callback of callbacks) {
-        callback(message.payloadString, message);
+      for (var theCallback of callbacks) {
+        theCallback(message.payloadString, message);
       }
     };
     // the mqtt websocket library uses "onConnect," but our terminology uses
