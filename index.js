@@ -638,14 +638,12 @@ function createClearBladeInstance (window, undefined) {
 
     // Set Credentials; Maybe some encryption later
     if (authToken) {
-      httpRequest.setRequestHeader('CLEARBLADE-USERTOKEN', authToken);
+      httpRequest.setRequestHeader('CLEARBLADE-USERTOKEN', authToken); 
+    }
+    if (options.systemKey) {
       httpRequest.setRequestHeader('ClearBlade-SystemKey', options.systemKey);
-      httpRequest.setRequestHeader(
-        'ClearBlade-SystemSecret',
-        options.systemSecret
-      );
-    } else {
-      httpRequest.setRequestHeader('ClearBlade-SystemKey', options.systemKey);
+    }
+    if (options.systemSecret) {
       httpRequest.setRequestHeader(
         'ClearBlade-SystemSecret',
         options.systemSecret
