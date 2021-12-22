@@ -1637,7 +1637,7 @@ function createClearBladeInstance (window, undefined) {
      *    }
      * })
      */
-    code.execute = function (name, params, callback) {
+    code.execute = function (name, params, callback, id) {
       var reqOptions = {
         method: 'POST',
         endpoint: 'api/v/1/code/' + this.systemKey + '/' + name,
@@ -1646,6 +1646,9 @@ function createClearBladeInstance (window, undefined) {
         URI: this.URI,
         timeout: this.callTimeout,
       };
+      if (id) {
+        reqOptions.endpoint = reqOptions.endpoint + '?id=' + id;
+      }
       if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
       } else {

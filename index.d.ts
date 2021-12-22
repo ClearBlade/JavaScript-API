@@ -359,7 +359,8 @@ interface Code {
   execute<T>(
     name: string,
     params: object,
-    callback: CbCallback<ServiceCallbackInfo<T>>
+    callback: CbCallback<ServiceCallbackInfo<T>>,
+    id?: string
   ): void;
   getCompletedServices(callback: CbCallback<ServiceInfo>): void;
   getFailedServices(callback: CbCallback<ServiceInfo>): void;
