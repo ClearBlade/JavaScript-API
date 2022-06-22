@@ -1,18 +1,22 @@
-import '../lib/mqttws31';
-import '../index';
+import "../lib/mqttws31";
+import { ClearBlade } from "../index";
 
-const platformUrl = 'http://fakeUrl.com';
-const systemKey = 'fakeSystemKey';
+const platformUrl = "http://fakeUrl.com";
+const systemKey = "fakeSystemKey";
 
-const cb = new ClearBlade();
+const mockRequest = jest.fn(({}, cb) => {
+  cb(null, { fake: "data", DATA: [] });
+});
+const cb = new ClearBlade({
+  request: mockRequest,
+});
+
 cb.init({
   systemKey,
-  systemSecret: 'fake',
-  useUser: { email: 'test@fake.com', authToken: 'testUserToken' },
+  systemSecret: "fake",
+  useUser: { email: "test@fake.com", authToken: "testUserToken" },
   URI: platformUrl,
 });
-cb.setUser('test@fake.com', 'testUserToken');
+cb.setUser("test@fake.com", "testUserToken");
 
-ClearBlade.request = jest.fn(({}, cb) => cb(null, { fake: 'data', DATA: [] }));
-
-export { cb, platformUrl, systemKey };
+export { cb, platformUrl, systemKey, mockRequest, ClearBlade };

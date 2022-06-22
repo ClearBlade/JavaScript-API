@@ -2,19 +2,19 @@
  * Javascript tests for Edges
  */
 
-import { cb, platformUrl } from "./utils";
+import { cb, platformUrl, mockRequest } from "./utils";
 
 var edge: Edge;
-beforeAll(function() {
+beforeAll(function () {
   edge = cb.Edge();
 });
 
-describe("ClearBlade Edges", function() {
-  it("create edge", function() {
-    const callNum = ClearBlade.request.mock.calls.length;
+describe("ClearBlade Edges", function () {
+  it("create edge", function () {
+    const callNum = mockRequest.mock.calls.length;
     var name = "fakeEdge";
     var newData = {
-      newData: "newData"
+      newData: "newData",
     };
     var expectedData = {
       method: "POST",
@@ -23,20 +23,20 @@ describe("ClearBlade Edges", function() {
       body: newData,
       user: {
         authToken: "testUserToken",
-        email: "test@fake.com"
-      }
+        email: "test@fake.com",
+      },
     };
-    edge.create(newData, name, function(err, data) {
+    edge.create(newData, name, function (err, data) {
       expect(err).toBeNull();
-      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+      expect(mockRequest.mock.calls[callNum][0]).toEqual(expectedData);
     });
   });
 
-  it("update an edge by name", function() {
-    const callNum = ClearBlade.request.mock.calls.length;
+  it("update an edge by name", function () {
+    const callNum = mockRequest.mock.calls.length;
     var name = "fakeEdge";
     var newData = {
-      newData: "newData"
+      newData: "newData",
     };
     var expectedData = {
       method: "PUT",
@@ -45,20 +45,20 @@ describe("ClearBlade Edges", function() {
       body: newData,
       user: {
         authToken: "testUserToken",
-        email: "test@fake.com"
-      }
+        email: "test@fake.com",
+      },
     };
-    edge.updateEdgeByName(name, newData, function(err, data) {
+    edge.updateEdgeByName(name, newData, function (err, data) {
       expect(err).toBeNull();
-      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+      expect(mockRequest.mock.calls[callNum][0]).toEqual(expectedData);
     });
   });
 
-  it("delete an edge by name", function() {
-    const callNum = ClearBlade.request.mock.calls.length;
+  it("delete an edge by name", function () {
+    const callNum = mockRequest.mock.calls.length;
     var name = "fakeEdge";
     var newData = {
-      newData: "newData"
+      newData: "newData",
     };
     var expectedData = {
       method: "DELETE",
@@ -66,12 +66,12 @@ describe("ClearBlade Edges", function() {
       endpoint: "api/v/3/edges/fakeSystemKey/fakeEdge",
       user: {
         authToken: "testUserToken",
-        email: "test@fake.com"
-      }
+        email: "test@fake.com",
+      },
     };
-    edge.deleteEdgeByName(name, function(err, data) {
+    edge.deleteEdgeByName(name, function (err, data) {
       expect(err).toBeNull();
-      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+      expect(mockRequest.mock.calls[callNum][0]).toEqual(expectedData);
     });
   });
 });

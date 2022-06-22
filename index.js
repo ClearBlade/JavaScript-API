@@ -13,7 +13,7 @@ if (!window.console) {
   window.console.log = window.console.log || function () {};
 }
 
-function createClearBladeInstance (window, undefined) {
+function createClearBladeInstance (window, options) {
   // 'use strict';
   var ClearBlade;
   /**
@@ -754,25 +754,7 @@ function createClearBladeInstance (window, undefined) {
     httpRequest.send(body);
   };
 
-  ClearBlade.getMessageTopic = function (destinationName, callbackDict) {
-    const destArr = destinationName.split('/');
-    for (const topic in callbackDict) {
-      const topicArr = topic.split('/');
-      for (let i = 0; i < destArr.length; i++) {
-        if (topicArr[i] === '#') {
-          return topic;
-        }
-        if (destArr[i] !== topicArr[i] && topicArr[i] !== '+') {
-          break;
-        }
-        if (i === destArr.length - 1) {
-          return topic;
-        }
-      }
-    }
-  };
-
-  ClearBlade.request = function (options, callback) {
+  ClearBlade.request = options.request || function (options, callback) {
     if (!options || typeof options !== 'object') {
       throw new Error('Request: options is not an object or is empty');
     }
@@ -1637,17 +1619,20 @@ function createClearBladeInstance (window, undefined) {
      *    }
      * })
      */
-    code.execute = function (name, params, callback, id) {
+    code.execute = function (name, params, callback, options) {
+      if (typeof options === 'undefined') {
+        options = {};
+      }
       var reqOptions = {
         method: 'POST',
         endpoint: 'api/v/1/code/' + this.systemKey + '/' + name,
         body: params,
         user: this.user,
         URI: this.URI,
-        timeout: this.callTimeout,
+        timeout: options.requestTimeout || this.callTimeout,
       };
-      if (id) {
-        reqOptions.endpoint = reqOptions.endpoint + '?id=' + id;
+      if (options.id) {
+        reqOptions.endpoint = reqOptions.endpoint + '?id=' + options.id;
       }
       if (typeof callback === 'function') {
         ClearBlade.request(reqOptions, callback);
@@ -2116,7 +2101,7 @@ function createClearBladeInstance (window, undefined) {
       // messageCallbacks from Subscribe() may contain multiple callbacks per topic
       const callbacks = Object.values(
         messageCallbacks[
-          ClearBlade.getMessageTopic(message.destinationName, messageCallbacks)
+          getMessageTopic(message.destinationName, messageCallbacks)
         ]
       );
       for (var theCallback of callbacks) {
@@ -3732,13 +3717,31 @@ function createClearBladeInstance (window, undefined) {
     };
     ClearBlade.request(reqOptions, callback);
   };
-
   return ClearBlade;
 }
 
+function getMessageTopic (destinationName, callbackDict) {
+  const destArr = destinationName.split('/');
+  for (const topic in callbackDict) {
+    const topicArr = topic.split('/');
+    for (let i = 0; i < destArr.length; i++) {
+      if (topicArr[i] === '#') {
+        return topic;
+      }
+      if (destArr[i] !== topicArr[i] && topicArr[i] !== '+') {
+        break;
+      }
+      if (i === destArr.length - 1) {
+        return topic;
+      }
+    }
+  }
+}
+
 module.exports = { 
-  ClearBlade: function() { 
-    const cb = createClearBladeInstance(window);  
+  ClearBlade: function(options) { 
+    const cb = createClearBladeInstance(window, options || {});  
     return new cb();
-  } 
+  },
+  getMessageTopic
 };

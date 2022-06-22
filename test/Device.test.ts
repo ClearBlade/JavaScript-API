@@ -2,75 +2,77 @@
  * JavaScript tests to test the device table functionality
  */
 
-import { cb, platformUrl } from "./utils";
+import { cb, platformUrl, mockRequest } from "./utils";
 
 var device: Device;
 var query: QueryObj;
-beforeEach(function() {
+beforeEach(function () {
   device = cb.Device();
   query = cb.Query();
 });
 
-describe("ClearBlade Device", function() {
-  it("gets device info by name", function() {
+describe("ClearBlade Device", function () {
+  it("gets device info by name", function () {
     var expectedData = {
       method: "GET",
       endpoint: "api/v/2/devices/fakeSystemKey/fakeName",
       URI: platformUrl,
       user: {
         email: "test@fake.com",
-        authToken: "testUserToken"
-      }
+        authToken: "testUserToken",
+      },
     };
-    var callNum = ClearBlade.request.mock.calls.length;
-    device.getDeviceByName("fakeName", function(err, body) {
+    var callNum = mockRequest.mock.calls.length;
+    device.getDeviceByName("fakeName", function (err, body) {
       expect(err).toBeNull();
-      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+      expect(mockRequest.mock.calls[callNum][0]).toEqual(expectedData);
     });
   });
 
-  it("updates a device's information by name", function() {
+  it("updates a device's information by name", function () {
     var expectedData = {
       method: "PUT",
       endpoint: "api/v/2/devices/fakeSystemKey/fakeName",
       URI: platformUrl,
       body: {
         state: "on",
-        causeTrigger: false
+        causeTrigger: false,
       },
       user: {
         email: "test@fake.com",
-        authToken: "testUserToken"
-      }
+        authToken: "testUserToken",
+      },
     };
-    var callNum = ClearBlade.request.mock.calls.length;
-    device.updateDeviceByName("fakeName", { state: "on" }, false, function(
-      err,
-      body
-    ) {
-      expect(err).toBeNull();
-      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
-    });
+    var callNum = mockRequest.mock.calls.length;
+    device.updateDeviceByName(
+      "fakeName",
+      { state: "on" },
+      false,
+      function (err, body) {
+        expect(err).toBeNull();
+        expect(mockRequest.mock.calls[callNum][0]).toEqual(expectedData);
+      }
+    );
   });
 
-  it("deletes a device's information by name", function() {
+  it("deletes a device's information by name", function () {
     var expectedData = {
       method: "DELETE",
       endpoint: "api/v/2/devices/fakeSystemKey/fakeName",
       URI: platformUrl,
       user: {
         email: "test@fake.com",
-        authToken: "testUserToken"
-      }
+        authToken: "testUserToken",
+      },
     };
-    var callNum = ClearBlade.request.mock.calls.length;
-    device.deleteDeviceByName("fakeName", function(err, body) {
+    var callNum = mockRequest.mock.calls.length;
+    device.deleteDeviceByName("fakeName", function (err, body) {
       expect(err).toBeNull();
-      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+      expect(mockRequest.mock.calls[callNum][0]).toEqual(expectedData);
     });
   });
 
-  it("fetch list of all devices", function() {
+  it("fetch list of all devices", function () {
     var expectedData = {
       method: "GET",
       endpoint: "api/v/2/devices/fakeSystemKey",
@@ -78,20 +80,20 @@ describe("ClearBlade Device", function() {
       qs: "query=%7B%7D",
       user: {
         email: "test@fake.com",
-        authToken: "testUserToken"
-      }
+        authToken: "testUserToken",
+      },
     };
-    var callNum = ClearBlade.request.mock.calls.length;
-    device.fetch(query, function(err, body) {
+    var callNum = mockRequest.mock.calls.length;
+    device.fetch(query, function (err, body) {
       expect(err).toBeNull();
-      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+      expect(mockRequest.mock.calls[callNum][0]).toEqual(expectedData);
     });
   });
 
-  it("updates all devices", function() {
+  it("updates all devices", function () {
     var newData = {
       state: "on",
-      causeTrigger: false
+      causeTrigger: false,
     };
     var expectedData = {
       method: "PUT",
@@ -101,17 +103,17 @@ describe("ClearBlade Device", function() {
       causeTrigger: false,
       user: {
         email: "test@fake.com",
-        authToken: "testUserToken"
-      }
+        authToken: "testUserToken",
+      },
     };
-    var callNum = ClearBlade.request.mock.calls.length;
-    device.update(query, newData, false, function(err, body) {
+    var callNum = mockRequest.mock.calls.length;
+    device.update(query, newData, false, function (err, body) {
       expect(err).toBeNull();
-      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+      expect(mockRequest.mock.calls[callNum][0]).toEqual(expectedData);
     });
   });
 
-  it("deletes all devices", function() {
+  it("deletes all devices", function () {
     var expectedData = {
       method: "DELETE",
       endpoint: "api/v/2/devices/fakeSystemKey",
@@ -119,20 +121,20 @@ describe("ClearBlade Device", function() {
       qs: "query=%5B%5D",
       user: {
         email: "test@fake.com",
-        authToken: "testUserToken"
-      }
+        authToken: "testUserToken",
+      },
     };
-    var callNum = ClearBlade.request.mock.calls.length;
-    device.delete(query, function(err, body) {
+    var callNum = mockRequest.mock.calls.length;
+    device.delete(query, function (err, body) {
       expect(err).toBeNull();
-      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+      expect(mockRequest.mock.calls[callNum][0]).toEqual(expectedData);
     });
   });
 
-  it("creates a device", function() {
+  it("creates a device", function () {
     var newDevice = {
       name: "fakeDevice",
-      type: "device"
+      type: "device",
     };
     var expectedData = {
       method: "POST",
@@ -141,13 +143,13 @@ describe("ClearBlade Device", function() {
       body: newDevice,
       user: {
         email: "test@fake.com",
-        authToken: "testUserToken"
-      }
+        authToken: "testUserToken",
+      },
     };
-    var callNum = ClearBlade.request.mock.calls.length;
-    device.create(newDevice, function(err, body) {
+    var callNum = mockRequest.mock.calls.length;
+    device.create(newDevice, function (err, body) {
       expect(err).toBeNull();
-      expect(ClearBlade.request.mock.calls[callNum][0]).toEqual(expectedData);
+      expect(mockRequest.mock.calls[callNum][0]).toEqual(expectedData);
     });
   });
 });

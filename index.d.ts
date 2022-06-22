@@ -9,7 +9,7 @@
 // TODO: change all the occurences where we use CbCallback<any> to supply the actual type that is returned
 
 interface ClearBlade {
-  new (): IClearBlade;
+  new (options?: { request: () => void }): IClearBlade;
 
   MESSAGING_QOS_AT_MOST_ONCE: MessagingQOS.MESSAGING_QOS_AT_MOST_ONCE;
   MESSAGING_QOS_AT_LEAST_ONCE: MessagingQOS.MESSAGING_QOS_AT_LEAST_ONCE;
@@ -22,6 +22,10 @@ interface ClearBlade {
   ): string;
 }
 export var ClearBlade: ClearBlade;
+export var getMessageTopic: (
+  destinationName: string,
+  callbackDict: { [key: string]: () => void }
+) => string;
 
 declare enum MessagingQOS {
   MESSAGING_QOS_AT_MOST_ONCE = 0,
@@ -360,7 +364,10 @@ interface Code {
     name: string,
     params: object,
     callback: CbCallback<ServiceCallbackInfo<T>>,
-    id?: string
+    options?: {
+      id?: string;
+      requestTimeout?: number;
+    }
   ): void;
   getCompletedServices(callback: CbCallback<ServiceInfo>): void;
   getFailedServices(callback: CbCallback<ServiceInfo>): void;
