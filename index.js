@@ -1395,6 +1395,11 @@ function createClearBladeInstance (window, options) {
       return this;
     };
 
+    query.groupBy = function (columnsArray) {
+      this.query.GROUPBY = columnsArray;
+      return this;
+    };
+
     /**
      * Removes an item or set of items from the Query
      * @method ClearBlade.Query.prototype.remove

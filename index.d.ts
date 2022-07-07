@@ -284,7 +284,8 @@ interface QueryObj {
   getFieldValue(field: string): object | null;
   fetch(callback: QueryCallbackInfo): void;
   update(changes: object, callback: CbCallback<string>): void;
-  columns(columnsArray: string[]): void;
+  columns(columnsArray: string[]): QueryObj;
+  groupBy(columnsArray: string[]): QueryObj;
   remove(callback: CbCallback<string>): void;
 }
 
