@@ -2238,6 +2238,7 @@ function createClearBladeInstance (window, options) {
 
       delete messageCallbacks[topic][callbackId || DEFAULT_CALLBACK_ID];
       if (Object.keys(messageCallbacks[topic]).length === 0) {
+        delete messageCallbacks[topic];
         this.client.unsubscribe(topic, conf);
       }
     };
@@ -3726,6 +3727,9 @@ function createClearBladeInstance (window, options) {
 }
 
 function getMessageTopic (destinationName, callbackDict) {
+  if (typeof callbackDict[destinationName] !== 'undefined') {
+    return destinationName;
+  }
   const destArr = destinationName.split('/');
   for (const topic in callbackDict) {
     const topicArr = topic.split('/');

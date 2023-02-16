@@ -1,6 +1,17 @@
 import { getMessageTopic } from "../index";
 
 describe("get message topic", function () {
+  it("prefers exact match over wildcard", function () {
+    const destinationName = "dbupdate/_monitor/_asset/123/locationAndStatus";
+    const callbackDict = {
+      "dbupdate/_monitor/_asset/+/locationAndStatus": () => {},
+      "dbupdate/_monitor/_asset/123/locationAndStatus": () => {},
+      "placeholder/+": () => {},
+    };
+    expect(getMessageTopic(destinationName, callbackDict)).toBe(
+      "dbupdate/_monitor/_asset/123/locationAndStatus"
+    );
+  });
   it("match identical destination and topic", function () {
     const destinationName = "dbupdate/_monitor/_area/123/status";
     const callbackDict = {
