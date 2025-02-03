@@ -2104,11 +2104,14 @@ function createClearBladeInstance (window, options) {
 
     messaging.client.onMessageArrived = function (message) {
       // messageCallbacks from Subscribe() may contain multiple callbacks per topic
-      const callbacks = Object.values(
-        messageCallbacks[
-          getMessageTopic(message.destinationName, messageCallbacks)
-        ]
-      );
+      const callbacksForTopic = messageCallbacks[
+        getMessageTopic(message.destinationName, messageCallbacks)
+      ];
+      if (!callbacksForTopic) {
+        console.warn('No callbacks for topic', message.destinationName);
+        return;
+      }
+      const callbacks = Object.values(callbacksForTopic);
       for (var theCallback of callbacks) {
         theCallback(message.payloadString, message);
       }
