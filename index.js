@@ -533,7 +533,7 @@ function createClearBladeInstance (window, options) {
 
   ClearBlade.prototype.registerMasterCallback = function (callback) {
     if (typeof callback === 'function') {
-      this.masterCallback = callback;
+      masterCallback = callback;
     } else {
       logger('Did you forget to supply a valid Callback!');
     }
