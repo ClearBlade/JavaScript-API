@@ -2011,6 +2011,9 @@ function createClearBladeInstance (window, options) {
 
   const DEFAULT_CALLBACK_ID = '__default_callback_id__';
 
+  /** Default reconnect attempts before giving up (~1 hour of cumulative backoff at 1s initial delay, 60s cap). */
+  var DEFAULT_MESSAGING_MAX_CONNECT_RETRIES = 65;
+
   /**
    * Initializes the ClearBlade messaging object and connects to a server.
    * @class ClearBlade.Messaging
@@ -2027,6 +2030,7 @@ function createClearBladeInstance (window, options) {
    * <p>{function} [onFailure] A callback to operate on the result of an unsuccessful connect. In beta the default is just the invoking of the `callback` parameter with the data from the connection.</p>
    * <p>{Object} [hosts] An array of hosts to attempt to connect too. Sticks to the first one that works. The default is [ClearBlade.messagingURI].</p>
    * <p>{Object} [ports] An array of ports to try, it also sticks to thef first one that works. The default is [1337].</p>
+   * <p>{Number} [maxConnectRetries] Max reconnect attempts after a connection loss before giving up. The default is 65 (~1 hour of cumulative backoff).</p>
    *</p>
    * @param {function} callback Callback to be run upon either succeessful or
    * failed connection
@@ -2053,7 +2057,11 @@ function createClearBladeInstance (window, options) {
     messaging.systemSecret = this.systemSecret;
     messaging.callTimeout = this._callTimeout;
     messaging.numOfConnectRetries = 0;
-    messaging.maxConnectRetries = options.maxConnectRetries || 3;
+    messaging.maxConnectRetries =
+      options.maxConnectRetries != null
+        ? options.maxConnectRetries
+        : DEFAULT_MESSAGING_MAX_CONNECT_RETRIES;
+    messaging._reconnectTimeoutId = null;
 
     //roll through the config
     var conf = {};
@@ -2095,10 +2103,19 @@ function createClearBladeInstance (window, options) {
           'ClearBlade Messaging connection lost- attempting to reestablish',
           response
         );
-        delete conf.mqttVersionExplicit;
-        delete conf.uris;
+        if (messaging._reconnectTimeoutId != null) {
+          clearTimeout(messaging._reconnectTimeoutId);
+          messaging._reconnectTimeoutId = null;
+        }
         messaging.numOfConnectRetries++;
-        messaging.client.connect(conf);
+        var attemptIndex = messaging.numOfConnectRetries - 1;
+        var delayMs = Math.min(1000 * Math.pow(2, attemptIndex), 60000);
+        messaging._reconnectTimeoutId = setTimeout(function () {
+          messaging._reconnectTimeoutId = null;
+          delete conf.mqttVersionExplicit;
+          delete conf.uris;
+          messaging.client.connect(conf);
+        }, delayMs);
       }
     };
 
@@ -2119,6 +2136,10 @@ function createClearBladeInstance (window, options) {
     // the mqtt websocket library uses "onConnect," but our terminology uses
     // "onSuccess" and "onFailure"
     var onSuccess = function (data) {
+      if (messaging._reconnectTimeoutId != null) {
+        clearTimeout(messaging._reconnectTimeoutId);
+        messaging._reconnectTimeoutId = null;
+      }
       messaging.numOfConnectRetries = 0;
       callback(undefined, data);
     };
@@ -2257,6 +2278,10 @@ function createClearBladeInstance (window, options) {
      * cb.disconnect()//why leave so soon :(
      */
     messaging.disconnect = function () {
+      if (messaging._reconnectTimeoutId != null) {
+        clearTimeout(messaging._reconnectTimeoutId);
+        messaging._reconnectTimeoutId = null;
+      }
       messageCallbacks = {};
       this.client.disconnect();
     };

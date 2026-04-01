@@ -86,6 +86,7 @@ describe("get current topics test", function () {
 describe("handle socket close", () => {
   let connectMock: jest.Mock;
   beforeEach(() => {
+    jest.useFakeTimers();
     connectMock = jest.fn();
 
     global.Paho = {
@@ -95,6 +96,10 @@ describe("handle socket close", () => {
         })),
       },
     };
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
   });
 
   it("should attempt to reconnect after losing connection", () => {
@@ -111,6 +116,7 @@ describe("handle socket close", () => {
     msg.client.onConnect("data");
     // fake a socket close
     closeSocket(msg);
+    jest.runTimersToTime(1000);
     // fake a successful reconnect
     msg.client.onConnect("data");
 
@@ -119,7 +125,7 @@ describe("handle socket close", () => {
     expect(msgCallback).toHaveBeenCalledWith(undefined, "data");
   });
 
-  it("should attempt to reconnect after losing connection", () => {
+  it("should stop reconnecting after max retries", () => {
     const closeSocket = (messagingObject: Messaging) => {
       messagingObject.client.onConnectionLost({
         errorCode: 8,
@@ -128,14 +134,16 @@ describe("handle socket close", () => {
     };
 
     const msgCallback = jest.fn();
-    const msg = cb.Messaging({}, msgCallback);
+    const msg = cb.Messaging({ maxConnectRetries: 3 }, msgCallback);
     // fake a successful connection on startup
     msg.client.onConnect("data");
-    // fake a retry loop
+    // three losses with backoff delays elapsing between each reconnect attempt
     closeSocket(msg);
+    jest.runTimersToTime(1000);
     closeSocket(msg);
+    jest.runTimersToTime(2000);
     closeSocket(msg);
-    closeSocket(msg);
+    jest.runTimersToTime(4000);
     closeSocket(msg);
     closeSocket(msg);
     closeSocket(msg);
