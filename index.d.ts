@@ -445,6 +445,7 @@ interface CommonMessagingProperties {
 
 interface MessagingOptions extends CommonMessagingProperties {
   qos?: MessagingQOS;
+  /** Default ~65 (~1 hour of cumulative backoff). */
   maxConnectRetries?: number;
 }
 
